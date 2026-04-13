@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Orbitron:wght@400;700&amp;family=Space+Grotesk:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "surface-container-low": "#161b2b",
+            "primary": "#c3f5ff",
+            "on-tertiary-fixed-variant": "#594400",
+            "surface-container": "#1a1f2f",
+            "tertiary-fixed-dim": "#f3bf26",
+            "on-secondary-container": "#ffddd2",
+            "on-background": "#dee1f7",
+            "primary-fixed": "#9cf0ff",
+            "inverse-surface": "#dee1f7",
+            "on-tertiary-fixed": "#251a00",
+            "on-secondary-fixed": "#390c00",
+            "outline-variant": "#3b494c",
+            "on-primary-container": "#00626e",
+            "tertiary-fixed": "#ffdf96",
+            "on-primary-fixed-variant": "#004f58",
+            "on-error-container": "#ffdad6",
+            "surface-dim": "#0e1322",
+            "surface-variant": "#2f3445",
+            "surface-container-lowest": "#090e1c",
+            "background": "#0e1322",
+            "on-primary-fixed": "#001f24",
+            "secondary": "#ffb59d",
+            "outline": "#849396",
+            "on-surface": "#dee1f7",
+            "inverse-on-surface": "#2b3040",
+            "surface-container-highest": "#2f3445",
+            "secondary-container": "#b83900",
+            "on-surface-variant": "#bac9cc",
+            "on-secondary-fixed-variant": "#832600",
+            "on-secondary": "#5d1900",
+            "secondary-fixed-dim": "#ffb59d",
+            "error-container": "#93000a",
+            "surface-container-high": "#25293a",
+            "on-tertiary-container": "#6f5500",
+            "primary-fixed-dim": "#00daf3",
+            "on-error": "#690005",
+            "tertiary-container": "#fec931",
+            "tertiary": "#ffeac0",
+            "secondary-fixed": "#ffdbd0",
+            "primary-container": "#00e5ff",
+            "inverse-primary": "#006875",
+            "on-tertiary": "#3e2e00",
+            "on-primary": "#00363d",
+            "error": "#ffb4ab",
+            "surface-tint": "#00daf3",
+            "surface-bright": "#343949",
+            "surface": "#0e1322"
+          },
+          fontFamily: {
+            "headline": ["Rajdhani", "sans-serif"],
+            "body": ["Inter", "sans-serif"],
+            "label": ["Space Grotesk", "sans-serif"],
+            "stats": ["Orbitron", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .glass-panel {
+      background: rgba(26, 31, 47, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+    }
+    .stadium-gradient {
+      background: linear-gradient(135deg, #00E5FF, #0066FF);
+    }
+    .glow-cyan:hover {
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0F1E; }
+    ::-webkit-scrollbar-thumb { background: #1C2333; border-radius: 10px; }
+  </style>
+</head>
+<body class="bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- Side Navigation Bar -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-[#0A0F1E] shadow-[inset_-1px_0_0_0_rgba(148,163,184,0.1)] shadow-2xl shadow-cyan-900/10 z-50">
+<div class="flex flex-col h-full py-6">
+<div class="px-6 mb-10">
+<div class="font-['Rajdhani'] text-2xl font-bold tracking-tighter text-[#00E5FF]">SEP CONTROL</div>
+<div class="text-[10px] tracking-[0.2em] text-slate-500 font-bold mt-1 uppercase">COMMAND CENTER</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-['Rajdhani'] uppercase tracking-wider">OVERVIEW</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-['Rajdhani'] uppercase tracking-wider">VERIFICATION</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#00E5FF] border-l-2 border-[#00E5FF] bg-gradient-to-r from-cyan-500/10 to-transparent transition-all duration-300 scale-[0.98] brightness-125" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-['Rajdhani'] uppercase tracking-wider">MANAGEMENT</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span class="font-['Rajdhani'] uppercase tracking-wider">OPERATIONS</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-['Rajdhani'] uppercase tracking-wider">ANALYTICS</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-['Rajdhani'] uppercase tracking-wider">PLATFORM</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full stadium-gradient text-white font-['Rajdhani'] font-bold py-3 rounded-lg flex items-center justify-center gap-2 glow-cyan transition-all duration-300 active:scale-95">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+          DEPLOY UPDATE
+        </button>
+</div>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-white/5 z-40 flex justify-between items-center px-8 shadow-[0_20px_40px_rgba(0,229,255,0.08)]">
+<div class="flex items-center gap-6">
+<div class="font-['Rajdhani'] text-xl font-black text-white tracking-widest uppercase">STADIUM OPS</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">search</span>
+<input class="bg-surface-container-lowest border-none rounded-full py-1.5 pl-10 pr-4 text-sm text-on-surface focus:ring-1 focus:ring-primary-container w-64" placeholder="Search operations..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-white/5 transition-colors rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary-container rounded-full"></span>
+</button>
+<button class="p-2 text-slate-400 hover:text-cyan-400 hover:bg-white/5 transition-colors rounded-full">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-white/10 mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<div class="text-xs font-bold text-white font-['Rajdhani'] uppercase tracking-tighter">Admin User</div>
+<div class="text-[10px] text-primary-container font-medium">SUPER_ADMIN</div>
+</div>
+<div class="w-10 h-10 rounded-full border border-primary-container/30 overflow-hidden bg-surface-container-high">
+<img alt="Admin User" class="w-full h-full object-cover" data-alt="professional portrait of an executive administrator with short hair and clean glasses against a subtle dark blue tech background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAP7r_EVUF8_sosbTwfPT2s-2RZu8sIwEwvpyoZplmyWzo4tW5-wfz0vZQO9vMabiNRRaukTGELYfF6tAW50ChBPXsa0bKE1f2POltittdRAsqBcNH4aw4irx5Dm4IyLvm3jwaKBWEhqDy8OGzpLqX8dBkhMEL31BFLmSLyAXcH4WSIwDlk9AHAebsxd6WUuQBFHjKI1BIzbLeaOtfYLI0LQPy9rj7NAy_QUfbFsZ2voM4UPWH1vCTKI5c_IUi1UDbvwHUGMrbD_0"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 px-8 pb-12">
+<!-- Summary Header Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<!-- Card 1 -->
+<div class="glass-panel p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl">subscriptions</span>
+</div>
+<p class="text-on-surface-variant font-['Rajdhani'] font-bold text-sm tracking-widest uppercase mb-1">Total Active Subscriptions</p>
+<div class="flex items-end gap-3">
+<h2 class="font-stats text-4xl text-primary-container">1,284</h2>
+<span class="text-emerald-400 text-sm font-bold flex items-center mb-1">
+<span class="material-symbols-outlined text-xs">arrow_upward</span> 12%
+          </span>
+</div>
+<div class="mt-4 h-1 w-full bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="h-full stadium-gradient w-[78%]"></div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-panel p-6 rounded-xl relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl">payments</span>
+</div>
+<p class="text-on-surface-variant font-['Rajdhani'] font-bold text-sm tracking-widest uppercase mb-1">Revenue This Month</p>
+<div class="flex items-end gap-3">
+<h2 class="font-stats text-4xl text-white">$42,910</h2>
+<span class="text-emerald-400 text-sm font-bold flex items-center mb-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> $3.2k
+          </span>
+</div>
+<div class="mt-4 flex gap-1">
+<div class="h-1 flex-1 bg-primary-container"></div>
+<div class="h-1 flex-1 bg-primary-container"></div>
+<div class="h-1 flex-1 bg-primary-container"></div>
+<div class="h-1 flex-1 bg-primary-container/30"></div>
+<div class="h-1 flex-1 bg-primary-container/30"></div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-panel p-6 rounded-xl border-l-4 border-secondary-container">
+<p class="text-on-surface-variant font-['Rajdhani'] font-bold text-sm tracking-widest uppercase mb-1">Expiring Within 7 Days</p>
+<div class="flex items-end gap-3">
+<h2 class="font-stats text-4xl text-secondary-container">24</h2>
+<span class="text-on-surface-variant text-xs font-medium mb-1">Actions Required</span>
+</div>
+<div class="mt-4">
+<button class="text-[10px] font-bold text-primary-container hover:underline tracking-widest uppercase flex items-center gap-1">
+            VIEW ALL EXPIRING <span class="material-symbols-outlined text-xs">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex gap-6 items-start">
+<!-- Table Section -->
+<div class="flex-1 min-w-0">
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="px-6 py-4 flex justify-between items-center border-b border-white/5 bg-white/5">
+<h3 class="font-['Rajdhani'] font-bold text-lg tracking-wider">ACTIVE SUBSCRIPTIONS</h3>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant hover:text-white transition-colors">EXPORT</button>
+<button class="px-4 py-1.5 bg-surface-container-highest rounded text-xs font-bold text-on-surface-variant hover:text-white transition-colors">FILTER</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-separate border-spacing-0">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-6 py-4 font-['Rajdhani'] text-xs font-bold text-slate-500 uppercase tracking-widest">Business Name</th>
+<th class="px-6 py-4 font-['Rajdhani'] text-xs font-bold text-slate-500 uppercase tracking-widest">Package Type</th>
+<th class="px-6 py-4 font-['Rajdhani'] text-xs font-bold text-slate-500 uppercase tracking-widest">Term Duration</th>
+<th class="px-6 py-4 font-['Rajdhani'] text-xs font-bold text-slate-500 uppercase tracking-widest">Amount</th>
+<th class="px-6 py-4 font-['Rajdhani'] text-xs font-bold text-slate-500 uppercase tracking-widest">Status</th>
+<th class="px-6 py-4 font-['Rajdhani'] text-xs font-bold text-slate-500 uppercase tracking-widest">Usage</th>
+<th class="px-6 py-4 font-['Rajdhani'] text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<!-- Row 1 -->
+<tr class="hover:bg-primary-container/5 transition-colors group cursor-pointer">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-2 h-8 bg-primary-container rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div>
+<div class="font-bold text-white text-sm">Velocity Arena</div>
+<div class="text-[10px] text-slate-500">ID: #VA-9902</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded-full bg-primary-container/10 text-primary-container text-[10px] font-bold uppercase tracking-tighter">ELITE PARTNER</span>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-on-surface">Oct 12, 23 — Oct 11, 24</div>
+<div class="text-[10px] text-slate-500">Auto-renews</div>
+</td>
+<td class="px-6 py-4">
+<div class="font-stats text-sm">$4,200.00</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5 text-[#00C896] text-[10px] font-bold uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-[#00C896] animate-pulse"></span>
+                      Active
+                    </div>
+</td>
+<td class="px-6 py-4">
+<div class="w-24">
+<div class="flex justify-between mb-1">
+<span class="text-[9px] text-slate-500">LISTINGS</span>
+<span class="text-[9px] text-primary-container">82/100</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full">
+<div class="h-full bg-primary-container w-[82%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 hover:bg-white/10 rounded transition-colors text-slate-400 hover:text-white" title="View History">
+<span class="material-symbols-outlined text-sm">history</span>
+</button>
+<button class="p-1.5 hover:bg-white/10 rounded transition-colors text-slate-400 hover:text-white" title="Adjust Subscription">
+<span class="material-symbols-outlined text-sm">edit_calendar</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-primary-container/5 transition-colors group cursor-pointer">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-2 h-8 bg-primary-container rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div>
+<div class="font-bold text-white text-sm">Apex Fitness Hub</div>
+<div class="text-[10px] text-slate-500">ID: #AF-2134</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded-full bg-surface-container-highest text-slate-400 text-[10px] font-bold uppercase tracking-tighter">STANDARD OPS</span>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-on-surface">Jan 01, 24 — Dec 31, 24</div>
+<div class="text-[10px] text-secondary-container">Expiring in 4 days</div>
+</td>
+<td class="px-6 py-4">
+<div class="font-stats text-sm">$1,500.00</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5 text-secondary-container text-[10px] font-bold uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+                      Pending
+                    </div>
+</td>
+<td class="px-6 py-4">
+<div class="w-24">
+<div class="flex justify-between mb-1">
+<span class="text-[9px] text-slate-500">LISTINGS</span>
+<span class="text-[9px] text-white">12/15</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full">
+<div class="h-full bg-secondary-container w-[80%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 hover:bg-white/10 rounded transition-colors text-slate-400 hover:text-white">
+<span class="material-symbols-outlined text-sm">history</span>
+</button>
+<button class="p-1.5 hover:bg-white/10 rounded transition-colors text-slate-400 hover:text-white">
+<span class="material-symbols-outlined text-sm">edit_calendar</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-primary-container/5 transition-colors group cursor-pointer">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-2 h-8 bg-primary-container rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div>
+<div class="font-bold text-white text-sm">Summit Peaks Resort</div>
+<div class="text-[10px] text-slate-500">ID: #SP-0012</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded-full bg-primary-container/10 text-primary-container text-[10px] font-bold uppercase tracking-tighter">ELITE PARTNER</span>
+</td>
+<td class="px-6 py-4">
+<div class="text-xs text-on-surface">Mar 15, 24 — Mar 14, 25</div>
+<div class="text-[10px] text-slate-500">Auto-renews</div>
+</td>
+<td class="px-6 py-4">
+<div class="font-stats text-sm">$4,200.00</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5 text-[#00C896] text-[10px] font-bold uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-[#00C896]"></span>
+                      Active
+                    </div>
+</td>
+<td class="px-6 py-4">
+<div class="w-24">
+<div class="flex justify-between mb-1">
+<span class="text-[9px] text-slate-500">LISTINGS</span>
+<span class="text-[9px] text-primary-container">45/100</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest rounded-full">
+<div class="h-full bg-primary-container w-[45%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex justify-end gap-2">
+<button class="p-1.5 hover:bg-white/10 rounded transition-colors text-slate-400 hover:text-white">
+<span class="material-symbols-outlined text-sm">history</span>
+</button>
+<button class="p-1.5 hover:bg-white/10 rounded transition-colors text-slate-400 hover:text-white">
+<span class="material-symbols-outlined text-sm">edit_calendar</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 flex justify-between items-center border-t border-white/5 bg-white/5">
+<span class="text-xs text-slate-500 font-medium">Showing 1-10 of 128 active subscriptions</span>
+<div class="flex gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container text-slate-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container text-on-primary-container font-bold text-xs">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container text-slate-400 hover:text-white font-bold text-xs transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container text-slate-400 hover:text-white font-bold text-xs transition-colors">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container text-slate-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Payment History Panel (Side Drawer Style) -->
+<div class="w-96 glass-panel rounded-xl overflow-hidden self-stretch flex flex-col">
+<div class="p-6 border-b border-white/5 bg-white/5">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-['Rajdhani'] font-bold text-lg tracking-wider">PAYMENT HISTORY</h3>
+<p class="text-xs text-primary-container font-bold uppercase tracking-tighter">Velocity Arena</p>
+</div>
+<button class="text-slate-500 hover:text-white">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex items-center gap-4 bg-surface-dim p-4 rounded-lg border border-white/5">
+<div class="w-10 h-10 rounded-full bg-primary-container/20 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<div>
+<div class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Lifetime Value</div>
+<div class="font-stats text-xl text-white leading-tight">$12,600</div>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6 relative">
+<!-- Timeline -->
+<div class="absolute left-9 top-0 bottom-0 w-[1px] bg-white/10"></div>
+<div class="space-y-8 relative">
+<!-- Event 1 -->
+<div class="flex gap-4">
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center text-on-primary ring-4 ring-surface-dim z-10">
+<span class="material-symbols-outlined text-xs">check</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-bold text-white uppercase tracking-wider">Subscription Renewal</span>
+<span class="font-stats text-[11px] text-emerald-400">+$4,200</span>
+</div>
+<p class="text-[10px] text-slate-400 mb-2">Package: Elite Partner (Annual)</p>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-slate-500">Oct 12, 2023 • 09:42 AM</span>
+<button class="text-[10px] font-bold text-primary-container hover:underline">RECEIPT</button>
+</div>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="flex gap-4">
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center text-on-primary ring-4 ring-surface-dim z-10">
+<span class="material-symbols-outlined text-xs">check</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-bold text-white uppercase tracking-wider">Subscription Renewal</span>
+<span class="font-stats text-[11px] text-emerald-400">+$4,200</span>
+</div>
+<p class="text-[10px] text-slate-400 mb-2">Package: Elite Partner (Annual)</p>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-slate-500">Oct 11, 2022 • 08:15 AM</span>
+<button class="text-[10px] font-bold text-primary-container hover:underline">RECEIPT</button>
+</div>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="flex gap-4">
+<div class="w-6 h-6 rounded-full bg-surface-container-highest flex items-center justify-center text-slate-400 ring-4 ring-surface-dim z-10">
+<span class="material-symbols-outlined text-xs">edit</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Account Upgraded</span>
+</div>
+<p class="text-[10px] text-slate-400 mb-2">From Standard Ops to Elite Partner</p>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-slate-500">Jun 02, 2022 • 14:22 PM</span>
+</div>
+</div>
+</div>
+<!-- Event 4 -->
+<div class="flex gap-4">
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center text-on-primary ring-4 ring-surface-dim z-10">
+<span class="material-symbols-outlined text-xs">check</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-bold text-white uppercase tracking-wider">Initial Payment</span>
+<span class="font-stats text-[11px] text-emerald-400">+$4,200</span>
+</div>
+<p class="text-[10px] text-slate-400 mb-2">Package: Standard Ops (Annual)</p>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-slate-500">Oct 10, 2021 • 11:04 AM</span>
+<button class="text-[10px] font-bold text-primary-container hover:underline">RECEIPT</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 bg-surface-container-high">
+<button class="w-full py-2.5 rounded border border-primary-container/30 text-primary-container text-xs font-bold uppercase tracking-widest hover:bg-primary-container/10 transition-colors">
+            LOAD FULL HISTORY
+          </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Manual Adjustment Modal Backdrop -->
+<div class="fixed inset-0 bg-[#0A0F1E]/90 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+<!-- Modal Container -->
+<div class="w-full max-w-md bg-surface-variant/80 glass-panel rounded-xl overflow-hidden shadow-2xl">
+<div class="p-6 border-b border-white/5 flex justify-between items-center">
+<h4 class="font-['Rajdhani'] font-bold text-xl tracking-tight text-white">MANUAL ADJUSTMENT</h4>
+<button class="text-slate-500 hover:text-white">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="p-6 space-y-5">
+<div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg mb-2">
+<div class="w-10 h-10 rounded bg-surface-container-lowest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary-container">domain</span>
+</div>
+<div>
+<div class="text-xs text-slate-400">Business Target</div>
+<div class="text-sm font-bold text-white">Apex Fitness Hub</div>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Target Status</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest border-none rounded py-3 pl-4 pr-10 text-sm text-on-surface focus:ring-1 focus:ring-primary-container appearance-none font-medium">
+<option>Active - Extension</option>
+<option>Suspended - Non-payment</option>
+<option>Cancelled - Customer Request</option>
+<option>Complimentary / Promo</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">expand_more</span>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Adjustment Reason</label>
+<textarea class="w-full bg-surface-container-lowest border-none rounded p-4 text-sm text-on-surface focus:ring-1 focus:ring-primary-container placeholder:text-slate-600" placeholder="State the internal reason for this manual override..." rows="3"></textarea>
+</div>
+<div class="pt-4 flex gap-3">
+<button class="flex-1 py-3 text-xs font-bold text-slate-400 uppercase tracking-widest hover:bg-white/5 rounded transition-all">CANCEL</button>
+<button class="flex-[2] stadium-gradient text-white py-3 text-xs font-bold uppercase tracking-widest rounded glow-cyan transition-all duration-300">CONFIRM OVERRIDE</button>
+</div>
+</div>
+<div class="px-6 py-4 bg-secondary-container/10 flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-container text-sm">warning</span>
+<p class="text-[10px] text-secondary-container leading-normal"><strong>SECURITY NOTICE:</strong> Manual status overrides bypass automated billing cycles. This action will be logged in the system audit trail.</p>
+</div>
+</div>
+</div>
+</body></html>

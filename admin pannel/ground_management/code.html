@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Stadium Admin - Ground Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&amp;family=Orbitron:wght@400;500;700;800&amp;family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#ffb59d",
+                        "on-primary-fixed-variant": "#004f58",
+                        "on-surface-variant": "#bac9cc",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "on-secondary": "#5d1900",
+                        "on-secondary-fixed-variant": "#832600",
+                        "error": "#ffb4ab",
+                        "surface-container": "#1a1f2f",
+                        "on-surface": "#dee1f7",
+                        "on-primary": "#00363d",
+                        "inverse-surface": "#dee1f7",
+                        "tertiary-container": "#fec931",
+                        "primary-fixed": "#9cf0ff",
+                        "on-tertiary-fixed": "#251a00",
+                        "background": "#0e1322",
+                        "tertiary-fixed": "#ffdf96",
+                        "primary-container": "#00e5ff",
+                        "surface-variant": "#2f3445",
+                        "outline-variant": "#3b494c",
+                        "on-primary-fixed": "#001f24",
+                        "tertiary-fixed-dim": "#f3bf26",
+                        "inverse-primary": "#006875",
+                        "on-secondary-fixed": "#390c00",
+                        "error-container": "#93000a",
+                        "surface-bright": "#343949",
+                        "on-secondary-container": "#ffddd2",
+                        "surface": "#0e1322",
+                        "primary-fixed-dim": "#00daf3",
+                        "tertiary": "#ffeac0",
+                        "surface-container-high": "#25293a",
+                        "surface-tint": "#00daf3",
+                        "on-background": "#dee1f7",
+                        "surface-container-highest": "#2f3445",
+                        "on-tertiary": "#3e2e00",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#ffdbd0",
+                        "primary": "#c3f5ff",
+                        "on-primary-container": "#00626e",
+                        "surface-container-lowest": "#090e1c",
+                        "inverse-on-surface": "#2b3040",
+                        "outline": "#849396",
+                        "secondary-fixed-dim": "#ffb59d",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#0e1322",
+                        "surface-container-low": "#161b2b",
+                        "on-tertiary-container": "#6f5500",
+                        "secondary-container": "#b83900"
+                    },
+                    fontFamily: {
+                        "headline": ["Rajdhani"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"],
+                        "scoreboard": ["Orbitron"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-stadium-pattern {
+            background-image: radial-gradient(circle at 2px 2px, rgba(0, 229, 255, 0.03) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .glass-panel {
+            background: rgba(26, 31, 47, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface font-body min-h-screen bg-stadium-pattern">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-[#0A0F1E]/80 backdrop-blur-xl flex justify-between items-center px-8 h-16 w-full shadow-[0_20px_40px_rgba(0,229,255,0.08)]">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-bold tracking-tighter text-cyan-400 font-['Orbitron'] uppercase">STADIUM ADMIN</span>
+<nav class="hidden md:flex items-center gap-6 font-['Rajdhani'] uppercase tracking-wider">
+<a class="text-slate-400 font-medium hover:text-cyan-300 transition-colors" href="#">Support</a>
+<a class="text-slate-400 font-medium hover:text-cyan-300 transition-colors" href="#">Docs</a>
+<a class="text-slate-400 font-medium hover:text-cyan-300 transition-colors" href="#">System Status</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-cyan-400 transition-colors">notifications</span>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-cyan-400 transition-colors">settings</span>
+</div>
+<div class="h-8 w-8 rounded-full bg-surface-container-highest border border-outline-variant overflow-hidden">
+<img alt="Admin Profile Avatar" class="w-full h-full object-cover" data-alt="close up professional headshot of a person with a clean tech aesthetic profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-P-bMTtUwIAooj_NecUZCm8J4maDoPQQ2ma60VDGxODXOMF3qGsrV-omeU77xXS2exuyRFrNfnwi6-f5Z-tZIgNKfKUrKlNYIS44vRb6OUguHk8rNKZfwt0yZo2kIiX_Q-ZNkrA4OyMycd_huxg4bVChDUtt3nn1KL-nCXVnFDOD4zh3uq8cKRvpUTtEG_sQ4nCpFNsAyiT6iwuWHAu6kvbp39X_kJImWSNG23wWXJg_ns2_9nsb5KZzuEnXfd4CLOzO3BOE4LjM"/>
+</div>
+</div>
+<div class="absolute bottom-0 left-0 bg-[#1C2333] h-[1px] w-full"></div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-40 bg-[#0A0F1E] border-r border-slate-800/50 flex flex-col pt-20 pb-8 h-full font-['Rajdhani'] font-semibold text-lg">
+<div class="px-6 mb-8">
+<h2 class="text-cyan-400 font-['Orbitron'] text-xl tracking-widest uppercase">COMMAND CENTER</h2>
+<p class="text-slate-500 text-xs tracking-[0.2em] uppercase">Elite Operations</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1 flex items-center gap-3 cursor-pointer" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1 flex items-center gap-3 cursor-pointer" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span>Verification</span>
+</a>
+<a class="text-cyan-400 border-l-4 border-cyan-400 bg-gradient-to-r from-cyan-500/10 to-transparent pl-4 py-3 flex items-center gap-3 cursor-pointer" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span>Management</span>
+</a>
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1 flex items-center gap-3 cursor-pointer" href="#">
+<span class="material-symbols-outlined">stadium</span>
+<span>Operations</span>
+</a>
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1 flex items-center gap-3 cursor-pointer" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span>Analytics</span>
+</a>
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1 flex items-center gap-3 cursor-pointer" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span>Platform</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<a class="text-slate-500 pl-4 py-3 hover:text-error transition-all flex items-center gap-3 cursor-pointer" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="pl-64 pt-16 min-h-screen">
+<div class="p-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-10">
+<div>
+<h1 class="text-4xl font-bold font-headline tracking-tight text-white uppercase">Ground Management</h1>
+<p class="text-on-surface-variant font-body mt-1">Configure stadium facilities and operational windows.</p>
+</div>
+<button class="bg-gradient-to-br from-primary-container to-[#0066FF] text-on-primary-container px-6 py-3 rounded-lg font-headline font-bold flex items-center gap-2 hover:shadow-[0_0_15px_rgba(0,229,255,0.4)] transition-all active:scale-95">
+<span class="material-symbols-outlined">add</span>
+                    ADD NEW GROUND
+                </button>
+</div>
+<!-- Grounds Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6">
+<!-- Ground Card 1 -->
+<div class="bg-surface-container-high rounded-xl overflow-hidden group border border-white/5 hover:border-cyan-500/30 transition-all">
+<div class="relative h-48">
+<img class="w-full h-full object-cover" data-alt="Professional floodlit football stadium at night with lush green pitch and bright stadium lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLHLi6aVPE_07OsvnQH3tNxL40JrflAHcxsIN1FHdTxTcpqfiEOrUcpMeyDcAbjPH6j5FMTYz8p3XfsnVSxcUp9H8Ub4TcJ8-QdY1flRyJlgD9GNMj5qihDXImHqLJZ058rfn5_-kga9Qn4QTxFMLHtrMUQGqTph0vEyEKgLcKByL3IADTwIbwdJGmRSEa5WjSl3QaZ5WAZTWRIAD-JBWq2TRWexaCLDLuOpyIGj6pNI0Rt25TPfwbobQmvPy8P6iHMDxadrLrGUI"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-high to-transparent"></div>
+<div class="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 border border-white/10">
+<div class="w-2 h-2 rounded-full bg-[#00C896] animate-pulse"></div>
+<span class="text-[10px] font-bold text-[#00C896] tracking-widest uppercase">Live</span>
+</div>
+</div>
+<div class="p-6 relative">
+<div class="absolute -top-10 left-6">
+<span class="bg-primary-container text-on-primary-container px-4 py-1 rounded-full font-headline font-bold text-sm shadow-xl">CRICKET</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-2xl font-bold font-headline text-white uppercase tracking-tight">Victory Arena</h3>
+<p class="text-on-surface-variant text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span> Karachi, Sindh
+                                </p>
+</div>
+<div class="text-right">
+<span class="block text-xs text-on-surface-variant uppercase font-bold">Price / Slot</span>
+<span class="text-2xl font-scoreboard text-primary-container">PKR 4,500</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-surface-container-lowest p-3 rounded-lg">
+<span class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Capacity</span>
+<span class="text-lg font-scoreboard text-white">22 Players</span>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg">
+<span class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Status</span>
+<div class="flex items-center gap-2">
+<span class="text-sm font-body text-on-surface">Active</span>
+<div class="w-8 h-4 bg-primary-container/20 rounded-full relative flex items-center px-0.5">
+<div class="w-3 h-3 bg-primary-container rounded-full translate-x-4"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex-1 py-2 border border-outline-variant text-on-surface-variant hover:bg-white/5 hover:text-white transition-all rounded-lg text-sm font-bold uppercase tracking-wider">Edit</button>
+<button class="flex-1 py-2 border border-outline-variant text-on-surface-variant hover:bg-white/5 hover:text-white transition-all rounded-lg text-sm font-bold uppercase tracking-wider">Manage Slots</button>
+<button class="p-2 border border-outline-variant text-error hover:bg-error-container/20 transition-all rounded-lg">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Ground Card 2 -->
+<div class="bg-surface-container-high rounded-xl overflow-hidden group border border-white/5 hover:border-cyan-500/30 transition-all">
+<div class="relative h-48">
+<img class="w-full h-full object-cover" data-alt="Close up of a football goal net with blurry stadium lights in the background blue night atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3Nfbcw55z0zoUyisRxKpBstd57P6saCXNMO2tyxCyT9LBOrFt2XkjArOuqw35KpUkRhIhpJgKbF6RoMB99rkGQ8bPWSogCCZe3Rqw7JT3PE17TvQ_iYJydXQLU3Ixs84oGOyNRmF1ojClszXbzfLgZnkMFTPRPfbMQKFsYTBia_InXb2Qp9nkT2_OdPK0ZFsd1m8e-q-n2mRH2dzAdMZOmI3eRG7errqvpUH3OhzcgaEKkewRCnjKHEaxaKvinWAmW406aQaD7BY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-high to-transparent"></div>
+<div class="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 border border-white/10">
+<div class="w-2 h-2 rounded-full bg-[#FF6B35]"></div>
+<span class="text-[10px] font-bold text-[#FF6B35] tracking-widest uppercase">Maintenance</span>
+</div>
+</div>
+<div class="p-6 relative">
+<div class="absolute -top-10 left-6">
+<span class="bg-primary-container text-on-primary-container px-4 py-1 rounded-full font-headline font-bold text-sm shadow-xl">FOOTBALL</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-2xl font-bold font-headline text-white uppercase tracking-tight">Lahore Pitch X</h3>
+<p class="text-on-surface-variant text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span> Lahore, Punjab
+                                </p>
+</div>
+<div class="text-right">
+<span class="block text-xs text-on-surface-variant uppercase font-bold">Price / Slot</span>
+<span class="text-2xl font-scoreboard text-primary-container">PKR 3,200</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-surface-container-lowest p-3 rounded-lg">
+<span class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Capacity</span>
+<span class="text-lg font-scoreboard text-white">14 Players</span>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg">
+<span class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Status</span>
+<div class="flex items-center gap-2">
+<span class="text-sm font-body text-slate-500">Disabled</span>
+<div class="w-8 h-4 bg-slate-700/50 rounded-full relative flex items-center px-0.5">
+<div class="w-3 h-3 bg-slate-500 rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex-1 py-2 border border-outline-variant text-on-surface-variant hover:bg-white/5 hover:text-white transition-all rounded-lg text-sm font-bold uppercase tracking-wider">Edit</button>
+<button class="flex-1 py-2 border border-outline-variant text-on-surface-variant hover:bg-white/5 hover:text-white transition-all rounded-lg text-sm font-bold uppercase tracking-wider">Manage Slots</button>
+<button class="p-2 border border-outline-variant text-error hover:bg-error-container/20 transition-all rounded-lg">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Ground Card 3 -->
+<div class="bg-surface-container-high rounded-xl overflow-hidden group border border-white/5 hover:border-cyan-500/30 transition-all">
+<div class="relative h-48">
+<img class="w-full h-full object-cover" data-alt="Outdoor floodlit basketball court at night with bright blue and purple ambient light on asphalt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDo6k3hPB1NUuZuPNlRZ3cWj-79QE0y6cF_r2wae7RY4Id7GzVGww4f45q-jkBNe-lsJFu8ks_5CXPl3M1rnXoX0ux0i_5NjEiSmdA7LyQH7GarE-PbiKUGmW2g0QPXkN717b8K2zfF9dtjLMoHpEZuW2c1X7V_m0N4c3BZht2FWvDsAZfclPYXk9dzA9YfxbfqZvFF0FKQNJZ-qxWqwNeof7Zx7MrBrLThKEQhh0_5a-P1T1fgz6Vaq4qjMwSOoeQEnuM70lpw-CY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-high to-transparent"></div>
+<div class="absolute top-4 right-4 bg-black/40 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-2 border border-white/10">
+<div class="w-2 h-2 rounded-full bg-[#00C896] animate-pulse"></div>
+<span class="text-[10px] font-bold text-[#00C896] tracking-widest uppercase">Live</span>
+</div>
+</div>
+<div class="p-6 relative">
+<div class="absolute -top-10 left-6">
+<span class="bg-primary-container text-on-primary-container px-4 py-1 rounded-full font-headline font-bold text-sm shadow-xl">BASKETBALL</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-2xl font-bold font-headline text-white uppercase tracking-tight">Skyline Hoops</h3>
+<p class="text-on-surface-variant text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">location_on</span> Karachi, Sindh
+                                </p>
+</div>
+<div class="text-right">
+<span class="block text-xs text-on-surface-variant uppercase font-bold">Price / Slot</span>
+<span class="text-2xl font-scoreboard text-primary-container">PKR 2,500</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-surface-container-lowest p-3 rounded-lg">
+<span class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Capacity</span>
+<span class="text-lg font-scoreboard text-white">10 Players</span>
+</div>
+<div class="bg-surface-container-lowest p-3 rounded-lg">
+<span class="block text-[10px] text-slate-500 uppercase font-bold mb-1">Status</span>
+<div class="flex items-center gap-2">
+<span class="text-sm font-body text-on-surface">Active</span>
+<div class="w-8 h-4 bg-primary-container/20 rounded-full relative flex items-center px-0.5">
+<div class="w-3 h-3 bg-primary-container rounded-full translate-x-4"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex-1 py-2 border border-outline-variant text-on-surface-variant hover:bg-white/5 hover:text-white transition-all rounded-lg text-sm font-bold uppercase tracking-wider">Edit</button>
+<button class="flex-1 py-2 border border-outline-variant text-on-surface-variant hover:bg-white/5 hover:text-white transition-all rounded-lg text-sm font-bold uppercase tracking-wider">Manage Slots</button>
+<button class="p-2 border border-outline-variant text-error hover:bg-error-container/20 transition-all rounded-lg">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Modal Overlay (Fixed) -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center bg-background/80 backdrop-blur-lg">
+<!-- Add Ground Modal -->
+<div class="bg-surface-container w-full max-w-4xl max-h-[921px] rounded-xl overflow-hidden shadow-[0_20px_40px_rgba(0,229,255,0.08)] flex flex-col border border-white/10">
+<!-- Modal Header -->
+<div class="px-8 py-6 border-b border-outline-variant flex justify-between items-center bg-surface-container-high">
+<div>
+<h2 class="text-2xl font-bold font-headline text-white uppercase tracking-tight">Register New Ground</h2>
+<p class="text-sm text-on-surface-variant">Step 2: Define Operational Availability</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-[#00C896] text-black font-bold flex items-center justify-center text-xs">1</div>
+<div class="w-8 h-[2px] bg-[#00C896]"></div>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container font-bold flex items-center justify-center text-xs ring-4 ring-primary-container/20">2</div>
+<div class="w-8 h-[2px] bg-slate-700"></div>
+<div class="w-8 h-8 rounded-full bg-slate-800 text-slate-500 font-bold flex items-center justify-center text-xs">3</div>
+</div>
+<button class="text-slate-500 hover:text-white transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<!-- Modal Body -->
+<div class="flex-1 overflow-y-auto p-8">
+<!-- Step 2 Content: Weekly Calendar Slot Grid -->
+<div class="mb-6">
+<h3 class="text-lg font-bold font-headline text-cyan-400 uppercase tracking-wider mb-2">Weekly Operational Grid</h3>
+<p class="text-sm text-on-surface-variant mb-6">Select time blocks to enable/disable field availability for players. Cyan cells represent active booking slots.</p>
+</div>
+<div class="overflow-x-auto">
+<div class="min-w-[700px]">
+<!-- Calendar Grid Header -->
+<div class="grid grid-cols-8 gap-1 mb-2">
+<div class="h-10"></div>
+<div class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-tighter py-2">MON</div>
+<div class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-tighter py-2">TUE</div>
+<div class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-tighter py-2">WED</div>
+<div class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-tighter py-2">THU</div>
+<div class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-tighter py-2">FRI</div>
+<div class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-tighter py-2">SAT</div>
+<div class="text-center text-[10px] font-bold text-slate-500 uppercase tracking-tighter py-2">SUN</div>
+</div>
+<!-- Calendar Grid Rows -->
+<div class="space-y-1">
+<!-- 08:00 Slot -->
+<div class="grid grid-cols-8 gap-1">
+<div class="flex items-center justify-end pr-2 text-[10px] font-scoreboard text-slate-500">08:00</div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-surface-variant/40 rounded shadow-sm cursor-pointer hover:bg-slate-700"></div>
+<div class="h-12 bg-surface-variant/40 rounded shadow-sm cursor-pointer hover:bg-slate-700"></div>
+</div>
+<!-- 10:00 Slot -->
+<div class="grid grid-cols-8 gap-1">
+<div class="flex items-center justify-end pr-2 text-[10px] font-scoreboard text-slate-500">10:00</div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+</div>
+<!-- 12:00 Slot -->
+<div class="grid grid-cols-8 gap-1">
+<div class="flex items-center justify-end pr-2 text-[10px] font-scoreboard text-slate-500">12:00</div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-surface-variant/40 rounded shadow-sm cursor-pointer hover:bg-slate-700"></div>
+<div class="h-12 bg-surface-variant/40 rounded shadow-sm cursor-pointer hover:bg-slate-700"></div>
+<div class="h-12 bg-surface-variant/40 rounded shadow-sm cursor-pointer hover:bg-slate-700"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+</div>
+<!-- 14:00 Slot -->
+<div class="grid grid-cols-8 gap-1">
+<div class="flex items-center justify-end pr-2 text-[10px] font-scoreboard text-slate-500">14:00</div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+</div>
+<!-- 16:00 Slot -->
+<div class="grid grid-cols-8 gap-1">
+<div class="flex items-center justify-end pr-2 text-[10px] font-scoreboard text-slate-500">16:00</div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+<div class="h-12 bg-primary-container rounded shadow-sm cursor-pointer hover:brightness-110"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="px-8 py-6 border-t border-outline-variant bg-surface-container-low flex justify-between items-center">
+<button class="px-6 py-2 border border-outline-variant text-on-surface hover:bg-white/5 rounded-lg font-headline font-bold uppercase transition-all">Back to Info</button>
+<div class="flex items-center gap-4">
+<span class="text-xs text-on-surface-variant italic">Changes auto-saved to session...</span>
+<button class="bg-gradient-to-r from-primary-container to-[#0066FF] text-on-primary-container px-8 py-2 rounded-lg font-headline font-bold uppercase hover:shadow-[0_0_15px_rgba(0,229,255,0.4)] transition-all">Continue to Summary</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Business Owner Management | STADIUM ADMIN</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Rajdhani:wght@500;600;700&amp;family=Orbitron:wght@400;700&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#ffb59d",
+                        "on-primary-fixed-variant": "#004f58",
+                        "on-surface-variant": "#bac9cc",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "on-secondary": "#5d1900",
+                        "on-secondary-fixed-variant": "#832600",
+                        "error": "#ffb4ab",
+                        "surface-container": "#1a1f2f",
+                        "on-surface": "#dee1f7",
+                        "on-primary": "#00363d",
+                        "inverse-surface": "#dee1f7",
+                        "tertiary-container": "#fec931",
+                        "primary-fixed": "#9cf0ff",
+                        "on-tertiary-fixed": "#251a00",
+                        "background": "#0e1322",
+                        "tertiary-fixed": "#ffdf96",
+                        "primary-container": "#00e5ff",
+                        "surface-variant": "#2f3445",
+                        "outline-variant": "#3b494c",
+                        "on-primary-fixed": "#001f24",
+                        "tertiary-fixed-dim": "#f3bf26",
+                        "inverse-primary": "#006875",
+                        "on-secondary-fixed": "#390c00",
+                        "error-container": "#93000a",
+                        "surface-bright": "#343949",
+                        "on-secondary-container": "#ffddd2",
+                        "surface": "#0e1322",
+                        "primary-fixed-dim": "#00daf3",
+                        "tertiary": "#ffeac0",
+                        "surface-container-high": "#25293a",
+                        "surface-tint": "#00daf3",
+                        "on-background": "#dee1f7",
+                        "surface-container-highest": "#2f3445",
+                        "on-tertiary": "#3e2e00",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#ffdbd0",
+                        "primary": "#c3f5ff",
+                        "on-primary-container": "#00626e",
+                        "surface-container-lowest": "#090e1c",
+                        "inverse-on-surface": "#2b3040",
+                        "outline": "#849396",
+                        "secondary-fixed-dim": "#ffb59d",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#0e1322",
+                        "surface-container-low": "#161b2b",
+                        "on-tertiary-container": "#6f5500",
+                        "secondary-container": "#b83900"
+                    },
+                    fontFamily: {
+                        "headline": ["Rajdhani"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"],
+                        "numbers": ["Orbitron"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(26, 31, 47, 0.6);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface font-body selection:bg-primary-container/30">
+<!-- Top Navigation Bar -->
+<nav class="fixed top-0 w-full z-50 bg-[#0A0F1E]/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,229,255,0.08)] flex justify-between items-center px-8 h-16 w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-bold tracking-tighter text-cyan-400 font-['Orbitron']">STADIUM ADMIN</span>
+<div class="hidden md:flex gap-6">
+<a class="text-slate-400 font-medium hover:text-cyan-300 transition-colors font-['Rajdhani'] uppercase tracking-wider" href="#">Support</a>
+<a class="text-slate-400 font-medium hover:text-cyan-300 transition-colors font-['Rajdhani'] uppercase tracking-wider" href="#">Docs</a>
+<a class="text-slate-400 font-medium hover:text-cyan-300 transition-colors font-['Rajdhani'] uppercase tracking-wider" href="#">System Status</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-slate-400 hover:text-cyan-400 transition-all active:scale-95 cursor-pointer" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-slate-400 hover:text-cyan-400 transition-all active:scale-95 cursor-pointer" data-icon="settings">settings</button>
+<div class="h-8 w-8 rounded-full bg-surface-variant overflow-hidden border border-outline-variant">
+<img alt="Admin Profile Avatar" class="w-full h-full object-cover" data-alt="close-up portrait of a professional male administrator in a dark tech-themed environment with cyan highlights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgFmFhGa9oAfnUKn0l8SHFdEsX0LzDzeUCYc_EwQydufLxEf-DObNcb57gmv7NYbTgIUuH0Wgb4MFfJY6RUpOnDL-paTtOtwqqoFRsxAfAA9HMRTMMNhMZ2K45T0al_VexzpFkXADeY5LwXyLh4Vuw6m-byBis3_Rx05rDWeh35wnrZ2rt5426aoXUwwcFEyMg8kUsU_lB50IAs08t21VIQ0WU_uORt-_cvtvGkyaLzm4jycEc0H2nQgeXa75x8JX2G17vcDtwgwo"/>
+</div>
+</div>
+<div class="bg-[#1C2333] h-[1px] w-full absolute bottom-0 left-0"></div>
+</nav>
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-40 bg-[#0A0F1E] border-r border-slate-800/50 flex flex-col pt-20 pb-8 h-full hidden md:flex">
+<div class="px-6 mb-10">
+<h2 class="text-cyan-400 font-['Orbitron'] text-xl tracking-widest uppercase">COMMAND CENTER</h2>
+<p class="text-slate-500 font-['Rajdhani'] font-semibold text-sm">Elite Operations</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all cursor-pointer flex items-center gap-3 hover:bg-slate-800/40 hover:translate-x-1 font-['Rajdhani'] font-semibold text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Overview</span>
+</a>
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all cursor-pointer flex items-center gap-3 hover:bg-slate-800/40 hover:translate-x-1 font-['Rajdhani'] font-semibold text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span>Verification</span>
+</a>
+<a class="text-cyan-400 border-l-4 border-cyan-400 bg-gradient-to-r from-cyan-500/10 to-transparent pl-4 py-3 cursor-pointer flex items-center gap-3 font-['Rajdhani'] font-semibold text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span>Management</span>
+</a>
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all cursor-pointer flex items-center gap-3 hover:bg-slate-800/40 hover:translate-x-1 font-['Rajdhani'] font-semibold text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="stadium">stadium</span>
+<span>Operations</span>
+</a>
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all cursor-pointer flex items-center gap-3 hover:bg-slate-800/40 hover:translate-x-1 font-['Rajdhani'] font-semibold text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span>Analytics</span>
+</a>
+<a class="text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all cursor-pointer flex items-center gap-3 hover:bg-slate-800/40 hover:translate-x-1 font-['Rajdhani'] font-semibold text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span>Platform</span>
+</a>
+</nav>
+<div class="mt-auto px-4">
+<button class="w-full text-slate-500 pl-4 py-3 hover:text-error transition-all cursor-pointer flex items-center gap-3 font-['Rajdhani'] font-semibold text-lg hover:bg-error/5 rounded-lg">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span>Logout</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-24 px-8 pb-12 min-h-screen">
+<!-- Header Section -->
+<header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-4xl font-headline font-bold tracking-tight text-white mb-2">BUSINESS <span class="text-primary-container">MANAGEMENT</span></h1>
+<p class="text-on-surface-variant max-w-xl">Oversee and regulate active business entities across the platform ecosystem with tactical precision.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 bg-surface-container-high px-4 py-2.5 rounded-lg border border-outline-variant hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined text-primary-container" data-icon="filter_list">filter_list</span>
+<span class="font-headline font-semibold">FILTERS</span>
+</button>
+<div class="flex bg-surface-container-low p-1 rounded-lg border border-outline-variant">
+<button class="p-2 bg-primary-container text-on-primary-container rounded-md shadow-lg shadow-primary-container/20">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="view_list">view_list</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Search & Filter Bar -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+<div class="md:col-span-2 relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary-container transition-colors" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none focus:ring-1 focus:ring-primary-container rounded-xl pl-12 pr-4 py-4 text-on-surface placeholder:text-slate-600 transition-all" placeholder="Search Pakistani sports brands, tech hubs..." type="text"/>
+</div>
+<select class="bg-surface-container-low border-none focus:ring-1 focus:ring-primary-container rounded-xl px-4 py-4 text-on-surface appearance-none cursor-pointer font-headline font-semibold">
+<option>All Subscription Types</option>
+<option>Premium (Gold)</option>
+<option>Pro (Cyan)</option>
+<option>Basic (Gray)</option>
+</select>
+<select class="bg-surface-container-low border-none focus:ring-1 focus:ring-primary-container rounded-xl px-4 py-4 text-on-surface appearance-none cursor-pointer font-headline font-semibold">
+<option>All Statuses</option>
+<option>Active</option>
+<option>Maintenance</option>
+<option>Suspended</option>
+</select>
+</div>
+<!-- Business Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Card 1: Sialkot Sports -->
+<div class="group relative bg-surface-container border-l-2 border-primary-container p-6 rounded-xl hover:bg-surface-container-high transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="w-14 h-14 bg-surface-variant rounded-lg flex items-center justify-center border border-outline-variant shadow-inner overflow-hidden">
+<img class="w-full h-full object-cover opacity-80" data-alt="minimalist logo of a sports equipment company with bold geometric shapes on a dark charcoal background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_Qpo5yLlRTWUMP4N5wO9Ph7HIZtKQj2xGTqG1Hz8L1Qap7zYh4gXdzPhqxRB7gW1-J7k9szwX_erizpicNIh0tcU17Uh-cEnBWxi-ruKALDxG4MxCQvRW7vrCS0FLKVtOBfUCjS3k97iHxyB8e4Qw2io1nDamk1T4LpA4m3bThDSZJVCCr0lgfUeJ9uFgaqNm1Zg8Y52z86RN2b4I0qPrOiHs3KnjiCzqXeOqN9PXamV_lgTDztdUpAfAvZOTzUfXfLwtCnI4EQ4"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-white group-hover:text-primary-container transition-colors">Sialkot Sports Hub</h3>
+<p class="text-sm text-on-surface-variant">Manufacturing &amp; Exports</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 font-headline uppercase">PREMIUM</span>
+</div>
+<div class="mb-6 space-y-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-label text-slate-500 uppercase">Quota Usage</span>
+<span class="text-xs font-numbers text-yellow-500">88.4%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 w-[88%] shadow-[0_0_8px_rgba(234,179,8,0.3)]"></div>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="text-xs font-medium text-emerald-500 uppercase tracking-tighter">Operational • 24 Outlets</span>
+</div>
+</div>
+<div class="flex gap-2 pt-4 border-t border-outline-variant/30">
+<button class="flex-1 bg-primary-container text-on-primary-container font-headline font-bold py-2 rounded text-sm hover:brightness-110 active:scale-95 transition-all">VIEW PROFILE</button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="edit">edit</span></button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span></button>
+</div>
+</div>
+<!-- Card 2: Karachi Athletic Goods -->
+<div class="group relative bg-surface-container border-l-2 border-primary-container p-6 rounded-xl hover:bg-surface-container-high transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="w-14 h-14 bg-surface-variant rounded-lg flex items-center justify-center border border-outline-variant shadow-inner overflow-hidden">
+<img class="w-full h-full object-cover opacity-80" data-alt="modern tech hub branding with minimalist line art showing a stylized network on a dark navy square" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDu2ktRUBKhDrFKr5TI27czPb9ZpEDBQCIM4q1OQAkaq-v9MF0mENmzqMkkQ2RUv5KEzGuUsRf_tzrbsCRXWPLmweqKEJZFnrdbCyL_aPYG7yhke2IVc1CaYVO86bAU9xTDvri-sv2rq9oROO0wZkJzPvcALKped6e0Bkad4klwUIfK_31qEG9fyak7umds-P53GKICbV2T_nE176Zl-69mgZm8jRMEuUUIz9RS-BltQvRxcOJIYZhGF_OVtG35amTTnZjjO7ooHZw"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-white group-hover:text-primary-container transition-colors">Karachi Athletic Goods</h3>
+<p class="text-sm text-on-surface-variant">Retail Distribution</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-headline uppercase">PRO</span>
+</div>
+<div class="mb-6 space-y-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-label text-slate-500 uppercase">Quota Usage</span>
+<span class="text-xs font-numbers text-cyan-400">42.1%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[42%] shadow-[0_0_8px_rgba(0,229,255,0.3)]"></div>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-medium text-emerald-500 uppercase tracking-tighter">Operational • 12 Outlets</span>
+</div>
+</div>
+<div class="flex gap-2 pt-4 border-t border-outline-variant/30">
+<button class="flex-1 bg-primary-container text-on-primary-container font-headline font-bold py-2 rounded text-sm hover:brightness-110 active:scale-95 transition-all">VIEW PROFILE</button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="edit">edit</span></button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span></button>
+</div>
+</div>
+<!-- Card 3: Lahore Fitness Collective -->
+<div class="group relative bg-surface-container border-l-2 border-slate-700 p-6 rounded-xl hover:bg-surface-container-high transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="w-14 h-14 bg-surface-variant rounded-lg flex items-center justify-center border border-outline-variant shadow-inner overflow-hidden">
+<img class="w-full h-full object-cover opacity-80" data-alt="fitness gym equipment icon style logo with dark background and vibrant orange accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQFTV0_quBt6HJ7hnMGBn--th0T4oHbD7hLApd07NB-vOQ-Ei4WOOHaN87gjm43ojOSjevZSsVGivyw69aV7YIFNL_CCRkeV-U5LXpPvdhv4PXItm37ql6p2dIE9DI_DNDOurU4FOhpYAKvgIzKJvKvOz5DbZDE6zHSGPGHKWBoa3LwTbvGLg25PmGCj7Q0vZVsh83CYKw_Xw_0L4Jz1d9TM1nq8V34c22CuMG8MKywemfEcj8YPUj8gsqZMn7ofW846BaCMfKtBA"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-white group-hover:text-primary-container transition-colors">Lahore Fitness Coll.</h3>
+<p class="text-sm text-on-surface-variant">Service/Gym Chain</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-slate-500/10 text-slate-400 border border-slate-500/20 font-headline uppercase">BASIC</span>
+</div>
+<div class="mb-6 space-y-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-label text-slate-500 uppercase">Quota Usage</span>
+<span class="text-xs font-numbers text-slate-400">95.0%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-error w-[95%] shadow-[0_0_8px_rgba(255,180,171,0.3)]"></div>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+<span class="text-xs font-medium text-secondary-container uppercase tracking-tighter">Maintenance • 5 Outlets</span>
+</div>
+</div>
+<div class="flex gap-2 pt-4 border-t border-outline-variant/30">
+<button class="flex-1 bg-primary-container text-on-primary-container font-headline font-bold py-2 rounded text-sm hover:brightness-110 active:scale-95 transition-all">VIEW PROFILE</button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="edit">edit</span></button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span></button>
+</div>
+</div>
+<!-- Card 4: Faisalabad Fabric Tech -->
+<div class="group relative bg-surface-container border-l-2 border-primary-container p-6 rounded-xl hover:bg-surface-container-high transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="w-14 h-14 bg-surface-variant rounded-lg flex items-center justify-center border border-outline-variant shadow-inner overflow-hidden">
+<img class="w-full h-full object-cover opacity-80" data-alt="abstract textile pattern with futuristic digital overlay in cyan and deep blue tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBq0SjUik9pTNxcelm63U0q9u6UHET7gWAqhyhpf2PqroMHI4gUpxiQ7ktpXOxnbHKhhY6MDHMZClYFfy4aWCATIi_YFqKa46n0PTk6lUPSVn4PDJXMhsr7dgGVIrr7hblAOmCY1_rkRLv2Sxel1dqhFQitSGcpZ7JawJ9mhMxQUyV76TvIpk0wAyyfDmpP1pcoAtheYa_VHmYDurP7Ji2NTwuyFl4xovVkkU4T9s7KJASr-JAwydNDM0WAE488L1xUE4s6IAU8Ow4"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-white group-hover:text-primary-container transition-colors">Faisalabad Fabric Tech</h3>
+<p class="text-sm text-on-surface-variant">Wearable Technology</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-headline uppercase">PRO</span>
+</div>
+<div class="mb-6 space-y-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-label text-slate-500 uppercase">Quota Usage</span>
+<span class="text-xs font-numbers text-cyan-400">12.5%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[12%] shadow-[0_0_8px_rgba(0,229,255,0.3)]"></div>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-medium text-emerald-500 uppercase tracking-tighter">Operational • 2 Outlets</span>
+</div>
+</div>
+<div class="flex gap-2 pt-4 border-t border-outline-variant/30">
+<button class="flex-1 bg-primary-container text-on-primary-container font-headline font-bold py-2 rounded text-sm hover:brightness-110 active:scale-95 transition-all">VIEW PROFILE</button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="edit">edit</span></button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span></button>
+</div>
+</div>
+<!-- Card 5: Islamabad Esports Arena -->
+<div class="group relative bg-surface-container border-l-2 border-primary-container p-6 rounded-xl hover:bg-surface-container-high transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="w-14 h-14 bg-surface-variant rounded-lg flex items-center justify-center border border-outline-variant shadow-inner overflow-hidden">
+<img class="w-full h-full object-cover opacity-80" data-alt="vibrant esports gaming arena interior with neon lights and rows of professional gaming setups" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAFeRqmlkNeVFP_oaIsLq7PGIZ0FqGMVKEKgng1GY_wMs_uHcJVVNz16KwyNoo3PjGEDzRkpQpd1G4IXeObylZPQdOvvGxVvWLy1ReeZeOtto-hYkfuPgSF6weWBS2AgcafARFMtzSQYEDBfBZYK87PFcSpE5Y4J-wP-71vVxSl5JKDqJTtDkBw1DzrEID07Mwdu7VsAbKfPdk70BsBBdFUC1sQN6x3OeCIgUUzdltXeu-vi-rVqxxgvQyL8xqnLMfndjuZvUkKds"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-white group-hover:text-primary-container transition-colors">Islamabad Esports Arena</h3>
+<p class="text-sm text-on-surface-variant">Entertainment/Gaming</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 font-headline uppercase">PREMIUM</span>
+</div>
+<div class="mb-6 space-y-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-label text-slate-500 uppercase">Quota Usage</span>
+<span class="text-xs font-numbers text-yellow-500">64.0%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 w-[64%] shadow-[0_0_8px_rgba(234,179,8,0.3)]"></div>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-medium text-emerald-500 uppercase tracking-tighter">Operational • 8 Arenas</span>
+</div>
+</div>
+<div class="flex gap-2 pt-4 border-t border-outline-variant/30">
+<button class="flex-1 bg-primary-container text-on-primary-container font-headline font-bold py-2 rounded text-sm hover:brightness-110 active:scale-95 transition-all">VIEW PROFILE</button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="edit">edit</span></button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span></button>
+</div>
+</div>
+<!-- Card 6: Peshawar Cricket Gear -->
+<div class="group relative bg-surface-container border-l-2 border-slate-700 p-6 rounded-xl hover:bg-surface-container-high transition-all duration-300">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="w-14 h-14 bg-surface-variant rounded-lg flex items-center justify-center border border-outline-variant shadow-inner overflow-hidden">
+<img class="w-full h-full object-cover opacity-80" data-alt="close up of a professional cricket bat with high quality wood grain texture in dramatic studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcJO21WGztfYWPcFEFMhlWO13X2KMjsdMGLuscIyYpi7S-C3ZE15CO---yaqkYIcRmqd-xWDflUYSQusoRqX-cgJTVGD_0PgTZw7ShILrymJytlKioKHl0TO5Ex3uCUskA-igl42orl__1g049q7p3_t26hkaqRbAlAZDoTGPna1CrV_wvXUE5LaI6QlbP-_lL7k2SQS_1sAUzfCM5hXL8Ox1WAQZAD2UKRgSZVvjxLyucRvz7sl5XuCEhkBOT272jVQ51VAJwPMs"/>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-white group-hover:text-primary-container transition-colors">Peshawar Cricket Gear</h3>
+<p class="text-sm text-on-surface-variant">Wholesale Exports</p>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-widest bg-slate-500/10 text-slate-400 border border-slate-500/20 font-headline uppercase">BASIC</span>
+</div>
+<div class="mb-6 space-y-4">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-label text-slate-500 uppercase">Quota Usage</span>
+<span class="text-xs font-numbers text-slate-400">30.2%</span>
+</div>
+<div class="w-full h-1.5 bg-surface-dim rounded-full overflow-hidden">
+<div class="h-full bg-slate-500 w-[30%] shadow-[0_0_8px_rgba(100,116,139,0.2)]"></div>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<span class="text-xs font-medium text-emerald-500 uppercase tracking-tighter">Operational • 15 Depots</span>
+</div>
+</div>
+<div class="flex gap-2 pt-4 border-t border-outline-variant/30">
+<button class="flex-1 bg-primary-container text-on-primary-container font-headline font-bold py-2 rounded text-sm hover:brightness-110 active:scale-95 transition-all">VIEW PROFILE</button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="edit">edit</span></button>
+<button class="p-2 bg-surface-variant text-on-surface-variant hover:text-white rounded transition-colors"><span class="material-symbols-outlined text-sm" data-icon="more_vert">more_vert</span></button>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<footer class="mt-12 flex items-center justify-between">
+<p class="text-sm text-on-surface-variant font-medium">Showing <span class="text-white font-numbers">6</span> of <span class="text-white font-numbers">124</span> business entities</p>
+<div class="flex gap-2">
+<button class="p-2 rounded bg-surface-container hover:bg-surface-variant text-on-surface-variant transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="px-4 py-2 rounded bg-primary-container text-on-primary-container font-headline font-bold text-sm">1</button>
+<button class="px-4 py-2 rounded bg-surface-container hover:bg-surface-variant text-white font-headline font-bold text-sm">2</button>
+<button class="px-4 py-2 rounded bg-surface-container hover:bg-surface-variant text-white font-headline font-bold text-sm">3</button>
+<button class="p-2 rounded bg-surface-container hover:bg-surface-variant text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</footer>
+</main>
+<!-- Floating Action Button (FAB) -->
+<button class="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white shadow-[0_0_20px_rgba(0,229,255,0.4)] hover:scale-110 transition-transform active:scale-95 z-50">
+<span class="material-symbols-outlined text-3xl font-bold" data-icon="add">add</span>
+</button>
+</body></html>

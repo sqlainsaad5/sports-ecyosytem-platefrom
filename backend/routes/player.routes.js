@@ -1,0 +1,46 @@
+const { Router } = require('express');
+const { body } = require('express-validator');
+const p = require('../controllers/playerController');
+const { authenticate, requireRole, loadUser } = require('../middleware/auth');
+
+const r = Router();
+r.use(authenticate, loadUser, requireRole('player'));
+
+r.get('/me/profile', p.getProfile);
+r.put(
+  '/me/profile',
+  [
+    body('fullName').optional().trim(),
+    body('sportPreference').optional().isIn(['cricket', 'badminton']),
+    body('skillLevel').optional().isIn(['beginner', 'intermediate', 'advanced']),
+  ],
+  p.updateProfile
+);
+r.get('/recommendations', p.getRecommendations);
+r.post('/training-requests', [body('coachId').notEmpty()], p.createTrainingRequest);
+r.get('/training-requests', p.listMyTrainingRequests);
+r.get('/training-sessions', p.listTrainingSessions);
+r.get('/training-plans', p.listTrainingPlans);
+r.post(
+  '/ground-bookings/hold',
+  [body('groundId').notEmpty(), body('startTime').notEmpty(), body('endTime').notEmpty()],
+  p.holdGroundBooking
+);
+r.post('/ground-bookings/:id/confirm-payment', p.confirmGroundPayment);
+r.get('/ground-bookings', p.listMyGroundBookings);
+r.delete('/ground-bookings/:id', p.cancelGroundBooking);
+r.get('/performance', p.getPerformance);
+r.get('/products', p.browseProducts);
+r.post('/orders', p.createOrder);
+r.get('/orders', p.listMyOrders);
+r.post('/coaches/:coachId/feedback', [body('rating').isInt({ min: 1, max: 5 })], p.submitCoachFeedback);
+r.post(
+  '/payments/coach',
+  [body('coachId').notEmpty(), body('amount').isFloat({ min: 0.01 })],
+  p.payCoach
+);
+r.get('/notifications', p.listNotifications);
+r.patch('/notifications/:id/read', p.markNotificationRead);
+r.post('/complaints', [body('subject').notEmpty(), body('description').notEmpty()], p.fileComplaint);
+
+module.exports = r;

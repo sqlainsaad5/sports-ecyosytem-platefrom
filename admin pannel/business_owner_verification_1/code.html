@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SEP Admin Control - Business Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Orbitron:wght@600;800&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-on-surface": "#2b3040",
+              "surface-container-highest": "#2f3445",
+              "tertiary-container": "#fec931",
+              "on-tertiary-container": "#6f5500",
+              "on-surface": "#dee1f7",
+              "secondary-fixed": "#ffdbd0",
+              "surface-container-high": "#25293a",
+              "outline-variant": "#3b494c",
+              "on-primary-container": "#00626e",
+              "on-primary": "#00363d",
+              "on-surface-variant": "#bac9cc",
+              "on-tertiary-fixed-variant": "#594400",
+              "on-error": "#690005",
+              "primary-container": "#00e5ff",
+              "surface-container-lowest": "#090e1c",
+              "on-tertiary": "#3e2e00",
+              "on-secondary": "#5d1900",
+              "secondary": "#ffb59d",
+              "primary-fixed-dim": "#00daf3",
+              "primary-fixed": "#9cf0ff",
+              "on-secondary-fixed": "#390c00",
+              "surface-container-low": "#161b2b",
+              "secondary-container": "#b83900",
+              "on-background": "#dee1f7",
+              "on-error-container": "#ffdad6",
+              "tertiary-fixed-dim": "#f3bf26",
+              "on-tertiary-fixed": "#251a00",
+              "error-container": "#93000a",
+              "surface-variant": "#2f3445",
+              "surface": "#0e1322",
+              "surface-dim": "#0e1322",
+              "on-secondary-fixed-variant": "#832600",
+              "surface-container": "#1a1f2f",
+              "surface-bright": "#343949",
+              "tertiary": "#ffeac0",
+              "on-primary-fixed": "#001f24",
+              "on-primary-fixed-variant": "#004f58",
+              "tertiary-fixed": "#ffdf96",
+              "inverse-surface": "#dee1f7",
+              "inverse-primary": "#006875",
+              "secondary-fixed-dim": "#ffb59d",
+              "primary": "#c3f5ff",
+              "error": "#ffb4ab",
+              "background": "#0e1322",
+              "surface-tint": "#00daf3",
+              "outline": "#849396",
+              "on-secondary-container": "#ffddd2"
+            },
+            fontFamily: {
+              "headline": ["Rajdhani", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "stats": ["Orbitron", "sans-serif"],
+              "label": ["Space Grotesk", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      body { font-family: 'Inter', sans-serif; background-color: #0A0F1E; }
+      h1, h2, h3, h4 { font-family: 'Rajdhani', sans-serif; }
+      .font-orbitron { font-family: 'Orbitron', sans-serif; }
+      .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+      .glass-panel {
+        backdrop-filter: blur(12px);
+        background: rgba(26, 31, 47, 0.8);
+      }
+      .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+      .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+      .custom-scrollbar::-webkit-scrollbar-thumb { background: #00E5FF; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-on-surface selection:bg-primary-container selection:text-on-primary-container">
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-full w-[260px] transition-all duration-300 ease-in-out bg-[#0A0F1E] z-50 flex flex-col overflow-y-auto shadow-[20px_0_40px_rgba(0,229,255,0.03)]">
+<div class="px-8 py-8">
+<h1 class="text-2xl font-black font-orbitron text-[#00E5FF] tracking-tighter">SEP</h1>
+<p class="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em]">Admin Control</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-colors hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="dashboard">dashboard</span>
+<span class="font-rajdhani text-lg">Overview</span>
+</a>
+<a class="border-l-4 border-[#00E5FF] bg-gradient-to-r from-[#00E5FF]/10 to-transparent text-[#00E5FF] font-bold flex items-center px-6 py-4 transition-colors" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="verified_user">verified_user</span>
+<span class="font-rajdhani text-lg">Verification</span>
+</a>
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-colors hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="groups">groups</span>
+<span class="font-rajdhani text-lg">Management</span>
+</a>
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-colors hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="settings_applications">settings_applications</span>
+<span class="font-rajdhani text-lg">Operations</span>
+</a>
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-colors hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="analytics">analytics</span>
+<span class="font-rajdhani text-lg">Analytics</span>
+</a>
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-colors hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="hub">hub</span>
+<span class="font-rajdhani text-lg">Platform</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<div class="bg-surface-container-high rounded-xl p-4 flex items-center gap-3">
+<img alt="Admin Avatar" class="w-10 h-10 rounded-full border border-primary-container/30" data-alt="Professional headshot of a middle-aged male executive in a dark suit with short groomed hair and a confident expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUolK-bstXXzHf2qfL-G6x9rmqyYBHGgQdUxuJqhOD4KpU7FXqI5aBtp6pC4LKdB9kgKkjHmd5nkf6zVhKzRLlzbpEmH_apLL2JxZWbLvwUQ3GAWEr1nkKyBaTeU9Fa3VJeiiblqmL60cebvVeF4xFbwI_21b4EYEEC8LLdosoOqFwnO6ymjBSMJlpPoz8GQWm6UpXoIWLEwdEngta2o3MlEJS2TgnBJrFn-Qqodcyg2hfcdokQtH8E6F9AwszsNEJKzROOk9hA7g"/>
+<div class="overflow-hidden">
+<p class="text-sm font-bold truncate">Zaid Ahmed</p>
+<p class="text-[10px] text-slate-400 truncate">Super Administrator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[260px] min-h-screen relative flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="h-16 flex justify-between items-center px-8 w-full bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-slate-800/50 sticky top-0 z-40">
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00E5FF] transition-colors" data-icon="search">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-[#00E5FF]/50 transition-all placeholder:text-slate-600" placeholder="Search businesses, owners, or IDs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6 ml-8">
+<button class="relative text-slate-400 hover:text-[#00E5FF] transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-[#00E5FF] rounded-full"></span>
+</button>
+<button class="text-slate-400 hover:text-[#00E5FF] transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-8 flex-1 flex flex-col gap-8">
+<!-- Dashboard Header -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-black font-rajdhani text-on-surface tracking-tight uppercase">Business Verification</h2>
+<p class="text-on-surface-variant mt-1">Reviewing 14 pending commercial applications from across Pakistan.</p>
+</div>
+<div class="flex gap-4">
+<div class="bg-surface-container rounded-lg p-3 flex flex-col items-end">
+<span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Verification Queue</span>
+<span class="font-orbitron text-2xl text-[#00E5FF]">142</span>
+</div>
+</div>
+</div>
+<!-- Filter Tabs -->
+<div class="flex items-center gap-8 border-b border-slate-800/50">
+<button class="relative pb-4 text-[#00E5FF] font-bold font-rajdhani text-xl flex items-center gap-2">
+                    Pending
+                    <span class="bg-primary-container/20 text-[#00E5FF] text-xs px-2 py-0.5 rounded-full">14</span>
+<div class="absolute bottom-0 left-0 w-full h-[2px] bg-[#00E5FF] shadow-[0_0_10px_#00E5FF]"></div>
+</button>
+<button class="pb-4 text-slate-500 hover:text-slate-300 font-rajdhani text-xl flex items-center gap-2 transition-colors">
+                    Approved
+                    <span class="bg-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-full">1,208</span>
+</button>
+<button class="pb-4 text-slate-500 hover:text-slate-300 font-rajdhani text-xl flex items-center gap-2 transition-colors">
+                    Rejected
+                    <span class="bg-slate-800 text-slate-400 text-xs px-2 py-0.5 rounded-full">43</span>
+</button>
+</div>
+<!-- Verification Table Container -->
+<div class="bg-surface-container rounded-xl overflow-hidden shadow-2xl relative">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high">
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Business Name</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Owner Name</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Type</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Location</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Documents</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400">Status</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-[0.15em] text-slate-400 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800/30">
+<!-- Row 1: Active Focus -->
+<tr class="group hover:bg-[#1C2333] transition-all cursor-pointer relative">
+<td class="absolute inset-y-0 left-0 w-1 bg-[#00E5FF] shadow-[0_0_15px_#00E5FF] opacity-0 group-hover:opacity-100 transition-opacity"></td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center font-orbitron text-[#00E5FF] border border-slate-700/50">LS</div>
+<span class="font-bold text-on-surface group-hover:text-[#00E5FF] transition-colors">Lords Sports</span>
+</div>
+</td>
+<td class="px-6 py-5 text-slate-300">Bilal Hassan</td>
+<td class="px-6 py-5">
+<span class="bg-secondary-container/10 text-secondary border border-secondary/20 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">Manufacturer</span>
+</td>
+<td class="px-6 py-5 text-slate-400 italic">Sialkot, Punjab</td>
+<td class="px-6 py-5">
+<div class="flex -space-x-2">
+<span class="material-symbols-outlined text-xs bg-slate-800 p-1.5 rounded-full border border-slate-700 text-green-400" data-icon="description">description</span>
+<span class="material-symbols-outlined text-xs bg-slate-800 p-1.5 rounded-full border border-slate-700 text-green-400" data-icon="contact_page">contact_page</span>
+<span class="material-symbols-outlined text-xs bg-slate-800 p-1.5 rounded-full border border-slate-700 text-amber-400" data-icon="location_on">location_on</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-orange-500/10 text-orange-400">Pending</span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-[#00E5FF] font-rajdhani font-bold hover:underline">Review Detail</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-[#1C2333] transition-all cursor-pointer relative">
+<td class="absolute inset-y-0 left-0 w-1 bg-[#00E5FF] shadow-[0_0_15px_#00E5FF] opacity-0 group-hover:opacity-100 transition-opacity"></td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center font-orbitron text-[#00E5FF] border border-slate-700/50">SG</div>
+<span class="font-bold text-on-surface group-hover:text-[#00E5FF] transition-colors">Sialkot Gear</span>
+</div>
+</td>
+<td class="px-6 py-5 text-slate-300">Fatima Khan</td>
+<td class="px-6 py-5">
+<span class="bg-blue-500/10 text-blue-400 border border-blue-400/20 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">Retailer</span>
+</td>
+<td class="px-6 py-5 text-slate-400 italic">Lahore, Punjab</td>
+<td class="px-6 py-5">
+<div class="flex -space-x-2">
+<span class="material-symbols-outlined text-xs bg-slate-800 p-1.5 rounded-full border border-slate-700 text-green-400" data-icon="description">description</span>
+<span class="material-symbols-outlined text-xs bg-slate-800 p-1.5 rounded-full border border-slate-700 text-red-400" data-icon="warning">warning</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-red-500/10 text-red-400">Action Required</span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-[#00E5FF] font-rajdhani font-bold hover:underline">Review Detail</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-[#1C2333] transition-all cursor-pointer relative">
+<td class="absolute inset-y-0 left-0 w-1 bg-[#00E5FF] shadow-[0_0_15px_#00E5FF] opacity-0 group-hover:opacity-100 transition-opacity"></td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-highest rounded-lg flex items-center justify-center font-orbitron text-[#00E5FF] border border-slate-700/50">PK</div>
+<span class="font-bold text-on-surface group-hover:text-[#00E5FF] transition-colors">Punjab Kits Co.</span>
+</div>
+</td>
+<td class="px-6 py-5 text-slate-300">Hamza Ali</td>
+<td class="px-6 py-5">
+<span class="bg-secondary-container/10 text-secondary border border-secondary/20 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider">Manufacturer</span>
+</td>
+<td class="px-6 py-5 text-slate-400 italic">Faisalabad</td>
+<td class="px-6 py-5">
+<div class="flex -space-x-2">
+<span class="material-symbols-outlined text-xs bg-slate-800 p-1.5 rounded-full border border-slate-700 text-green-400" data-icon="description">description</span>
+<span class="material-symbols-outlined text-xs bg-slate-800 p-1.5 rounded-full border border-slate-700 text-green-400" data-icon="contact_page">contact_page</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-orange-500/10 text-orange-400">Pending</span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="text-[#00E5FF] font-rajdhani font-bold hover:underline">Review Detail</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Detail Drawer (Slide-in Right Side) -->
+<aside class="fixed top-0 right-0 h-screen w-[40%] bg-surface-container-high border-l border-slate-800/50 z-50 transform transition-transform duration-500 glass-panel shadow-[-40px_0_60px_rgba(0,0,0,0.5)] flex flex-col">
+<!-- Drawer Header -->
+<div class="px-8 py-6 border-b border-slate-800/50 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<button class="text-slate-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<h3 class="text-2xl font-black font-rajdhani uppercase tracking-tight">Business Profile Review</h3>
+</div>
+<div class="flex gap-2">
+<span class="bg-[#00E5FF]/10 text-[#00E5FF] text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded border border-[#00E5FF]/20">ID: BIZ-29401</span>
+</div>
+</div>
+<!-- Drawer Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-8 custom-scrollbar space-y-10">
+<!-- Hero Section -->
+<div class="flex items-start gap-6">
+<img alt="Shop Front" class="w-32 h-32 rounded-xl object-cover border-2 border-primary-container/20 shadow-lg" data-alt="Modern sporting goods storefront in Sialkot with large glass windows and neon Lords Sports branding at twilight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4L0AeYXFAq6he01J9tL9OhDy4P-LIp6TjSXqWm0-fk-uPADbQwP3zi4WcIJSkDK_qovhgkxztoHMFPJj_8RbjgBy_7DtoyulVKZiP5QiVWqMv7f2tzTA-9ADeINbbdUQA5KONvev03rdhfNalYs8g8AA0OiHVyp2WwvkXE-LHxLkBUkMfEHUwmBnjvJNIgWET34MmndbOk8SbxTywp58008yduFzZQPt799CBBXxkwLzchxtgR5Rpr2_I_WGo1MGD1E2JbyKPE8A"/>
+<div class="flex-1">
+<h4 class="text-3xl font-bold font-rajdhani text-white">Lords Sports</h4>
+<p class="text-slate-400 flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-sm" data-icon="location_on">location_on</span>
+                            Kashmir Road, Sialkot, Pakistan
+                        </p>
+<div class="flex flex-wrap gap-2 mt-4">
+<span class="px-2 py-0.5 bg-slate-800 rounded text-[10px] font-bold text-slate-400">EST. 2012</span>
+<span class="px-2 py-0.5 bg-slate-800 rounded text-[10px] font-bold text-slate-400">SPORTSWEAR</span>
+<span class="px-2 py-0.5 bg-slate-800 rounded text-[10px] font-bold text-slate-400">EXPORT PERMIT</span>
+</div>
+</div>
+</div>
+<!-- Section: Owner & Contact -->
+<div class="grid grid-cols-2 gap-6 bg-surface-container-lowest p-6 rounded-xl border border-slate-800/40">
+<div>
+<p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Owner / CEO</p>
+<p class="font-rajdhani text-xl font-bold text-on-surface">Bilal Hassan</p>
+<p class="text-xs text-slate-400">CNIC: 34603-XXXXXXX-1</p>
+</div>
+<div>
+<p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Contact Information</p>
+<p class="font-rajdhani text-lg text-on-surface">+92 321 4455667</p>
+<p class="text-xs text-slate-400">bilal.h@lordssports.pk</p>
+</div>
+</div>
+<!-- Section: Document Previews -->
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<h5 class="text-sm font-bold uppercase tracking-widest text-slate-400">Legal Documents</h5>
+<button class="text-[10px] text-[#00E5FF] font-bold uppercase hover:underline">View All</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="group relative aspect-[4/3] bg-surface-container rounded-lg overflow-hidden border border-slate-700/50 hover:border-[#00E5FF]/50 transition-all cursor-pointer">
+<img alt="Business Registration" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" data-alt="Official government business registration certificate with stamps and signatures on a textured parchment paper background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr1Wz2VZQl4-82BJOEG2CpBPLLTXawyGKCCrJxqR8zDmR3ayI0i4XE_PfhUL1BFKTfaLjw-UyUNyM6grKeHYEtbCy35YwTX_ASwam-jmdR3QY3D3R-qKCzRfJSmnPher-ipADPhv-mD1iBx4yRS4ZCgIEjIKBc0LDWLf2QQ-uRJrccPAGJXFGIvi0rSyOxVTL3ymQLUf1_elzA5_sNx59NPfyofcpAcaBYc9hdEeGaoxsnfp4NED873X1L1Ez-FGzxkTI01P_ZxBc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim to-transparent flex items-end p-4">
+<span class="text-[10px] font-bold uppercase tracking-wider">Tax Registration.pdf</span>
+</div>
+</div>
+<div class="group relative aspect-[4/3] bg-surface-container rounded-lg overflow-hidden border border-slate-700/50 hover:border-[#00E5FF]/50 transition-all cursor-pointer">
+<img alt="Export License" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" data-alt="Legal document showing export license certification with official gold foil seal and professional typography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0kdypEYDvpKrKXYe1x8r7g813h1FzMwXcqGEHgKuCtpMLwYyioJjTR_SxcKukc4d7cX8FZnlWlfvqiW0HOTcWLliiACWF-4x2XGlyE5WjNuZSJqpcFslmyTFAYKoCDlYaXHoprAzi0DFEaeDO7GRhONSbgVDS3wq56lVnOW0UYS32uhOAP18itP2NgMR0Mkf5_G6V_-w3aESU9M2l2bBPp6ScoHDepKxDQH63kvpSHIsZzSPbbxwDv3XDg1_RhGuLC8EjE0dVt70"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-dim to-transparent flex items-end p-4">
+<span class="text-[10px] font-bold uppercase tracking-wider">Export_License.png</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Compliance Check -->
+<div class="space-y-4">
+<h5 class="text-sm font-bold uppercase tracking-widest text-slate-400">Compliance Audit</h5>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 bg-green-500/5 rounded border border-green-500/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-400" data-icon="check_circle">check_circle</span>
+<span class="text-sm font-medium">NADRA Verified Owner</span>
+</div>
+<span class="text-[10px] font-bold text-green-400 uppercase">Passed</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-green-500/5 rounded border border-green-500/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-green-400" data-icon="check_circle">check_circle</span>
+<span class="text-sm font-medium">Business Location Pin-pointed</span>
+</div>
+<span class="text-[10px] font-bold text-green-400 uppercase">Passed</span>
+</div>
+<div class="flex items-center justify-between p-3 bg-amber-500/5 rounded border border-amber-500/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-amber-400" data-icon="pending">pending</span>
+<span class="text-sm font-medium">Environmental NOC</span>
+</div>
+<span class="text-[10px] font-bold text-amber-400 uppercase">Under Review</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Drawer Footer Actions -->
+<div class="p-8 border-t border-slate-800/50 bg-[#161B2B]/50 backdrop-blur-md">
+<div class="grid grid-cols-2 gap-4">
+<button class="flex flex-col items-center justify-center p-4 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg border border-red-500/20 transition-all group">
+<span class="material-symbols-outlined mb-1 group-active:scale-90 transition-transform" data-icon="cancel">cancel</span>
+<span class="font-rajdhani font-bold text-lg uppercase tracking-wider">Reject</span>
+</button>
+<button class="flex flex-col items-center justify-center p-4 bg-gradient-to-br from-[#00E5FF] to-[#0066FF] text-white rounded-lg shadow-[0_0_20px_rgba(0,229,255,0.2)] hover:shadow-[0_0_30px_rgba(0,229,255,0.4)] transition-all group">
+<span class="material-symbols-outlined mb-1 group-active:scale-90 transition-transform" data-icon="verified">verified</span>
+<span class="font-rajdhani font-bold text-lg uppercase tracking-wider">Approve</span>
+</button>
+</div>
+<button class="w-full mt-4 py-3 bg-surface-container-highest hover:bg-slate-700 text-slate-300 rounded-lg font-rajdhani font-bold uppercase tracking-widest transition-all">
+                    Request Additional Documents
+                </button>
+</div>
+</aside>
+</main>
+<!-- Rejection Modal (Hidden by Default Overlay) -->
+<div class="fixed inset-0 z-[100] bg-[#0A0F1E]/90 backdrop-blur-md flex items-center justify-center opacity-0 pointer-events-none transition-opacity">
+<div class="bg-surface-container-high w-full max-w-lg rounded-xl border border-slate-800 p-8 shadow-[0_20px_40px_rgba(0,229,255,0.08)] transform translate-y-10 transition-transform">
+<div class="flex items-center gap-4 mb-6 text-red-400">
+<span class="material-symbols-outlined text-4xl" data-icon="report">report</span>
+<h3 class="text-3xl font-black font-rajdhani uppercase tracking-tight">Decline Application</h3>
+</div>
+<p class="text-slate-400 mb-6 font-body">Please select the reason for rejecting <span class="text-white font-bold">Lords Sports</span>. This message will be sent to the business owner.</p>
+<div class="space-y-4 mb-8">
+<label class="flex items-start gap-4 p-4 rounded-lg bg-surface-container border border-slate-800 cursor-pointer hover:border-slate-600 transition-colors">
+<input class="mt-1 text-[#00E5FF] bg-slate-900 border-slate-700 focus:ring-[#00E5FF]" name="reason" type="radio"/>
+<div>
+<p class="font-bold text-on-surface">Invalid Documentation</p>
+<p class="text-xs text-slate-500">The provided legal certificates appear expired or counterfeit.</p>
+</div>
+</label>
+<label class="flex items-start gap-4 p-4 rounded-lg bg-surface-container border border-slate-800 cursor-pointer hover:border-slate-600 transition-colors">
+<input class="mt-1 text-[#00E5FF] bg-slate-900 border-slate-700 focus:ring-[#00E5FF]" name="reason" type="radio"/>
+<div>
+<p class="font-bold text-on-surface">Location Mismatch</p>
+<p class="text-xs text-slate-500">The physical storefront address does not match local council records.</p>
+</div>
+</label>
+<textarea class="w-full bg-surface-container border border-slate-800 rounded-lg p-4 text-sm focus:ring-1 focus:ring-red-500/50 transition-all placeholder:text-slate-600" placeholder="Other reason (please specify)..." rows="3"></textarea>
+</div>
+<div class="flex gap-4">
+<button class="flex-1 py-3 text-slate-400 font-bold uppercase font-rajdhani tracking-widest hover:text-white transition-colors">Cancel</button>
+<button class="flex-[2] py-3 bg-red-600 hover:bg-red-500 text-white rounded font-rajdhani font-bold uppercase tracking-widest transition-all shadow-lg shadow-red-900/20">Confirm Rejection</button>
+</div>
+</div>
+</div>
+</body></html>

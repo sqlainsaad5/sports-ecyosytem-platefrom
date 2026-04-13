@@ -1,0 +1,2780 @@
+ University of Central Punjab  
+ BSCS FINAL PROJECT 
+Software Design Specification 
+ 
+SPORTS ECOSYSTEM PLATFORM 
+ 
+ 
+ 
+ 
+Project Advisor 
+ 
+PROF SHEEZA SHABIR 
+ 
+Presented by:  
+Group ID: FYP26-CS-G22 
+ 
+ 
+Student Reg#   Student Name 
+ 
+                                 S3F22UBSCS016                                       M ANAS 
+                                 S3F22UBSCS038                                     ANAS ALI 
+                                 S3F22UBSCS062                                       M KAIF 
+                                 S3F22UBSCS066                               SAMEER FAROOQ 
+ 
+ 
+ 
+Faculty of Information Technology & Computer Science 
+ 
+University of Central Punjab 
+
+ University of Central Punjab  
+Software Design Specification  
+SDP Phase II 
+ 
+SPORTS ECOSYSTEM PLATFORM 
+Advisor: PROF SHEEZA SHABIR 
+ 
+FYP26-CS-G22 
+Member Name Primary Responsibility 
+M ANAS(S3F22UBSCS016) Assisted in project research, documentation, 
+and diagram reviews 
+ANAS ALI(S3F22UBSCS038) Lead developer, main contributor to coding, 
+diagrams, and SRS preparation 
+M KAIF(S3F22UBSCS062) Co-developer, significant contribution to 
+coding, diagrams, and testing 
+SAMEER FAROOQ 
+(S3F22UBSCS066) 
+Assisted in testing, documentation, and final 
+compilation of the project 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage i 
+Table of Contents 
+Table of Contents ........................................................................................................................... i 
+Revision History ............................................................................................................................ ii 
+Previous Phases Feedback ............................................................................................................ ii 
+Abstract ...........................................................................................................................................1 
+1. Introduction ..............................................................................................................................2 
+1.1 Product ......................................................................................................................................... 4 
+1.2 Background .................................................................................................................................. 5 
+1.3 Objective(s)/Aim(s)/Target(s) ..................................................................................................... 5 
+1.4 Scope ........................................................................................................................................... 6 
+1.5 Business Goals ............................................................................................................................. 6 
+1.6 Document Conventions ............................................................................................................... 7 
+1.7 Miscellaneous .............................................................................................................................. 7 
+2. Overall Description ..................................................................................................................8 
+2.1 Product Features ........................................................................................................................ 10 
+2.2 Functional Description .............................................................................................................. 12 
+2.3 User Classes and Characteristics ............................................................................................... 13 
+2.4 Design and Implementation Constraints .................................................................................... 15 
+2.5 Assumptions and Dependencies ................................................................................................ 16 
+3. Technical Architecture ..........................................................................................................18 
+3.1 Application and Data Architecture ............................................................................................ 24 
+3.2 Component Interactions and Collaborations ............................................................................. 32 
+3.3 Design Reuse and Design Patterns ............................................................................................ 84 
+3.4 Technology Architecture ........................................................................................................... 84 
+4. Screenshots/Prototype ...........................................................................................................87 
+4.1 Workflow ................................................................................................................................... 87 
+4.2 Screens ....................................................................................................................................... 89 
+4.3 Additional Information ............................................................................................................ 105 
+5. Other Design Details ............................................................................................................105 
+6. Revised Project Plan ............................................................................................................107 
+7. References .............................................................................................................................108 
+Appendix A: Glossary................................................................................................................109 
+Appendix B: IV & V Report .....................................................................................................109 
+ 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage ii 
+Revision History 
+Name Date Reason For Changes Version 
+    
+    
+ 
+ 
+ 
+Previous Phases Feedback 
+ 
+Idea Defence Feedback (Screenshot) 
+ 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 1 
+Abstract 
+Sports management as it is developed today is very much fragmented and the players, coaches, facilities 
+providers, and equipment suppliers work in decentralized channels lacking a central tie whereby they 
+can coordinate their activities. Even when a player  requires a qualified coach in a sport like cricket or 
+badminton, he/she has to use word -of-mouth recommendations with no means of confirming the 
+qualification of the coach, or checking the quality of coaching services. The indoor property reservations 
+are done manually which leads to scheduling problems which are time consuming and costly. There is 
+no digital record of the performance made of the players between the sessions, and there is also no 
+attendance, skill advancement, or weekly assessment. Meanwhi le, coaches find it difficult to connect 
+with potential students in an effective way, business owners that sell sport equipment are completely not 
+connected with their most oriented customer audience, and administrators do not have an organized 
+means to monitor the activity in the platform and hold them accountable. It is a systemic obstacle that 
+restricts the participation of grassroots in sports as the players lose interest when quality coaching is not 
+readily available, when enough access to facilities is not guaranteed, and when performance development 
+is not a tangible concept, the sports development as a whole ecosystem stall.The Sports Ecosystem 
+Platform is suggested to be a centralized online platform based on web services that integrates coaching 
+management, indoor ground reservation, automatic performance monitoring, and online equipment 
+trading into a single integrated platform comprising of four role -based modules that include Players, 
+Coaches, Business Owners and Administrators. The creation of t his system relies on such fields of 
+knowledge as software requirements engineering, relational database design, web application 
+architecture, role-based access control, automated recommendation logic, UML-based system modeling, 
+and secure payment integration. These disciplines collaborate in creating a software solution that would 
+be structured, secure and maintainable to accommodate the workflows of all the four types of actors 
+within the organisation in real-time. 
+On launch, the platform will provide a functioning digital ecosystem, through which players will find 
+verified coaches using an automated matching engine and reserve indoor grounds in real time, monitor 
+their performance and attendance weekly and buy equip ment with certified vendors on subscription. 
+Sessions will be operated by coaches, players evaluated, and they will be paid securely. The owners of 
+the businesses will run organized storefronts with on -demand inventory management and the 
+administrators will apply verification, dispute resolution, and system-wide activity monitoring.  
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 2 
+1. Introduction 
+The explosion of service industries digitization that happened in the last 10 years has fundamentally 
+changed the manner of access by people and management of people to professional services in virtually 
+all fields. Whether it is healthcare and education or the retail and entertainment sector, digital solutions 
+that rely on platforms have been offered instead of fragmented and inefficient delivery systems 
+(platforms) that were based on manual workflows and results. This transformation has however, been 
+left out in large in the sports and fitness industry. Irrespective of the increasing demand of these types of 
+organized indoor games like cricket and badminton, the facilities that sustain sports training, coaching, 
+venue accessibility, and the provision of eq uipment are all informal and disconnected and entirely 
+handled manually. Players, coaches, facility managers, and equipment vendors operate individually 
+without a digital environment they can share to organize their operations, formalize their relations, a nd 
+measure the results in any quantifiable manner. Such lack of integration is not just a hassle but a structural 
+issue that minimizes the possibility of quality coaching, likewise limits the use of facilities and eliminates 
+performance accountability, as well as alienates equipment vendors to their most interested audience. 
+The Sports Ecosystem Platform will serve to bridge this gap in totality. Currently, to find a qualified 
+badminton or cricket coach a player have to refer informally, use social media search, or visit an academy 
+physically, and has no sure way of checking the credentials of coaches, determining who is more 
+knowledgeable or skilled and feedback provided by other players. Although an appropriate coach has 
+been identified, a training session should be arranged through the communication back and forth that is 
+not established within any system. The booking of indoor grounds is done manually leading to a lot of 
+chaos in terms of scheduling, booking of facilities twice and poor use of the availab le facilities. No 
+recording of player trends across sessions exists at all, then the performance of the players is not tracked 
+digitally, there is no formalized system of evaluation and certainly no graphical history of improvement 
+that can be used either by the player or by the coach with time. Coaching services are paid informally 
+and there is no record of transaction and the payment has no financial responsibility. The business part 
+of coaches allows them no professional platform to promote their service s and to keep track of their 
+students, as well as record the training results. Sports equipment vendors are entirely disconnected with 
+the training ecosystem they are not directly connected to the players and coaches that will consume their 
+products significantly. The whole landscape is practically unregulated administratively and there is no 
+central body to check credentials, settle disputes, or check on activity amongst the different parties 
+involved. All these issues stand alone, but they have one common  factor, which is the lack of a digital 
+platform that uniquely views the sports ecosystem as an interconnected whole to manage. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 3 
+It is suggested that the Sports Ecosystem Platform would be an all -in-one web-based application that 
+unites all four major stakeholder groups together, namely Players, Coaches, Business Owners, and 
+Administrators, under one, integrated environment that each can use their individual roles-based module 
+that suits their specific needs and workflows. The system is developed based upon the notion that all 
+core sporting actions, such as finding a coach and a training session, and making reservations, like 
+reserving a ground and acquiring equipment, ought to be handled in a single secure and responsible 
+system as opposed to being distributed between disjointed services and unofficial settings. To players, 
+the platform offers automatic coach suggestions based on matching algorithms that take into account the 
+type of sport, the level of skill, and the geographic location eliminating the uncertainty and inefficiency 
+of searching rather than finding coaches manually. Players can also request training sessions through the 
+platform itself, reserve an indoor cricket/badminton ground in real time with live availability status, track 
+their performance in terms of weekly points and a record of attendance provided by their coach, and 
+shop sports equipment in recommended vendor shops without leaving the ecosystem. All the activities 
+the player undergoes in relations with a coach, a facility, a product are logged and put into the system, 
+allowing coaches to have a continuous and transparent history of all the activities within the  student in 
+relation to the sports.Coaches are also provided with a professional environment to arrange their 
+availability, look at, and reply to requests to train with a particular person, develop an individualized 
+training strategy per week to a student,  register attendance post-training, and give some well organized 
+performance appraisals, which become visible instantly to a player. The coaches are paid training fees 
+via the card payment system integrated within the platform that keeps full records on the transaction and 
+facilitated bank withdrawal to other accounts. The platform also includes verified player ratings and 
+written feedback as a reputation-building mechanism to help serious professionals and enable players to 
+make informed decisions, as the platform also provides an opportunity to earn a quality accountability 
+system based on the tiered levels of subscription packages, i.e., Basic, Pro, and Premium. After being 
+verified by the administrator and subscribing to a package, business owners are th en able to build out 
+their store, add products with image and pricing, and monitor inventory as well as create customer orders, 
+generate sales reports, and get automatic low -stock and renewal notifications. The subscription system 
+would ensure that the administrators have a sustainable revenue model and that all approved legitimate 
+businesses are left to operate in the marketplace.To the administrators, the platform gives them a 
+comprehensive control panel which would give them a view of the whole chain of control in all the 
+activity of the system. Admin duties include the entire platform governance lifecycle, including: 
+validating the documentation of coach and business owner account registration, managing all user 
+accounts, setting up ground listing and ti me slot, managing bookings and training, performance and 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 4 
+attendance record, complains and disputes, subscription payments, books reports. It is the administrative 
+layer that makes trust, accountability, and system integrity constantly upheld at all levels of the entire 
+ecosystem. 
+This system is built based on the web technology with a relational database in the back end and the 
+architecture of role-based access control which provides permission boundaries in the interface design 
+and server design. The system architecture will be ba sed on such areas of knowledge as software 
+engineering, database design, system modeling, secure authentication and payment integration and will 
+provide a platform that is not only functionally complete, but can be maintained, scaled and rely upon. 
+The version in use will be limited to scooping cricket and badminton as the sporting type that it supports 
+and the architecture developed will support other sports and extended functionality in subsequent 
+development stages. 
+The following Software Design Specification reports on the full technical design of the Sports Ecosystem 
+Platform, which refines the requirements of the SRS Phase 1 into the architectural structures, module 
+designs, database schemas, interface layouts, and  system interactions, by which the development team 
+will proceed with its implementation. 
+1.1 Product 
+The Sports Ecosystem Platform is a web -based solution that is centralized and creates no further 
+fragmentation with the existing sports training, coaching, facility booking and equipment trading 
+business model. Currently, players can not be able to access trusted coaches, book indoor grounds 
+without conflict, monitor their training activity, and buy athletic equipment using one integrated 
+platform. Coaches, business owners and administrators encounter the same problem of disconnected 
+work streams that lack a common digital space to integrate their operations. This system is an immediate 
+solution to these issues, as it integrates into a single platform all the four groups of stakeholders namely, 
+Players, Coaches, Business Owners and Administrators, and all th e activities relating to the sports are 
+handled through specific role -based modules. Acid operation features of the platform include logic of 
+coach recommendations through rule-based application, ground availability administration in real-time, 
+systematic product listing and listing based on subscription control, and an all -inclusive administrative 
+control board. It is not a research tool, a simulator, a standalone utility, it is production -grade, a multi-
+purpose web application developed to offer an entire and responsible sports management flow with just 
+one secure electronic space. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 5 
+1.2 Background 
+There are a number of digital platforms that are currently covering single factors of sports management, 
+however they lack the ability to cut all said and done into one unique ecosystem. Areas like CoachUp 
+and TeamSnap provide simple coach search services and classes, which provide players with the ability 
+to view coach profiles and book training lessons. Nevertheless, these platforms are more of directories 
+and they do not have any formal system in place to evaluate the performance of these facilities as w ell 
+as keep track of attendance or provide real time facility booking option. Players can recruit a coach and 
+fail to track their progress, reserve a training ground or equipment even in the same space. 
+One such platform is Playeasy or SportBooking.net in the facility booking section which enables 
+individuals to make sports venue reservations online, however, and operates absolutely independent of 
+any coaching or training environment. A player who is book ing the ground using their systems is not 
+related to their coach and training routine or even their performance history. The booking is a piece of 
+independent purchase with no additional value of sports management attached to it.The sports equity is 
+then h eld by general retailers in the e -commerce sector like Daramaz and Amazon who will house 
+equipment but will not know the sport, level, coaching association, or training requirements of the buyer. 
+Suggestions are purchase history based, as opposed to sports  context based and provide no interaction 
+with the training ecosystem around the player. 
+None of the existing sites combines coach verification, automated player coach, training session 
+management, performance tracking, indoor ground booking as well as shopping of sports equipment in 
+the same role based environment. The Sports Ecosystem Platfo rm bridges this gap directly by 
+considering all these services as one component of a whole system as opposed to these features being 
+treated as individual features and features, and providing a level of integration and coverage of 
+stakeholders that no existing solution can match. 
+1.3 Objective(s)/Aim(s)/Target(s) 
+ 
+The Sports Ecosystem Platform will attempt to accomplish the following specific objectives: 
+• The purpose of the design and development of a centralized, job-based web application that links 
+Enterprises, Coaches, Playerships, and Administrators in a single built -in sports management 
+world. 
+• In order to develop an automated coach recommendation engine that will pair players with 
+verified coaches according to the type of sport, the level of skills, and the geographic area, it is 
+necessary to eliminate an inefficiency that is an ineffective search of coaches. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 6 
+• To deliver a live indoor ground booking system to the cricketing and badminton which will not 
+cause any scheduling issues and will enable players to have real time access of their facility 
+bookings. 
+• To create an organized performance monitoring and attendance control system where coaches 
+would be able to assess players on a weekly basis, awarding them performance points and create 
+training plans that are instantly reflected on the player. 
+• The purpose of this is to come up with a subscription-based online sports equipment marketplace 
+in which authorized business owners can post, administer and sell products to the very same 
+platform directly to the players. 
+• To have an all -member administrative control panel that implements platform integrity by 
+document checking, user management, complaints handling, booking tracking and system wide 
+reporting 
+1.4 Scope 
+Sports Ecosystem Platform encompasses the entire design and development of a web -based multi-role 
+app that caters to the needs of Players and Coaches, Business Owners as well as Administrators. The 
+system involves automated coach recommendation, booking an  indoor ground to play cricket or 
+badminton, weekly performance improvement and attendance record, a sports equipment marketplace 
+that is controlled by a subscription and up -to-date payments, card payment processing, verification of 
+documents and the admin istration of a control panel. The entire functionality can be accessed in the 
+standard web browsers without software installations. Sport specifications are already limited to cricket 
+and badminton as the only supported category of sports, but architectura l base would suffer similar 
+expansion of sport characteristics in later releases. The updated edition lacks a native mobile application, 
+live video coaching, third -party logistics systems in tracking equipments delivery, and the social 
+networking between users. 
+1.5 Business Goals 
+The Sports Ecosystem Platform has the following benefits to the business: 
+• To enhance the efficiency of the operations through automation of digitally controlled sports 
+management procedures instead of manual and informal processes. 
+• To make professional coaching services more accessible, connecting players with coaches that 
+have been pre-verified with an intelligent recommendation system. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 7 
+• To create a long-term revenue stream by use of tiered business owner subscriptions that will be 
+tailored to control the product listing quotas. 
+• To attract a good user experience by uniting the coaching, booking, performance tracking, and 
+equipment purchase into one platform. 
+• To develop trust and accountability amongst all the parties by means of administrative check and 
+balance, formal feedback channels as well as clear records of the transactions. 
+• In order to be able to have a digital footing capable of expanding in size to accommodate further 
+expansion to other sport types and other user identities. 
+ 
+1.6 Document Conventions 
+The paper adheres to the numbered sectioning style and has very distinctly labeled headings and 
+subheadings. Examples of system actors included in the names of system roles (including Player, Coach, 
+Business Owner and Admin) are capitalized everywhere to d isambiguate Between a system actor and 
+general reference. They are presented in an area where they are needed without too much jargon. The 
+models and diagrams are in conventional UML notation. Every section is written in clear and mid level 
+academic English that allows readability by both technical and non technical audience 
+1.7 Miscellaneous 
+The Sports Ecosystem Platform is a Final Year Project made by four students of the University of Central 
+punjab under the supervision of Prof. Sheeza Shabir. The system scope and design is confined and set to 
+the academic schedule of the updated project pl an. All design -related choices recorded in this 
+specification can be linked directly to the requirements in SRS Phase 1. The site is to be developed as a 
+prototype of a real-world application and is not a hypothetically based academic project. 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 8 
+2. Overall Description 
+Sports Ecosystem Platform is a web-based software engine that transforms the main operations of sports 
+training, coaching administration, facility reservation, performance monitoring, and equipment trade into 
+a single unitary field. The system is designed to support four different user roles Player, Coach, Business 
+Owner, and Administrator and each of them has its own module of interaction with the platform and 
+they only see the features, data and workflows pertained to his or her role. This role based segr egation 
+is applied at all levels of the system, including the user interface, to the database access tier, in which no 
+actor has access or the capacity to access data that is not within his permission. The platform is 
+completely open and accessible by all normal web browsers and does not require the installation of any 
+other software in any user computer, supported by relational database back-end, which ensures integrity 
+and consistency of all data of the system in all simultaneous interactions.The rational e behind the 
+existence of the present sports management environment is a definitely identifiable gap. Sport 
+participants in indoors both those interested in cricket and badminton sports have traditionally relied on 
+informal networks to seek coaches, traini ngs and facilities. This casualness brings on a variety of 
+pragmatic issues in the form of coaches they have not verified and have not credentialed, manual booking 
+of a ground that is liable to fights, no visibility in terms of player performance between sessions, and no 
+systematic financial accountability of coaching fees, or equipment acquisitions. The Sports Ecosystem 
+Platform will solve all these issues using a linked system of functional modules designed to form an 
+ecosystem where all stakeholders can act within a highly organized, transparent, and responsible digital 
+space.The first step would be to register with the system through the name, email, and preferences in 
+sports and the geographical location. This user profile data forms the basis of the au tomatic coach 
+recommendation algorithm of the platform, which examines the type of sport that the player plays, their 
+level of skill, and location relative to available coaches and then presents a list of available coaches to 
+players ranked. Before making a training session request, the player can read comprehensive pieces of 
+information about coaches such as their certifications, experience, availability, and ratings by former 
+students. As soon as a coach gives the request, the player can know the training  plan of the week, can 
+track the list of his/her attendance, and can get the performance points that are given by the coach after 
+each training session. In addition to training, the player will have a chance to book the indoor cricket or 
+badminton ground independently via a real-time availability interface that will prevent double bookings 
+and create an instant confirmation. The players can also shop and make purchases of sports equipments 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 9 
+through the stores of certified business owners directly through the platform, and the payments will be 
+through a secure card payment gateway that stores all the records of transaction. 
+A Coach enters the platform by filing a registration form and professional certification documentation 
+and proof of location of an academy. The submission is added to an administrative review queue where 
+the Admin checks the uploaded documents and after th at the coach account is activated. Upon 
+credentialing, the coach gets the availability schedule computed and it directly goes into the 
+recommendation engine and is made visible to players with whom the profile matches their expertise. 
+The coach goes throug h the requests of the incoming training sessions, approves and rejects them 
+depending on the availability and capacity, and when approved, he/she draws up individual training plans 
+of weekly training sessions of the individual players who are enrolled. At the end of every session, the 
+coach takes attendance and allocates performance points along various measures of evaluation like 
+technique, fitness, and attitude. These reviews are instantly added to the performance dashboard of the 
+player, and this forms a n ongoing and transparent track of growth. A Business Owner is charged the 
+training fees on the platform payment system and is free to withdraw any amount at any time to a 
+registered bank account just as as coach registrations. After passing through approval, the business owner 
+will choose a subscription package, Basic, Pro, and Premium, which come with a specific number of 
+product listing quotas per month. This quota includes the owner setting up their online shopfront, listing 
+their products along with descriptions, images, and prices, handling inventory quantities with low stock 
+notifications, handling customer incoming orders as well as having simple sales analytics in a reporting 
+dashboard. The subscription solution makes sure that only established and dedicated vendors can play 
+in the market and will guarantee integrity of the commercial layer of the platform and will guarantee the 
+players trust in the products that they can purchase.The Administrator maintains a centralized control 
+panel that ensures full visibility and governance of all the layers of the platform. The role of the Admin 
+starts with the registration of coach and business owner documents, which will include the examination 
+of uploaded documents, verification of the business, and its legitimacy, and the possibility of approving 
+or rejecting the coach or business owner or eliminating the likelihood of acquiring the requested 
+information. In addition to the verification, the Admin is in charge of all registered user accounts, 
+configuring indoor ground listings and time slot availability, all active bookings and training sessions, 
+player performance and attendance records, complaints and argumentation between users, system -wide 
+reporting (user statistics, revenue, bookings, and performance tren ds). However, the mechanism that 
+underpins all four of these role -based modules is one that ensures that the platform is trustworthy and 
+operationally stable and sound at all times by ensuring that there is a common technical infrastructure 
+that ensures that all systems behave in a consistent, securely and reliably. All requests are handled and 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 10 
+processed this way by a structured API layer through which inputs undergo validation, permissions are 
+granted according to who is authorized to access the data or sometimes store the data through the 
+relational database. The database has been designed in s uch a way that there is referred integrity of all 
+the key entities that include users, coaches, training sessions, and ground bookings, performance records, 
+products, orders, and transactions, and the links between the data remain accurate even during concurrent 
+operations. The notification system is applied to all positions and sends real -time notifications about 
+booking confirmations, training request updates, payment receipts, verification decisions, and 
+subscription renewal updates through the platform interface and email messages.Collectively, these 
+elements compose a sports management ecosystem which is more than the aggregate of its parts. The 
+modules are all separately operational but highly intertwined with each other, and it brings the platform 
+upon which a player has his/her coach suggestion, training schedule, ground booking, performance 
+history, and equipment purchases where all exist in the same coherent digital environment. 
+2.1 Product Features 
+These are the main core of the Sports Ecosystem Platform in brief. Everyone of those features is a 
+specific functional ability that is established in the system to support the operation requirements of four 
+user roles. 
+Automated Coach Recommendation - The system takes into account the sport preference of a player, 
+his level, and location to provide a list of the recommended coaches out of which a player can choose, 
+wherein a list of Coaches which meets the needs of the player is given, eliminating the manual search of 
+coaches. 
+Training Session Request and Scheduling - The players make official training requests to the coaches 
+of choice via the platform and the coach is expected to reply, approve or disapprove those requests and 
+the session by default is recorded when approved. 
+Weekly Training Plan Management Coaches write up and distribute planned weekly training schedules 
+to individual players which specify exercises, time of sessions, goals and performance standards of that 
+training week. 
+Attendance Tracking The coach will follow the same steps as each training session ends by recording 
+attendance of all the registered players, which will then create a cumulative digital profile the coach and 
+the player could use to look at over time. 
+Performance Assessment and Tracking - Coaches give weekly performance marks in the form of 
+technique, fitness and attitude. Through a special dashboard, players can review their playing history, its 
+areas that have been identified as weak, and their patterns of improvement. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 11 
+Indoor Ground Booking -- This means that players are able to book and get real time slot availability 
+of available cricket grounds and badminton grounds, make a selection in terms of time of their preference 
+and make a booking using the inbuilt payment system in the platform. 
+Online Equipment Store-- Business owners run verified products storefronts relevant in the platform 
+wherein players window shop, place search orders and make purchases of sports equipment without 
+visiting beyond the ecosystem. 
+Listing of Products on a subscription basis - The owners of the business will have the option of product 
+listing based on the tiered subscription fees that the business can use: Basic, Pro and Premium with each 
+tier containing the number of active product listings that the business can have during a billing cycle. 
+Secure Payment Processing: All money transactions such as coaching fees, Ground booking payments, 
+equipment purchases, and the subscription charges are done using a secure card payment gateway where 
+all the transaction history will be kept on behalf of each party. 
+Coach and Business Owner Background Checks  -- before gaining access to the platform, 
+administrators review registration forms provided by coaches and business owners and approves or 
+denies them access depending on the validity of the credential. 
+User and Platform Management -All registered accounts, indoor ground setups, time slot availability, 
+sports classifications, and systemwide settings are under full control of the administrators. 
+Complaints and Dispute Management- All users are able to post their complaints using the platform. 
+Administrators research, implement solutions including warnings or account measures and inform all 
+parties involved when closing. 
+Sales Analytics and Reporting -- The business owners have a reporting dashboard where they can see 
+a summary of revenue, numbers of orders and product performance. Administrators produce system -
+wide reports on user activity, bookings, revenue and performance indicators. 
+Role-Based Access Control -Each user role has a specified permission scope which is implemented at 
+interface and backend tiers but no one actor can access or execute any action that is not within their 
+assigned role. 
+Notification Service -- The system provides real -time contextual messaging to all user types in the 
+instance of the booking confirmation, session reminders, payment notices, evaluation updates, and 
+approval decisions. 
+Feedback/Rating System- At the end of the sessions, players give coaches ratings and complete forms 
+of rating in writing. Ratings of a coach are re -calculated each time a new rating is done and they are 
+visible to every player visiting coach pages. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 12 
+Coach Availability Management Coaches post their schedules each week on a calendar interface and 
+coach availability information is fed directly into the recommendation system and booking request 
+processing. 
+Certificate and Document Management  - Coaches are provided with an opportunity to upload 
+professional certification documents and this is submitted through the platform which become verified 
+by the administrator and takes the outcome on the public profile of the coach. 
+2.2 Functional Description 
+The management of sports in Pakistan especially at the grassroots and semi -professional sector is run 
+almost on an informal basis without any change over the years. The coaches who involve players also 
+depend on personal connections, word of mouth referral s or physical visits to local academies without 
+an organized system of checking the qualifications of the coach and contrasting his skills with the 
+options, or to judge the qualifications of the coaches by using documented reviews. Locating an 
+appropriate coach in the country is a process that relies on who a player is acquainted with as opposed 
+to matching profiles of talent and demand.Ground bookings in an indoor cricket and badminton facility 
+is also done in very similar way manually. The facility manage rs make the bookings either by phone 
+calls, WhatsApp messages or by walking in the facility and there is no centralized availability system 
+yet. Dubious usage of bookings is a menace, time sitting cannot be booked till the very last moment, and 
+players cannot know with certainty that a ground is actually available before they actually travel to book 
+the ground. The payment of ground usage is done manually without any digital copy of the transactions 
+and booking history. 
+Training advancement also lies with the memory of the coach. It does not have a standardized system by 
+which coaches assess the players in the long -run, no system of attendance attendance that can operate 
+beyond a handwritten book, no performance history, which the player or the coach can refer to, when 
+drafting subsequent sessions. The players continuously get a verbal feedback during their sessions but 
+have no access to a systematic evaluation, know how to develop around him or her, or week -by-week 
+progress comparison.Coaches themselves are also without a professional digital presence. Advertising 
+services occurs via social media postings or just word of mouth, scheduling is done manually by use of 
+messaging applications and payment is collected in cash or  informal taking of bank transfers and no 
+invoice system and receipt system. No platform is available to a coach to professionally introduce 
+certifications and to have a structured availability and training requests being made using a formalized 
+channel. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 13 
+Sports equipment sales owners operate in a totally different environment of training and coaching. They 
+have their independent retail stores or even general e -commerce directories without any direct 
+relationship with those players and coaches who are their main market. Discovery of products occurs via 
+general search engine or even retail outlets and there is no system that ties equipment suggestion to the 
+sport of a player, his/her level of skill and current training environment.Even the oversight of this whole 
+ecosystem is practically absent. There is no governing body to check the qualification of coaches prior 
+to their employment by the players and the training facilities is not tracked by any centralized system 
+and there is no conflict resolution mechani sm in case of a conflict between players and the service 
+providers 
+2.3 User Classes and Characteristics 
+The Sports Ecosystem Platform serves four distinct user classes, each operating within a dedicated 
+module governed by role-specific permissions. The table below defines each user class, describes their 
+primary responsibilities within the platform, and outlines the access permissions assigned to their role. 
+User 
+Class 
+Description Access 
+Level 
+Key Permissions 
+Player A registered person who will use the 
+site to find coaches, book training 
+sessions and reserve indoor 
+grounds, track his/her performance 
+and buy sports equipment. Players 
+are an average end -user that lacks 
+administrative control over other 
+accounts and sett ings within the 
+platform. 
+ 
+Standard 
+User 
+ 
+Create personal profile, invite coach 
+recommendations, book training 
+sessions, book ground, look at training 
+schedules and weekly plans, get 
+personal performance dashboard, buy 
+equipment through the store, pay 
+coaching fees, invite coach ratings and 
+feedback and get system notifications.  
+Coach  
+One of the verified professionals 
+offering sports training services on 
+the platform. Before it is activated, 
+coach accounts have to be approved 
+by the administrator. Coaches do 
+not have to communicate much with 
+each other and have autonomy in 
+Verified 
+User 
+Coach profile manage my 
+certifications, availability schedule add 
+and edit, training requests view and 
+respond, training plans create and 
+assign, player attendance mark, 
+performance evaluation, seeing player 
+history, ground booking information, 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 14 
+their training processes based on the 
+players entrusted to them 
+receives payments, performance 
+ratings and feedback, system 
+notifications. 
+ 
+Business 
+Owner 
+A confirmed business organization 
+operating an online shop front of 
+sports equipments in the platform. 
+Similar to coaches, business owner 
+accounts need approval of 
+administrator prior to opening the 
+store to the public. The subscription 
+package they have i s also a 
+guideline to their activity. 
+  
+Verified 
+User 
+Administer business profile, and legal 
+documentation, purchase and service 
+listing packages, set up and enable 
+online store, add and maintain product 
+listings within subscription plan, 
+administer product pricing and stock, 
+process and update customer order s, 
+see sales analytics and reports, match 
+up with coaches to form partnerships, 
+get system alerts. 
+ 
+Admin A platform administrator possessing 
+full monitoring control of all the 
+modules of the systems. The 
+position of an administrative 
+manager is not publicly listed and 
+operated within the company. The 
+administrators are not involved in 
+the training session and booking and 
+purchase processes but in the 
+administration, integrity, and 
+configuration of the entire platform.  
+Full 
+System 
+Access 
+Accept or deny coach and business 
+owner registration, maintain all user 
+accounts in all positions and levels, set 
+up indoor fields and slot availability, 
+sports category administration, track all 
+bookings and trainings, player 
+performance and attendance tr acking, 
+process user complaints, generate 
+system-wide reports, track subscription 
+process, system settings and 
+notification templates.  
+Guest A unregistered user that has not 
+registered on the site. Until they 
+have registered, the guests cannot 
+access the publicly visible 
+information but are denied the 
+opportunity to interact with any 
+transactional or personalized 
+services.  
+Read 
+Only 
+See platform landing page and overall 
+information, navigate through profiles 
+and ratings of coaches that are on -site, 
+see available sports types and ground 
+availability, fill in registration form to 
+create an account.  
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 15 
+Permission Boundary Summary 
+Platform Function Player Coach Business Owner Admin Guest 
+Register and Login Yes Yes Yes Yes No 
+Manage Own Profile Yes Yes Yes Yes No 
+Request Coach Recommendation  Yes No No No No 
+Send Training Request Yes No No No No 
+Manage Training Sessions No Yes No No No 
+Create Training Plans No Yes No No No 
+Mark Attendance No Yes No No No 
+Assign Performance Points No Yes No No No 
+View Performance Dashboard Yes Yes No Yes No 
+Book Indoor Ground Yes No No No No 
+Manage Ground Listings No No No Yes No 
+Purchase Equipment Yes No No No No 
+Manage Product Store No No Yes No No 
+Manage Subscription No No Yes No No 
+Process Payments Yes Yes Yes No No 
+Submit Coach Feedback Yes No No No No 
+Submit Complaint Yes Yes Yes No No 
+Verify User Accounts No No No Yes No 
+Manage All User Accounts No No No Yes No 
+Handle Complaints No No No Yes No 
+Generate Platform Reports No No Yes Yes No 
+Configure System Settings No No No Yes No 
+Receive Notifications Yes Yes Yes Yes No 
+ 
+2.4 Design and Implementation Constraints 
+The design choices and limits of development of Sports Ecosystem Platform are controlled by the 
+following constraints: 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 16 
+Browser-Based Deployment Only - The platform will be created as a web-based e-app that can be used 
+by the standard browsers like Chrome, Firefox and Edge. Native mobile applications are out of scope of 
+the project. 
+Sport Category Limitation- The system supports only cricket and badminton as sport categories that 
+are currently operational. Future development would be required to expand to other sports. 
+Role-Based Access Enforcement  - Role-based access control rigidly controls all features and data 
+access points, that is, no cross-role functionality can occur without administrative authorization. 
+Internet Dependency - - All the operations of platforms must have a constant internet connection. None 
+support the offline functionality in any of the modules. 
+Relational Database Requirement-- The system will be relying on the relational database management 
+system to ensure referential integrity among the associated objects, including the user, sessions, booking, 
+and transaction. 
+Verified Account Prerequisite Coaches and business owners are not allowed to make selections in 
+operational functions until their submitted documents are correctly verified by an administrator. 
+Dependency on the payment gateway  - The gateway has been overridden to use a third -party card 
+payment gateway to process all financial transactions. Other forms of payment like cash payment and 
+bank transfers are not processed in the platform. 
+Document Format Restriction Uploaded certification and legal documents should be an accepted file 
+type such as PDF, JPG, and PNG. The rest of the formats are automatically rejected by the system. 
+2.5 Assumptions and Dependencies 
+The basis of the design and development of the Sports Ecosystem Platform was based on the following 
+assumptions and external dependencies: 
+Assumptions 
+It is assumed that all registered players, coaches, and the owners of the business have a stable internet 
+connection and a user-friendly web browser. 
+The coaches and business owners are believed to have sound professional documents and legal 
+credentials during submission of registration. 
+The assumption is that the system administrator is actively present to work on verification queues   in a 
+reasonable duration otherwise the onboarding will experience delays. 
+ Players will be expected to give the correct profile details such as their preferred sport, level of skill,     
+and location, since the completeness of this information determines the accuracy of the recommendation. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 17 
+It is assumed that all users act in good faith and within the scope of their assigned role without trying to 
+illegally gain access to other modules. 
+Dependencies 
+All the financial transactions such as coach payments, bookings of ground transportation, purchase of 
+equipment and subscription fees are done through the platform through a third party card payment 
+gateway.  
+Email notification service relies on third -party email system based on SMTP to send confirmation to 
+registered users, verification decision and system notifications. 
+Verification of the location of the academy during the registration of coaches is done through the use of 
+an external mapping service to ensure that the location details provided are real and of the right location. 
+The accuracy of the recommendation engine relies on the database of coaches being large enough 
+because such sparse data decreases the quality and relevance of the surfaced matches to coach players. 
+Availability of continuous platforms is based on the availability of the hosting server infrastructure and 
+database service, which are not within the application codebase. 
+ 
+ 
+ 
+ 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 18 
+3. Technical Architecture 
+The complexity required to design a platform that will support four different groups of users 
+simultaneously, each with completely different workflows, data needs, and patterns of interaction 
+requires a structurally hard and malleable architectural base th at will support future expansion. The 
+Sports Ecosystem Platform is a three -tier model based on architecture that divides the system into 
+presentation layer, application layer and data layer. This division does not just happen to be 
+organizational in nature , but it is simply one that dictates the behavior of the system under load, the 
+safety with which data transfer is carried out between components of the system and the extent to which 
+any part of the system is modifiable without affecting the others. Any l arge-scale design choice in this 
+platform is historically sprouted in terms of the structural logic that is defined at the architectural level. 
+The Three-Tier Foundation 
+It was precisely because of that reason that the three -tier architecture was chosen among other 
+alternatives like the monolithic single -tier structure or a fully distributed microservices framework. 
+Using a monolithic architecture the user interface, busin ess logic and database access would have been 
+within a single codebase and available to change which would also be fragile as the failure of one 
+component would also cause other unrelated pieces to fail and it would be impossible to scale only one 
+component over the rest. The entire microservices deployment, however, brings complexity in 
+infrastructure that is beyond the scope and schedule of the project. The three -level model strikes an 
+optimal balance: the separation of responsibilities is strictly formal ized, every level can be created and 
+tested on its own, and its scale is suggested without entailing the operational costs of distributing 
+orchestration of services. 
+Both levels have communication with the level that is immediately nearby. The application layer receives 
+requests by the presentation layer. The data layer is read and written in the application layer. The 
+presentation layer will not in any way talk to the  database and the data layer does not know anything 
+about the user interface. The significance of this type of boundary protection to the security model of the 
+platform lies in the fact that, despite a frontend component having suffered, the attacker canno t make 
+further queries or manipulations of the database directly, unless they pass through the authentication and 
+validation code of the application layer. 
+Presentation Layer 
+The interface is a layer whereby all the four types of users access the platform. It is developed as a web 
+application with React.js, a component -based JavaScript library that dynamically renders the user 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 19 
+interface with an interactive browser without having to completely reload the page between interactions. 
+The component architecture of React has a self -reinforcing relationship with the role -based system of 
+this platform, with each user role being represen ted as a dedicated module of reusable interface parts 
+which are instantiated differently based on the role of the authenticated user. 
+Components in the player interface reveal coach discovery, training request submission, ground booking, 
+performance tracking and equipment browsing components, and payment. The coach interface exposes 
+an availability calendar, training request management panel, session tracking tools, attendance marking 
+forms and performance evaluation workspace. The business owner interface has store configuration 
+screens, product management screens, order processing screens, and the sales analytics dashboard. The 
+administration control panel consists of a verification queue, user management tables, ground 
+configuration panels, workflows to handle complaints, and a reporting hub. 
+The styling is done with Tailwind CSS, and uses utility-based styles included in the markup of individual 
+components instead of having to have separate stylesheet files. In this style, the visual logic is kept 
+alongside the structural logic, and there is no need to incur such a cognitive load when following which 
+styles are used with what components in such a large codebase. Cascading of all the interface elements 
+are to be highly responsive i.e. dynamically show their layouts in relation to the width of th e display 
+without the need to have a mobile version of them. 
+The communication of the presentation layer and the application layer occurs only via HTTPS. All the 
+frontend-initiated requests include an authentication token in their header. This token is proved by the 
+API Gateway and only after that, the request is forwarded to any service in backend. Messages with bad 
+token authentication are discarded at the gateway stage before they even reach the application layer and 
+avoid unauthorized traffic at all levels of business logic. 
+Application Layer 
+The platform intellectual core is the application layer. The presentation layer sends validated requests to 
+it, which use business rules, coordinate service -to-service interactions, and decide what data to read or 
+write to the database. This layer will be organized into an API Gateway and one eleven purpose-specific 
+backend services, each of which covers a distinct function domain. 
+The API Gateway is the only entrance point where all the incoming requests are made in the frontend. 
+Instead of each frontend component making individual calls to each of the backend services, all requests 
+go through the gateway before accessing the servic es. Before transmitting any request to the resource, 
+the gateway conducts three roles; it authenticates based on the supplied token to determine the identity 
+of the user, it verifies based on the role of the user to ensure that the user is authorized to ac cess the 
+resource and rate limiting is done to ensure that a single client does not flood the system with many 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 20 
+requests. This single control location implies that security enforcement occurs at a single location as 
+opposed to scattering the enforcement implementation across different individual services, which 
+simplifies the security model to audit and maintain. 
+The authentication lifecycle of any type of user is handled by another service, called the authentication 
+service beyond the gateway. On a user registering an account, the authentication service authenticates 
+the data provided and ensures that no two accou nts have the same email address, hash the password 
+using a cryptography algorithm and stores the hash before creating the account record with the 
+corresponding role assignment. At the time of the login, it supplies the account record, compares the 
+entered password with the stored hash, and upon a successful match, it produces a JSON Web Token 
+which is stored by the client in the local memory and attached to every further request. Also via this 
+service are password reset flows, which are time-limited reset links generated by the notification service. 
+Once the user is authenticated operation of the profile is managed by user management service of all the 
+four roles. It handles profile update requests, account status change requests, e.g. suspension and 
+reactivation and offers the administrative capabilities required to create, modify and delete user accounts. 
+This service interacts with the file storage on occasions where profile pictures or profile related 
+documents have to be stored or accessed. 
+One of the most functionally unique elements in the platform is the recommendation engine. Upon 
+receiving a request by a player to coach, this service logs in the profile data of the player and makes 
+requests in the coach database so that the coaches whose  specialization in sport, geographical location, 
+and availability slot match the preferences specified by the player. It then derives a score of match of 
+each candidate coach on the basis of the level of alignment between the candidates across these 
+dimensions and provides the player with a list of the ranked coaches. The downside of this ranking lies 
+in the completeness of both the profile of the player and the registered information of the coach, and that 
+is why profile completion is prioritized during the process of onboarding towards the two jobs. 
+The training management service facilitates the whole life cycle of a training session between an athlete 
+and a coach. It accepts training requests of players, puts them in pending status and informs the concerned 
+coach. The coach response serves as the update of the request status and in case it is accepted, a proper 
+record of the training session is recorded. It is also in charge of creating the training plan and assigning 
+it, the storage of the exercising duration, targets, and weekly goals to be achieved by the coaches on each 
+player. 
+The attendance and performance service comes in place once the training sessions are set up. The coaches 
+use this service to send attendance records which save the present or absent status of every enrolled 
+player and any notes of the session. Here also pe rformance tests provided by coaches are entered into - 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 21 
+the service takes into consideration the values of points according to the technique, fitness and attitude 
+in the score, the sum of the total score is obtained, the full evaluation history is recorded, and an alert is 
+given to the player. The accruing data the service accumulates serves the performance dashboard which 
+may be viewed by the players to monitor their progress over time. 
+The ground reservation services handle the entire process of booking the facilities. It keeps real -time 
+view of the slot availability of every registered indoor ground, responds to booking requests made by 
+players, temporarily books slots as part of the payment process to avoid concurrent booking of the same 
+slot and approves or cancels bookings according to the success or failure of payments. Cancellation 
+requests are also processed here and both the booking record and the slot availability state are updat ed 
+appropriately with regard to their status. 
+The equipment market place is regulated by the product and order service. It handles product creation 
+request, update request and delete request by the business owners, checks available slot and allows new 
+listings only when the remaining slots are low, ma intains catalogues of the shopping cart within a 
+browsing session, and handles order records when shoppers are successful with their payment. The 
+inventory is automatically updated whenever the order is made, and when the stock declines below the 
+presystemed levels, the low stocks alert is sent to notifications. 
+The financial processing centre of the site is the payment service. It can process four different types of 
+payments coaching fees to coaches, ground booking payments, equipment purchase payments and 
+subscription costs of business owners, and all of them go  through the same payment gateway adapter. 
+With every transaction, the service makes an authorization request to the external payment gateway, 
+accepts the result, documents the transaction and its outcome status, prints a receipt, and credits the 
+receiving account in which the money is supposed to go. This is also where withdrawal requests between 
+coaches are handled and the service would begin transferring the funds to registered bank accounts using 
+the gateway. 
+The notification service is used to track events on the platform and issue contextual notifications to the 
+concerned users. It waits to receive triggering signals by other services, a confirmation of a booking with 
+the ground booking service, a receipt of payment with the payment service and a submission of an 
+evaluation with the attendance and performance service, and generates records of notifications. The 
+notification is sent to the dashboard of the user in real -time and through email using an external S MTP 
+integration when the events require outside-of-platform communication. 
+The verification service handles the process of reviewing the documents in coach and business owners 
+registration. It saves documents uploaded in the file storage system, forwards them to the admin panel 
+to be checked, makes approvals or rejections and upd ates account verification to the user database, and 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 22 
+sends the outcomes as notification through the notification service. Location validation in coach academy 
+deals with handle. 
+Data Layer 
+Data layer: It offers a long-term storage of all entities of the platform in 4 databases which are purpose 
+separated and a file storage system. The main database is the most linked database in the system 
+containing user accounts, profiles of players and co aches, training sessions, attendance records, 
+performance appraisal, ground booking and records of complaints. By storing these items in one 
+relational database, both the referential integrity between these entities is maintained and any foreign 
+key relationships are maintained at the database level as opposed to being implemented at the application 
+level only. 
+Product and order database archives all business data regarding the equipment businessplace comprising 
+of the listing of products, order recordings, and order line items, and stock status. The fact that this data 
+gets separated of the main database represe nts the functional independence of the marketplace module 
+as compared to the coaching and booking modules. All the records of transactions, status of 
+subscriptions, and withdrawal records are stored in the payment database. Storing payment data 
+separately of other platform data makes the attack surface to any possible attacker - a product database 
+breach, such as, not expose payment data. All the notification records with notification states and the 
+time taken as read are kept in the notification database and therefore, notification queries do not have to 
+compete with the high-frequency read and write processes on the primary database. 
+File storage stores all the binary information such as uploaded certificates, legal business 
+documentations, product photographs as well as profile photographs in a dedicated storage system that 
+is not part of the relational databases. Storing binary files based on non-database ensures that large files 
+uploading to the database does not slow down querying the transactional tables. 
+Role-Based Access Control 
+Crosscutting all three levels is a role based access control system which imposes a limit of permissions 
+in all layers of the system. On the presentation layer, interface elements are displayed conditionally 
+depending on the role of the authenticated user so that any navigation options and screens of functions 
+that do not apply to a certain role are never shown. The API Gateway additionally checks role 
+permissibility at the application layer before the request is forwarded to the service, and at the service  
+each service undertakes a second check on the sensitive operations. At the data tier, service level queries 
+are limited to the records of the authenticated user by default, so that no user may access the data related 
+to another account by devising special ized requests. This enforcement by layers implies that failure in 
+one enforcement layer is detected by the next layer allowing defense in depth at the entire stack. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 23 
+Diagram 
+The diagram below is a layered system architecture whereby the UI (users) is connected to the backend 
+services through APIs. Business layer interacts with the core functionality such as booking, training and 
+payments and is backed with shared services (auth, logging).The data is managed with the assistance of 
+data access and database layers, and external services 
+ 
+Fig1. Layered System Architecture of the Sports echosystem 
+ 
+ 
+ 
+ 
+ 
+               
+           
+              
+                  
+                                 
+                               
+             
+              
+             
+          
+              
+                      
+                        
+                                           
+                                                      
+                                           
+                 
+                          
+                
+                            
+   
+  
+               
+                   
+                           
+                                                 
+                                  
+               
+                 
+                                                
+       
+              
+                                                                 
+                                         
+                                                           
+         
+                   
+                        
+                
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 24 
+3.1 Application and Data Architecture 
+The Sports Ecosystem Platform allocates its internal functions over two non -separable architectural 
+layers the application where all the business logic is executed and the data where all platform information 
+is stored. It is important to understand how the se two zones are organized on their own as well as their 
+respective interaction with one another that provides a better understanding of why the system reacts in 
+the manner it does given the various usage scenarios. 
+Applications/Application Layer Architecture. 
+The application layer is structured in terms of service oriented design with each of the backing 
+components having a certain set of functionality and being independent of the other components at 
+logical view. The system separates its roles through eleven d istinct core services with a well defined 
+input contract, set of internal operation and predictable output behaviour, instead of a single large 
+backend module which deals with all platform actions. Such a split allows new modifications to one 
+service, usually, updating the recommendation algorithm, say, or readjusting the logic of the subscription 
+quota, without needing to make changes to the service unassociated with the change, like the notification 
+dispatcher or the attendance tracker. 
+All requests that reach the application layer reach the API Gateway, which serves as the only gateway 
+to regulate all the frontend communication. Any request passes through the gateway which checks three 
+times before it can cut across. It asserts the authenticity of the authentication token at the request header 
+and verifies the fact that the caller is who he claims to be by matching his name with the stored session 
+record. It then compares the role assigned to the caller with the permission constraints of the requested 
+operation disallowing any access by a player to a coach -only functionality or by a business owner to 
+administrative endpoints. At last it implements rate limiting to ensure any single client request does not 
+make an overflow in the number of requests in a limited period of time. Request that passes all three 
+checks are sent to the relevant backend service only. 
+The authentication service handles the relationship of identity operations of all four roles of users in a 
+single workflow. Registration submissions are checked to ensure that they contain complete and valid 
+information and password is converted to a one w ay cryptographic hashing operation and account is 
+written to the database with the role tag and an initial status value. Login requests will generate a 
+credential look up, which is followed by a hash comparison, and authentication that is successful will 
+generate a signed JSON Web Token which encode identity and role of the user. This token is carried 
+with each follow-up request and it is the process by which the gateway knows who makes each call, it 
+does not need to ask the database every time there was an interaction. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 25 
+The recommendation engine is a query and scoring service. It allows verification of the sport 
+specialization on the search on requesting the recommendation by the player and then reading the user 
+database with the sport type, skill level, and location, and  finally, on requesting the search, the coach 
+table showed all of the verified and active coaches. It then picks the set filtered to generate a proximity 
+score calculated with geographic distance and compatibility score calculated with a match of skills an d 
+combines the two to form a composite match score per candidate and sends the ranked result set to the 
+gateway to be sent to the interface of the player. Its engines do not store their outputs - every 
+recommendation is calculated based on up to date infor mation, so that recently validated coaches can 
+immediately emerge in results with no human intervention. 
+The training management, attendance and performance services are a closely knit group that manages 
+the entire coaching process of creating programs up to assessment. Training management generates and 
+tracks records of the sessions, stores the plan details that are given by a coach and the request -accept-
+reject lifecycle. Each session contains presence records that are written after being submitted by a coach 
+by the attendance service into a cumulative attendance history of a player. Performance service acce pts 
+evaluation subissions, confirms that point values are within acceptable limits, sums the total score, and 
+leaves the evaluation record and at the same time announces an event that notifies the player of the 
+evaluation process. These three services have  similar database tables, however, on distinct code paths 
+and keep their logic separate but share a common data source. 
+The payment service is connected to an external payment gateway via a special adapter layer that shields 
+the details of the third -party API against the rest of the application. The service retrieves a payload 
+authorization when a request to make a payment comes, and sends it to the gateway adapter, which 
+converts the data to the format needed by the external provider. The output provided by the provider is 
+fed back through the adapter, and the payment service decodes it, creates the transaction record and 
+sends the suitable reply - generation of receipt on successful payment, generation of error on failure and 
+temporary release of reservation on a booking failure after a slot is had. 
+Data Layer Architecture 
+The data layer is divided into four relational databases and file storage system, each of which is serving 
+a specific purpose of the information requirements of the platform. The purpose of this partitioning is to 
+avoid conflicts between unrelated domains of data in an attempt to share the same database resources as 
+well as to contain the ripple effect (blast radius) of any individual point of failure. 
+The main database is the one that consists of the heaviest transaction load in the system. It records the 
+accounts of users, role -related profile, trainings, attendance, performance reviewing, ground booking, 
+time slot status, coach availability schedule, complaint history, and verification history. Since these 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 26 
+entities are closely connected with each other in terms of the foreign key reference; an attendance record 
+is created in connection with a player and a coach so are the training sessions and the complaints, a 
+player and a coach respectively; storing them i n the same relational database will enable the database 
+engine to enforce the referential integrity automatically. All foreign keys are defined on the schema level, 
+orphaned records are not possible even in cases of application-layer validation. 
+The order and product database is in charge of all business activities in the equipment market. Product 
+listing, order header, order line item, inventory quantities and records of subscriptions are stored here. 
+To separate this database and the main databa se will ensure that the high levels of product browsing 
+activity and order processing queries are not competing with authentication and session queries that are 
+operating continuously during the operation of the platform. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 27 
+Component Diagrams 
+Figure 1: Level 1 — Sports Ecosystem Platform: System Overview  This chart will be the top level 
+perspective of the platform which is structured in columns of four actors, their main area of focus, shared 
+services, and external systems and howby each role will cause its domain of focus and how data flows 
+to the bottom through shared services to the database and the external integrations. Before introducing 
+any internal detail, it specifies the overall structural boundaries of the system. 
+ 
+Fig2.Component Diagram of Sports Ecosystem 
+ 
+ 
+ 
+ 
+                                  
+      
+      
+     
+              
+     
+       
+             
+            
+               
+               
+             
+           
+                     
+                  
+                   
+                    
+       
+                  
+                
+               
+               
+                   
+            
+                
+                                                                   
+                                               
+                                         
+     
+               
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 28 
+Figure 2: Level 2 — Domain Internals and Inter-Domain Flows This figure enlarges each of the actor 
+domains to locate its internal parts and arrows between those revealing how the Player, Coach, Business 
+Owner and Admin domains each delegate to common services like authentication, booking, payment 
+and notifications. It detects the flow of one user action across various domain boundaries before hitting 
+the database or activating an external system. 
+ 
+Fig3.Component Diagram(Internals And Flow) 
+ 
+ 
+ 
+                                            
+                 
+                                                  
+                                                 
+                
+                                                        
+                                                         
+                         
+                                                      
+                
+                                                    
+               
+                         
+                     
+                         
+                  
+                    
+                    
+               
+                   
+                     
+                
+                                                                                         
+                                                                              
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 29 
+Figure 3: Level 3 — Core Pipeline: Detailed Component Interactions  It is a request life cycle 
+diagram showing all the request processes beginning at registration up to notification showing each 
+process step and the actor invoking it and the external system invoked in that process, and the flow of 
+data is strictly downstream in the pipe. 
+ 
+Fig4.Component Diagaram(Core pipeline) 
+ 
+ 
+ 
+ 
+ 
+ 
+                                         
+                       
+                                                         
+                
+                             
+                      
+                                                      
+                                                              
+                 
+               
+                        
+                         
+                                                             
+                 
+                      
+                           
+                                                                
+                 
+                   
+                                                        
+                                                                                    
+                                                                           
+              
+              
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 30 
+Abstract Class Diagram 
+ 
+ 
+ 
+ Fig5.Abstract Class Diagram of Sports EcoSystem 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 31 
+ER Diagram
+ 
+Fig6.ER Diagram 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 32 
+3.2 Component Interactions and Collaborations 
+Sports Ecosystem Platform is not a group of services that are independent of each other. Any significant 
+action that a user performs on the platform leads to a sequence of synchronized interactions involving 
+several components, and each component will provide a distinct segment of the larger response prior to 
+the outcome being delivered to a user. The analysis of these patterns of interactions shows how platform 
+consistency, rule enforcement and delivery of each interaction in a coherent experience occur in the face 
+of four completely different user workflows. 
+Request Flow Pattern 
+The flow of any interaction on the platform is set in the same basis despite the type of user role initiating 
+it. An action of the user in the front-end will include an HTTPS request that has the authentication token 
+of the user in its header. This request  is sent to the API Gateway which verifies the token to ensure 
+identification, compares the role of the user with the required permission to perform the requested 
+operation then sends the request to the relevant service on the back -end server only when bot h 
+verifications are successful. The backend service then takes the requested message, and does whatever 
+may be required (read or write) to the database and sends back a structured request back through the 
+gateway to the frontend. This regular request -response paradigm implies that no service is ever called 
+without an authentication or authorization, since the gateway captures and blocks it even before it sends 
+any further into the system. 
+The Interaction of Coach Recommendation. 
+The communication between a player and coach involves three elements operating sequentially when 
+the former seeks the latter to provide recommendations. At the API Gateway, the request is verified and 
+sent to the recommendation engine. To avoid taking prof ile data directly as the frontend, the 
+recommendation engine invokes the user management service to get the current profile information of 
+the player such as sport type, skill level, and location, instead of it being sent in the request body, which 
+means t hat clients are not allowed to manipulate the corresponding matching criteria to cause the 
+recommendation engine to react accordingly. Having checked profile information, the engine connects 
+directly to the main database to find corresponding coaches and calculates prioritized outcomes. The list 
+of rankings proceeds through the gateway to the interface of the player. Such an approach to retrieving 
+authoritative information like the data in the database as opposed to relying on the frontend input occurs 
+throughout all services that rely on the user profile information when making decisions. 
+ 
+Lifecycle Interaction of Training Sessions. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 33 
+The process of workflow training session is the type of collaboration that is most lasting in any part of 
+the process of the platform. As a player makes a training request, the training management service 
+records the request and sends an immediate notification to the training notification service so as to alert 
+the concerned coach. On receiving the coach reply, the training management service changes the requests 
+status and in case it is an acceptance it generates a formal record of the session and again se nds start of 
+notification to the player. When a session is created, the training management service also notifies the 
+attendance service to prepare an attendance record structure to that session, such that the coach can mark 
+attendance immediately the sess ion is conducted. Once attendance is marked, performance service is 
+active and an evaluation submitted by the coach, whereby the evaluation record is written and a third 
+notification event generated and sent to the player. In all this life cycle, the notif ication service is a 
+partner in passiveness; it is a service that reacts to stimulation signals by other services and does not take 
+any initiative of its own. 
+Interaction at the point-of-payment and Booking. 
+Ground booking space concerns specifically close cooperation of the booking service with the payment 
+service since the two have to work in accordances with slot reservation timing. In a situation where a 
+slot is chosen by a player, a temporary reservation is made on the slot by the booking service in the 
+database until the process of payment is made. It then takes care of signaling the payment service to 
+establish the payment. With a successful notification by the payment service of the external gateway, the 
+booking service then turns the temporary hold into a confirmed booking and then informs the notification 
+service to forward a confirmation to the player. In case payment service records failure, the temporary 
+hold is automatically released by the booking service and the slot is exposed again to other players. Such 
+a closely synchronized handoff between the payment service and booking service is what will stop the 
+case whereby a few slots are booked twice in the window period between selection of slot and completion 
+of payment. 
+Confirmation and Significant Cooperation. 
+The positive collaboration pattern is the same between the verification service and notification service 
+during the onboarding process of coaches and the business owner. Each status change the verification 
+service imposes on a pending registration be it a request of further verification documents, an approving 
+or a rejection is immediately preceded by an event signal to the notification service with the superior 
+outcome details and the target user identifier. The notification service then establishes the re cord of the 
+alert and sends a mail outside the mailbox through the external SMTP integration. This isolation implies 
+that the verification service does not require anything regarding the methods of delivering notifications 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 34 
+it merely indicates that a given event has happened and the notification service takes care of the 
+components and ensures each element is concentrating on its take 
+Collaboration Diagrams 
+Diagram 1 — System Level Collaboration  The diagram reflects the topical cooperation of all 
+significant system actors: Player, Coach, Business Owner, and Admin, the basic system elements: Sports 
+Ecosystem Platform, MongoDB database, and Notification Service. It is an expression of the interaction 
+between every actor with the centralized platform in ordered numbered message trails which characterize 
+the order of communication.Operations that are important to the diagram include user registration, 
+authentication, service request, interaction during booking and administrative control. Practically, every 
+request done by an actor is accepted by the platform and, together with the database, the data is stored 
+or retrieved, and the Notification Service is activated to provide real -time updates, alerts, or 
+confirmations. 
+ 
+Fig7.Collaboration Diagram 
+ 
+ 
+                                                         
+       
+             
+      
+              
+                
+        
+              
+              
+        
+        
+      
+            
+                    
+             
+                                       
+                   
+                       
+              
+                      
+            
+               
+              
+             
+             
+               
+      
+                                                                    
+                         
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 35 
+ 
+Diagram 2 — Training and Coaching Collaboration This diagram describes the interaction between 
+Player, Coach, Trainingservice, AttendanceService, Performanceservice, Notificationservice, and 
+MongoDB, and the entire process of booking a session, marking attendance, and assigning weekly points 
+on performance. This is opened by the Player requesting a training session, which is handled by the 
+Training Service and requested to be available and confirmed by the Coach. After a session has been 
+booked, the Attendance Service logs and establishes the attendance stature of the player from or after 
+the session. After that the Performance Service gauges the contribution of the player and allocates weekly 
+performance points according to established standards. 
+ 
+Fig8.Collaboration Diagram(Training and coach) 
+ 
+                                             
+       
+             
+                
+               
+      
+              
+                  
+                  
+                   
+                     
+                    
+             
+        
+        
+                                
+                                         
+                  
+                    
+                
+                    
+                     
+                    
+      
+                                                                                 
+                                                                                                                  
+                                                                                
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 36 
+ 
+Diagram 3 — Equipment Store and Admin Collaboration  It can be seen that these diagrams show 
+how the Business Owner handles product listings and subscriptions via StoreService and 
+SubscriptionService, how a Player makes an equipment order via OrderService, and how Admin handles 
+store registration via MongoDB . The Player communicates with the system by navigation through 
+available equipment and by making orders on the Order Service, currently doing transaction processing 
+and ensuring records of orders. At the  same time, the Admin processes and checks store registration 
+applications as a means of integrity and compliance. MongoDB supports all the interactions in terms of 
+persistent storage of the product data, subscription in
+formation, and transaction records. The chart indicates the synchronized nature of operations that 
+facilitate the smooth marketplace experience in the platform. 
+Fig9.Collaboration Diagram(Admin and Business) 
+ 
+ 
+ 
+                                                 
+              
+              
+             
+                         
+       
+               
+                    
+                    
+             
+                
+      
+            
+        
+        
+                    
+             
+              
+                   
+              
+                   
+                
+               
+            
+              
+              
+                  
+                
+      
+                                                                                
+                                                                                                                                      
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 37 
+ACTIVITY DIAGRAM 
+Player Activity Diagram 
+This figure demonstrates the manner in which the Player services profile and obtains coach 
+recommendations using RecommendationService, in which training requests are processed by use of 
+TrainingService, in which attendance and performance is directly moni tored, in which ground booking 
+is conducted using BookingService and finally in which equipment orders are placed using OrderService. 
+ 
+Fig10.Activity Diagram of player 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 38 
+Coach Activity Diagram 
+This diagram shows how the Coach handles profile and availability with the help of CoachService, 
+training requests are processed with TrainingService, how attendance and performance evaluation are 
+performed, and decision on player progress which will result in generation of reports are made. 
+ 
+Fig11.Activity Diagram of coach 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 39 
+Admin Activity Diagram 
+This is the diagram, which shows how the Admin does the verification of the coaches, the business 
+owners, the verification is conducted by VerificationService, the users are served by UserService, the 
+training sessions and bookings are monitored by ReportS ervice and generated by ReportService. 
+ 
+Fig12.Activity Diagram of Admin 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 40 
+ 
+Activity Diagram Business Owner 
+This figure shows how the Business Owner handles listings of products and subscriptions by use of 
+StoreService and SubscriptionService, orders processed by use of OrderService and approval and 
+verification of business operations by the Admin.. 
+ 
+ 
+Fig13.Activity Diagrm of business owner 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 41 
+ 
+DFD Diagrams 
+DFD LEVEL 0 
+This diagram displays the interaction of Player, Coach, Admin, and Business Owner with the Sports 
+Ecosystem Platform as a unit system, communicating with one another in the form of requests, responses 
+and system outputs. 
+ 
+Fig14.DFD level 0 
+DFD LEVEL 1 
+This figure shows the division of the system into significant processes such as User Management, 
+Training System, Booking System, E-Commerce System, and Admin Control and their interaction with 
+all the actors and data stores.  
+ 
+Fig15.DFD level 1 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 42 
+ 
+DFD LEVEL 2 
+This diagram demonstrates how complex subsystems such as training, booking, and e -commerce are 
+then broken down into specific processes with the interactions between Player, Coach, Business Owner, 
+and Admin. 
+ 
+Fig16.DFD level 2 
+ 
+DFD LEVEL 3 
+This is a flow chart showing the fine details of the performance evaluation process of data collection, 
+data analysis, data scoring, decision making and report writing of Coach, Player and Admin.  
+ 
+Fig17.DFD level 3 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 43 
+ 
+LEVEL BASED SIQUENCE DIAGRAMS 
+ADMIN 
+Coach And Business verification:This diagram captures the Admin's verification governance workflow 
+— the critical quality assurance process that controls platform membership. The sequence demonstrates 
+how the Verification Service retrieves both the applicant's profile data and their uplo aded document 
+references from the File Storage Service to present a complete dossier to the Admin reviewer. Three 
+decision outcomes are shown — approval activating the account, rejection with a documented reason, 
+and a request for additional documentation — each recording the Admin's identity and timestamp in an 
+audit trail. This audit trail ensures accountability for every verification decision and provides a reference 
+if an applicant disputes an outcome. 
+Step-by-step flow: 
+1. Admin navigates to Verification Queue page 
+2. VerificationService queries UserDB for all accounts with status PENDING_REVIEW (both 
+coaches and business owners) 
+3. Verification queue returned with applicant name, role, submission date, document count, and 
+current status 
+4. Admin clicks Review on a Coach application 
+5. VerificationService retrieves full coach profile: personal details, expertise, academy location, 
+sport type, years of experience 
+6. FileStorageService retrieves references to uploaded documents (certification files, academy 
+proof) 
+7. Full coach dossier displayed to Admin including document preview links 
+8. alt Admin clicks Approve → VerificationService updates User status to VERIFIED and 
+ACTIVE, records approval timestamp and Admin ID in audit trail, triggers notification to Coach 
+9. alt Admin clicks Reject → Admin enters rejection reason in modal, VerificationService updates 
+status to REJECTED, stores rejection reason and Admin ID in audit trail, triggers notification to 
+Coach with reason 
+10. alt Admin clicks Request More Documents → VerificationService updates status to 
+PENDING_MORE_DOCS, notifies applicant to upload additional files 
+11. Same flow applies identically to Business Owner verification with legal document review instead 
+of certifications 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 44 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 45 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 46 
+User Management :This diagram shows the Admin's comprehensive user account management 
+capability, from basic search and profile inspection through account suspension and permanent deletion. 
+The suspension workflow demonstrates that linked data such as existing training ses sions is preserved 
+rather than deleted — protecting coaches and other players who may be connected to the suspended 
+account. The deletion safety check that verifies blocking dependencies before proceeding demonstrates 
+data integrity consciousness, and the soft-delete approach that anonymizes personal data while 
+preserving transaction records shows awareness of both user privacy and financial record requirements. 
+Step-by-step flow: 
+1. Admin navigates to User Management page with search and role/status filters 
+2. UserManagementService queries UserDB with applied filters — returns user list with name, 
+email, role badge, registration date, location, account status 
+3. Admin searches by email — UserManagementService performs real-time filtered query 
+4. Admin views a specific user profile — full account details returned via SlidePanel 
+5. Admin suspends a user account 
+6. UserManagementService updates User status from ACTIVE to SUSPENDED in UserDB 
+7. Active training sessions linked to this user are preserved (not deleted) to protect other 
+stakeholders 
+8. NotificationService sends ACCOUNT SUSPENDED notification to user's email 
+9. Suspension confirmation returned to Admin 
+10. alt Admin reactivates suspended user → status updated back to ACTIVE, NotificationService 
+sends reactivation email 
+11. Admin initiates permanent account deletion (requires typing DELETE to confirm) 
+12. UserManagementService checks for pending financial transactions or active bookings linked to 
+this account 
+13. alt No blocking dependencies → UserManagementService soft-deletes User record, anonymizes 
+personal data, preserves transaction records for financial integrity 
+14. alt Blocking dependencies exist → deletion blocked, Admin informed of which dependencies 
+must be resolved first 
+15. Deletion confirmation returned to Admin 
+ 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 47 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 48 
+ 
+Ground Management :This diagram covers the Admin's dual role in ground management — 
+configuring the facility infrastructure and monitoring its real -time utilization. The ground creation 
+sequence shows the time slot grid configuration where each enabled slot generates an indi vidual 
+TimeSlot record that the booking system references. The monitoring portion demonstrates calendar -
+based oversight that gives the Admin a spatial view of platform facility usage, with the ability to drill 
+into specific days. The admin cancellation workflow shows the complete cleanup chain — releasing the 
+slot, processing the refund, and notifying the affected player — demonstrating that admin interventions 
+are handled with full downstream consequence management. 
+Step-by-step flow: 
+1. Admin views Ground Management page — GroundManagementService returns all grounds with 
+status, occupancy, and sport type 
+2. Admin clicks Add New Ground — multi-step form: Step 1 ground details (name, sport type, 
+location, capacity, price per slot), Step 2 weekly time slot grid configuration, Step 3 confirmation 
+3. GroundManagementService creates Ground record in GroundDB 
+4. GroundManagementService creates TimeSlot records for all enabled slots — one record per day-
+time combination 
+5. New ground immediately available for Player booking 
+6. Admin disables a specific time slot (e.g., for maintenance) 
+7. GroundManagementService updates TimeSlot status to DISABLED 
+8. Any future booking attempts for this slot are rejected by GroundBookingService 
+9. Admin navigates to Booking Monitoring 
+10. BookingMonitoringService queries BookingDB — returns monthly calendar view with booking 
+counts per day and occupancy percentages 
+11. Admin clicks a specific date — daily booking list returned with player names, time slots, payment 
+status 
+12. Admin cancels a problematic booking 
+13. BookingMonitoringService updates booking status to CANCELLED_BY_ADMIN, releases the 
+time slot back to AVAILABLE, triggers refund through PaymentService, notifies Player of 
+cancellation with reason 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 49 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 50 
+ Performance Monitoring :This diagram combines the Admin's performance oversight and dispute 
+resolution responsibilities — two governance functions that together maintain platform quality and user 
+trust. The performance monitoring portion shows automated anomaly detection that surfaces problematic 
+patterns to the Admin without requiring manual data inspection, converting raw evaluation data into 
+actionable oversight signals. The complaint resolution workflow demonstrates a structured four -option 
+resolution f ramework — each option producing a different downstream effect through the relevant 
+service. The requirement that resolution notes be recorded before closure ensures documented 
+accountability for every complaint outcome, supporting the platform's commitmen t to transparent 
+governance. 
+Step-by-step flow: 
+1. Admin navigates to Performance Monitoring — selects Player View 
+2. PerformanceMonitoringService queries EvaluationDB — aggregates performance data across all 
+players 
+3. System auto-flags anomalies: players with 3+ consecutive absences or 15%+ performance drop 
+in last 7 days 
+4. Alert cards returned to Admin: "Critical Drop — [Player Name] — -18% in Fitness over 7 days 
+— INVESTIGATE" 
+5. Admin clicks INVESTIGATE — detailed performance breakdown for that player returned with 
+full evaluation history 
+6. Admin navigates to Complaint Management 
+7. ComplaintService queries ComplaintDB — returns complaints filtered by status (Pending / 
+Under Review / Resolved / Dismissed) 
+8. Admin selects a complaint — ComplaintService returns full complaint detail: reference ID, 
+submitter, target, complaint type, description, relevant session or transaction references 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 51 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 52 
+ Complaint And Subscription Management :This diagram demonstrates the Admin's platform 
+intelligence and commercial oversight capabilities through report generation and subscription 
+monitoring. The reporting workflow shows how the Reporting Service aggregates data across multiple 
+database collections to produce structured analytical views, supporting both operational monitoring (user 
+activity, booking trends) and financial oversight (revenue by payment type, subscription health). The 
+subscription monitoring p ortion shows the expiry flagging mechanism that surfaces time -sensitive 
+renewals to the Admin, and the manual renewal reminder capability demonstrates the Admin's ability to 
+intervene proactively in the platform's commercial relationships. Together these f unctions give the 
+Admin the information infrastructure needed for evidence-based platform governance. 
+Step-by-step flow: 
+1. Admin navigates to Reports and Analytics page 
+2. Admin selects Report Type: User Statistics 
+3. ReportingService aggregates from UserDB: total registered users by role, new registrations over 
+selected date range, active vs suspended account counts, verification approval rates 
+4. Report data returned — rendered as summary stat cards, area chart of registration growth, and 
+role distribution donut chart 
+5. Admin selects Revenue report type 
+6. ReportingService queries PaymentDB: total revenue by payment type (coach fees, bookings, 
+equipment, subscriptions), revenue trend over period, average transaction value 
+7. Revenue report data returned — area chart, bar chart by payment type, high-value transaction list 
+8. Admin clicks Export PDF — ReportingService generates structured PDF document 
+9. Download link returned — Admin downloads report 
+10. Admin navigates to Subscription Payments 
+11. SubscriptionService queries SubscriptionDB — returns all subscriptions with package type, 
+usage bar (listings used/quota), expiry dates, payment status 
+12. System flags subscriptions expiring within 7 days with "URGENT" badge 
+13. Admin clicks Send Renewal Reminder — NotificationService sends renewal reminder email to 
+Business Owner 
+14. Admin manually adjusts a subscription — SubscriptionService updates subscription record with 
+new package type or listing limit 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 53 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 54 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 55 
+PLAYER 
+ Registration and Profile Management:This foundational sequence diagram covers the Player's entry 
+into the platform through registration, authentication, and profile maintenance. The diagram shows the 
+three-step registration process with field validation at each stage and the duplicate email check. It 
+demonstrates the secure authentication flow — password hashing on registration, hash comparison on 
+login, and JWT issuance — that underlies every subsequent platform interaction. The profile 
+management portion shows how the same JWT -protected pip eline handles ongoing profile updates, 
+establishing the authentication architecture that protects all Player operations throughout the platform. 
+Step-by-step flow: 
+1. Player submits multi-step registration form: personal details (Step 1), sport type and skill level 
+selection (Step 2), review and confirm (Step 3) 
+2. AuthService validates all fields — email format, password strength, required fields completeness 
+3. alt Email already exists → return duplicate email error to Player 
+4. AuthService hashes password using bcrypt, creates User record with role tag "PLAYER" and 
+status "ACTIVE" 
+5. UserManagementService creates Player profile record linked to User ID, stores sport type, skill 
+level, location 
+6. NotificationService sends welcome email to Player 
+7. Registration success confirmation returned to Player 
+8. Player submits login credentials (email + password) 
+9. AuthService retrieves User record by email, compares submitted password against stored hash 
+10. alt Credentials valid → AuthService generates signed JWT token encoding userID and role, 
+returns token to Player 
+11. alt Credentials invalid → return authentication error 
+12. Player with valid JWT requests profile update (sport type change, location update) 
+13. API Gateway validates JWT, confirms Player role 
+14. UserManagementService updates Player profile record in database 
+15. Success confirmation returned 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 56 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 57 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 58 
+Automated Coach Recommendation And Trainng Session :This diagram captures the two most 
+critical Player workflows in a single sequence — the intelligent coach discovery process and the training 
+request submission. It demonstrates how the Recommendation Engine retrieves player profile data from 
+the authoritative database source rather than trusting frontend input, computing a ranked match score. 
+The sequence then shows how a player proceeds from receiving recommendations to submitting a formal 
+training request, which triggers the notification pipeline to alert the coach. This flow is central to the 
+platform's value proposition of replacing manual coach searching with algorithm-driven matching. 
+Step-by-step flow to show: 
+1. Player submits coach recommendation request with sport type and location preferences 
+2. API Gateway validates JWT token and checks Player role permission 
+3. API Gateway forwards request to RecommendationEngine 
+4. RecommendationEngine calls UserManagementService to fetch Player's authoritative profile 
+(sport type, skill level, location) — this prevents frontend manipulation of matching criteria 
+5. UserManagementService returns verified profile data from database 
+6. RecommendationEngine queries CoachDB for all verified active coaches matching sport type 
+7. RecommendationEngine computes composite score (proximity + skill alignment) for each 
+matched coach 
+8. Ranked coach list returned to Player interface 
+9. Player selects a coach and submits training request with preferred date, time slot, and optional 
+message 
+10. TrainingManagementService creates a pending request record in the database 
+11. NotificationService triggered — sends alert to Coach that a new request is waiting 
+12. System returns confirmation to Player that request has been submitted 
+ 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 59 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 60 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 61 
+Ground Booking :This sequence diagram illustrates the ground booking workflow with particular 
+emphasis on the slot reservation concurrency mechanism. When a player selects a time slot, the Ground 
+Booking Service immediately marks it as temporarily held in the database bef ore payment begins, 
+ensuring no other player can claim the same slot during the payment window. The diagram shows three 
+alternative paths — successful payment leading to confirmed booking, failed payment releasing the held 
+slot, and automatic expiry of the hold — demonstrating how the system handles real -world concurrent 
+booking attempts without requiring complex database locking mechanisms. 
+Step-by-step flow: 
+1. Player requests available grounds filtered by sport type and location 
+2. GroundBookingService queries GroundDB and returns ground list with real-time slot availability 
+3. Player selects a ground and chooses an available time slot 
+4. GroundBookingService immediately marks the slot as HELD in the database (5 -minute 
+temporary reservation) — preventing any other player from selecting the same slot 
+5. System returns booking summary to Player with total price 
+6. Player submits payment details 
+7. PaymentService constructs authorization payload and sends to external Payment Gateway 
+8. alt Payment Gateway returns SUCCESS → GroundBookingService converts temporary HELD 
+status to CONFIRMED, generates booking confirmation number, triggers NotificationService to 
+send confirmation to Player 
+9. alt Payment Gateway returns FAILURE → GroundBookingService releases the HELD slot back 
+to AVAILABLE, returns payment failure message to Player with retry option 
+10. alt 5-minute hold expires without payment → automated release of slot back to AVAILABLE 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 62 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 63 
+ Performance Tracking  :This diagram demonstrates the performance analytics pipeline that gives 
+players comprehensive visibility into their development. The Performance Service coordinates with both 
+the Evaluation database and the Attendance Service in parallel to aggregate a com plete performance 
+profile — covering total points, category -wise scores, attendance rate, and identified weak areas. The 
+sequence shows how raw coach evaluation records are transformed into actionable development insights, 
+presenting players with data that tracks their progression trajectory and identifies specific areas requiring 
+attention. 
+Step-by-step flow: 
+1. Player navigates to Performance Dashboard 
+2. API Gateway authenticates and routes to PerformanceService 
+3. PerformanceService queries EvaluationDB for all weekly evaluations belonging to this Player 
+4. PerformanceService simultaneously queries AttendanceService for attendance records across all 
+sessions 
+5. PerformanceService aggregates data — computes total points, category breakdowns (Technique, 
+Fitness, Attitude), attendance rate, tier classification 
+6. PerformanceService identifies weak points from coach comments in evaluation records 
+7. System returns aggregated performance object to Player interface 
+8. Player interface renders: total points in Orbitron, three category progress bars, trend chart data, 
+evaluation history table, and weak points panel 
+9. Player requests detailed view of a specific evaluation 
+10. PerformanceService fetches individual evaluation record with full coach comments 
+11. Detailed evaluation modal returned to Player 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 64 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 65 
+Equipment Purchasing:This sequence diagram captures the complete equipment purchase workflow 
+from product discovery through payment confirmation. A key aspect shown is the stock validation step 
+performed by the Order Service before creating order records — ensuring inventory a ccuracy and 
+preventing overselling when multiple players attempt to purchase the same item simultaneously. The 
+diagram also shows how a completed purchase triggers parallel notifications to both the Player (order 
+confirmation) and the Business Owner (new order alert), demonstrating the interconnected nature of the 
+platform's marketplace ecosystem. 
+Step-by-step flow: 
+1. Player browses equipment store with category and price filters 
+2. ProductService queries ProductDB and returns filtered product list with real-time stock status 
+3. Player adds product to cart (client-side cart state management) 
+4. Player proceeds to checkout — submits shipping address 
+5. Player submits payment details 
+6. OrderService checks current stock quantity for each cart item against ProductDB before creating 
+order — prevents overselling 
+7. alt Sufficient stock → OrderService creates Order record and associated OrderItem records, 
+decrements stock quantity in ProductDB 
+8. PaymentService processes card payment through Payment Gateway 
+9. alt Payment SUCCESS → Order status updated to CONFIRMED, receipt generated, 
+NotificationService alerts Player with order confirmation and Business Owner with new order 
+notification 
+10. alt Payment FAILURE → Order record marked CANCELLED, stock quantity restored, error 
+returned to Player 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 66 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 67 
+COACH 
+ 
+ Profile Management And Avaibility Management :This diagram covers two interconnected coach 
+profile management workflows — availability scheduling and certification management — that together 
+determine the coach's visibility and credibility on the platform. The availability portion shows how the 
+weekly time slot grid is persisted as individual availability records that the Recommendation Engine and 
+Player booking interface use to determine scheduling options. The certification workflow demonstrates 
+the document upload and admin review pipeline, showing how uploaded files are stored by reference in 
+the File Storage Service while the Verification Service maintains the review lifecycle with its audit trail 
+of admin decisions. 
+Step-by-step flow: 
+1. Coach navigates to Availability Calendar 
+2. CoachManagementService retrieves existing availability schedule from AvailabilityDB 
+3. Coach sets weekly availability by toggling time slots (6AM–10PM, Mon–Sun grid) 
+4. Coach enables Recurring toggle — marks schedule as weekly repeating 
+5. Coach saves availability 
+6. CoachManagementService writes CoachAvailability records to database — one per enabled slot 
+7. Availability confirmation returned to Coach 
+8. Coach navigates to Certifications page — uploads new certification document 
+9. FileStorageService stores uploaded file and returns file path reference 
+10. VerificationService creates Certificate record with status PENDING, stores file path reference 
+11. Admin receives notification of new certificate submission requiring review 
+12. Certificate upload confirmation returned to Coach with PENDING status badge 
+13. alt Admin approves → Certificate status updated to VERIFIED, Coach notified via 
+NotificationService 
+14. alt Admin rejects → Certificate status updated to REJECTED, Coach notified with rejection 
+reason and option to re-upload 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 68 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 69 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 70 
+ Training Requests:This diagram covers the training request management lifecycle from the Coach's 
+perspective — the most operationally significant workflow in the coaching module. When a coach 
+accepts a request, the diagram shows how the Training Management Service not only updates the request 
+status but also creates a formal session record and signals the Attendance Service to prepare the 
+attendance tracking structure — demonstrating the cascading coordination that happens behind a single 
+coach action. The alternative decline path shows how rejection reasons are preserved and communicated 
+to the player, maintaining transparent communication throughout the coaching relationship. 
+Step-by-step flow: 
+1. Coach navigates to Training Requests page — authenticated JWT verified by API Gateway 
+2. TrainingManagementService queries TrainingDB for all pending requests where coachID 
+matches 
+3. Pending request list returned to Coach interface with player details, sport type, requested time, 
+and player message 
+4. Coach reviews request details — clicks Accept 
+5. TrainingManagementService updates request status from PENDING to ACCEPTED in 
+TrainingDB 
+6. TrainingManagementService creates a formal TrainingSession record in the database 
+7. TrainingManagementService signals AttendanceService to prepare an attendance record 
+structure for the new session 
+8. NotificationService triggered — sends ACCEPTED notification to Player 
+9. Success response returned to Coach confirming acceptance 
+10. alt Coach clicks Decline → TrainingManagementService updates status to REJECTED, stores 
+optional rejection message 
+11. NotificationService triggered — sends DECLINED notification to Player with rejection reason 
+12. Success response returned to Coach 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 71 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 72 
+Attandence Marking and Performance Evaluation:This diagram illustrates two tightly related coach 
+workflows — attendance recording and performance evaluation — showing how they share common 
+session data while operating through separate service pathways. The attendance flow demonstrates the 
+per-player marking mechanism with optional absence notes, while the evaluation flow shows how the 
+Performance Service retrieves contextual data (recent attendance, prior evaluation) before presenting the 
+evaluation form to the coach. The validation step that checks score ranges before writing the evaluation 
+record shows a data integrity mechanism, and the final notification trigger demonstrates how the 
+platform keeps players informed of their coach's assessments automatically. 
+Step-by-step flow: 
+1. Coach selects a conducted session from the session dropdown 
+2. AttendanceService loads enrolled player list for that session from TrainingDB 
+3. Coach marks each player as PRESENT or ABSENT with optional absence notes 
+4. AttendanceService writes attendance records to database — one record per player per session 
+5. Save confirmation returned to Coach 
+6. Coach navigates to Performance Evaluation — selects a player from the student list 
+7. PerformanceService loads player's recent attendance summary and last evaluation record to 
+display context 
+8. Coach assigns category scores: Technique (0–100), Fitness (0–100), Attitude (0–100) 
+9. Coach adds evaluation comments and identifies weak points 
+10. Coach submits evaluation 
+11. PerformanceService validates that all three scores are within permitted range 
+12. PerformanceService calculates total score (sum of three categories) 
+13. PerformanceService writes Evaluation record to EvaluationDB 
+14. NotificationService triggered — sends EVALUATION SUBMITTED notification to Player with 
+total score 
+15. Submission success and animated confirmation returned to Coach 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 73 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 74 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 75 
+BUSINESS OWNER 
+Registration:This diagram captures the Business Owner's onboarding pipeline, which uniquely requires 
+administrative document verification before any store activity is permitted. The sequence shows how 
+legal documents are stored by file path reference in the File Storag e Service while the Verification 
+Service manages the review lifecycle independently. Three alternative verification outcomes are shown 
+— approval activating the account, rejection with documented reason, and a request for additional 
+documentation — each producing a different notification to the Business Owner. This verification gate 
+is what differentiates the platform from an unverified open marketplace, ensuring only legitimate sports 
+businesses operate on the platform 
+Step-by-step flow: 
+1. Business Owner submits three-step registration: owner details (Step 1), legal document uploads 
+— Business License and Tax Registration (Step 2), review and submit (Step 3) 
+2. AuthService validates input and creates User record with role BUSINESS_OWNER and status 
+PENDING 
+3. FileStorageService stores uploaded legal documents and returns file path references 
+4. VerificationService creates verification record with document paths and status 
+PENDING_REVIEW 
+5. Admin receives notification of new business owner application requiring document review 
+6. Welcome email sent to Business Owner acknowledging receipt and review timeline 
+7. Admin reviews business profile and legal documents 
+8. alt Admin approves → VerificationService updates account status to VERIFIED and ACTIVE, 
+store becomes publicly visible, Business Owner notified of approval 
+9. alt Admin rejects → VerificationService updates status to REJECTED, stores rejection reason, 
+Business Owner notified with specific reason and option to resubmit 
+10. alt Admin requests more documents → status set to PENDING_MORE_DOCS, Business Owner 
+notified to upload additional documentation 
+11. Upon approval → Business Owner can now configure store, add products within subscription 
+quota 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 76 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 77 
+Subscription ManagementAnd Store Setup:This diagram demonstrates the subscription-gated 
+product management system that forms the platform's primary commercial model for Business 
+Owners. The sequence shows how the listing quota is enforced at the service layer through a counter-
+based mechanism — the Product Service reads the current counter before any addition and increments 
+or decrements it as products are added or removed. This counter-based approach is more efficient than 
+scanning the full product collection on each operation. The subscription upgrade flow shows the 
+payment pipeline that expands the quota, and the deletion safety check demonstrates how the system 
+protects order integrity by preventing removal of products with active orders. 
+Step-by-step flow: 
+1. Business Owner navigates to Subscription Plan page 
+2. SubscriptionService retrieves current subscription record from SubscriptionDB — returns plan 
+type, expiry date, listing quota, used listings count 
+3. Business Owner selects an upgrade (e.g., Basic to Pro) 
+4. Business Owner submits payment details for subscription payment 
+5. PaymentService processes subscription payment through Payment Gateway 
+6. alt Payment SUCCESS → SubscriptionService updates subscription record: new package type, 
+new listing quota, new expiry date, resets billing cycle 
+7. NotificationService sends subscription upgrade confirmation to Business Owner 
+8. Business Owner attempts to add a new product 
+9. ProductService reads current usedListings counter from SubscriptionDB 
+10. Business Owner deletes a product  
+11.  ProductService checks for pending orders on this product before deletion  
+12.  alt No pending orders → ProductService deletes Product record, decrements usedListings 
+counter  
+13.   alt Pending orders exist → ProductService blocks deletion, suggests marking product as Out of 
+Stock instead 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 78 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 79 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 80 
+ 
+Order Management:This diagram shows the order fulfillment workflow from the Business Owner's 
+operational perspective, covering the order visibility, detail inspection, and status progression lifecycle. 
+The status update sequence shows validation of permitted status transit ions — ensuring logical order 
+progression — and the automatic customer notification that fires on every status change, keeping the 
+purchasing player informed without requiring manual Business Owner communication. The cancellation 
+alternative path demonstrates inventory restoration, showing how cancelled orders correctly return stock 
+quantities to the available count in the Product database. 
+Step-by-step flow: 
+1. Business Owner navigates to Orders page 
+2. OrderService retrieves all orders for this Business Owner's products from OrderDB — supports 
+filtering by status (All / Pending / Processing / Shipped / Completed) 
+3. Order list with customer details, product summary, amounts, and status badges returned 
+4. Business Owner clicks to view order detail 
+5. OrderService returns full order record: customer name, location, ordered items with quantities 
+and unit prices, payment status, current order status 
+6. Business Owner updates order status (e.g., Pending → Processing → Shipped) 
+7. OrderService validates the status transition is permitted (cannot skip from Pending to Completed) 
+8. OrderService updates order status in OrderDB with timestamp 
+9. NotificationService triggers customer notification: "Your order #[orderID] has been [new 
+status]" 
+10. Status update confirmation returned to Business Owner 
+11. alt Player cancels an order (before Shipped) → OrderService updates status to CANCELLED, 
+restores stock quantity for all cancelled items in ProductDB, Business Owner notified of 
+cancellation 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 81 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 82 
+ Sales Report:This diagram demonstrates the sales intelligence capability that the Reporting Service 
+provides to Business Owners by aggregating data across three separate database collections 
+simultaneously — Orders, Products, and Payments. The parallel query approach p roduces a 
+comprehensive analytics view in a single response rather than requiring multiple sequential requests. 
+The date range filtering shows how Business Owners can focus analysis on specific periods, and the 
+export pathway demonstrates how  aggregated insights can be extracted as a structured PDF document 
+— giving Business Owners a shareable performance report suitable for business planning purposes. 
+Step-by-step flow: 
+1. Business Owner navigates to Sales Overview 
+2. ReportingService aggregates data from multiple collections simultaneously:  
+• Queries OrderDB for order volume by date, status distribution, completion rate 
+• Queries ProductDB for units sold per product, top performing product identification 
+• Queries PaymentDB for revenue by period, average order value 
+3. ReportingService computes derived metrics: revenue trend over 14 days, order status breakdown 
+percentages, best-selling product with units sold this week 
+4.  Business Owner applies date range filter (e.g., Last 7 Days / Last 30 Days)  
+5.   ReportingService re-runs aggregation queries with date constraints  
+6.  Updated analytics returned and charts refresh  
+7. Business Owner requests PDF export  
+8. ReportingService generates structured report document with all chart data and summary statistics  
+9.   Report download link returned to Business Owner 
+ 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 83 
+ 
+   
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 84 
+3.3 Design Reuse and Design Patterns 
+The Sports Ecosystem Platform adheres to a few considerations design patterns to base its structural and 
+behavioral choices, each grounded in a particular reason which is based in the complexity of the multi -
+role of the platform. 
+The outermost structural choice is made as the three -tier architectural pattern basing separation of 
+responsibilities between presentation, application, and data entities into various layers, which only 
+interact via specified interfaces. The platform lies within the application layer that is a service -oriented 
+pattern where every component in the backend represents a single business unit that helps it to be reused 
+by different frontend modules because it is able to use the same service without having to imp lement 
+logic again. The authentication procedure, as example, is coded once in the authentication service and 
+invoked identically irrespective of the role of user making a login. 
+The Gateway pattern is used at the entry point of the API which concentrates authentication, checking 
+of role, and rate limiting in a single point as opposed to repetition of these functions within the various 
+elements of the service. The notification service is controlled by the Observer pattern that listens to the 
+event reports given by other services and responds without having to know anything of the notification 
+system directly. 
+The principles of normalization are ensured at the database level and used continuously to remove 
+redundancy of data along with such that updates made to one record is reflected appropriately on all 
+other entities that are in relations with the former entities without any inconsistencies at all. 
+ 
+3.4 Technology Architecture  
+The Sports Ecosystem Platform is developed based on a well considered list of technologies that have 
+been chosen because of their compatibility with the multi-role architecture of the platform, their maturity 
+as production-quality tools, and their ability to fit in within the timeframe and skill level of the team 
+needed to address this project within the academic schedule. 
+The frontend is created with React.js, a component -based programming library that works with 
+JavaScript and allows the application of dynamic component-based interface rendering with dynamism, 
+rendering of role -specific interfaces without total page reload  between elements. The Tailwind CSS 
+framework uses utility classes to all visual styling, which exists in the markup of the component, and the 
+style logic is physically situated alongside the component markup. The Express.js framework allows the 
+backend to be based on a lightweight and adaptable foundation of defining API routes and service logic 
+to all operations of the platform. JSON Web Tokens manage the authentication state in all user sessions 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 85 
+so that stateless authentication is performed at the API Gateway instead of the database querying each 
+request inward bound. 
+The main data store in all platform data stores is the MongoDB database technology. MongoDB is a 
+document-based NoSQL database, which is uniquely suited to the diverse data models of the platform, 
+that is, player profile, trainings session, product listing , and notification record each has its own set of 
+fields, which naturally follows the schema -flexible collection model of MongoDB. As an Object Data 
+Modeling library over used on MongoDB, Mongoose adds schema definitions, typicalization rules, and 
+relationship references to the document collections, and doesn’t limit the adaptability of MongoDB. The 
+store of file uploads such as coach certification papers, business owner legal files and product pictures 
+are in a separate file storage service to which document paths in the applicable collections in the package 
+MongoDB repositories are referred. 
+ 
+ 
+Layer Technology Purpose 
+Frontend Framework React.js Component-based dynamic interface 
+rendering 
+UI Styling Tailwind CSS Utility-based responsive visual styling 
+Backend Runtime Node.js Server-side JavaScript execution 
+environment 
+Backend Framework Express.js API route definition and middleware 
+management 
+Authentication JSON Web Token Stateless session management across all 
+roles 
+Database MongoDB Document-oriented NoSQL data storage 
+ODM Library Mongoose Schema definition and validation over 
+MongoDB 
+File Storage Dedicated File Storage 
+Service 
+Binary content storage for documents and 
+images 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 86 
+Version Control Git and GitHub Source code management and team 
+collaboration 
+Development 
+Environment 
+Visual Studio Code Primary code editor across all team 
+members 
+API Testing Postman Backend API endpoint testing and 
+validation 
+ 
+  
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 87 
+4. Screenshots/Prototype  
+4.1 Workflow 
+It begins by a user enrolling the Sports Ecosystem Platform when one reaches the web-based application 
+and enters the account by providing personal details i.e. name, email, password, sport of interest, skill 
+level, and location. And in case the user has a lready an account, he or she simply logs in with the 
+assistance of his or her credentials. This system will authenticate the typed information and in event the 
+authentication is successful the user dashboard will be accessed. On logging in, the player is t hen 
+supposed to fill or update his profile so that he can get the appropriate list of recommendations and the 
+mechanism of the system. 
+Upon completing the profile, it contrasts the data inputted by the player with the type of sport she plays, 
+the degree of skilfulness and location where she is found to present a list of profile of the coaches which 
+the system has suggested to the player. These recommendations are based on the fact that such criteria 
+as the expertise of coaches, their availability, ratings and the proximity are similar. The player can see 
+the list of proposed coaches, to make the detail profile and make a choice of a coach.  After identifying 
+the coach, the player makes some requests connected to the times of the training provision as well as 
+other requirements. 
+The request is forwarded to the coach where he/she will check the profile of the player and the schedule 
+requested. The coach accepts or rejects the request based on the availability and capacity. As system is 
+accepted, the schedule of training is generated automatically and a player and coach are informed about 
+it. Then the player can look at the schedule he has confirmed, displayed on his dashboard, and be able 
+to prepare his future sessions. 
+The site also provides the option of the booking of an indoor ground other than training. The gamer will 
+select the sport desired, when desired and what time and hardware will confirm in real time availability 
+of grounds. When the slot of the option of the selected slot is in use, the system will temporarily lock the 
+slot and redirect the player to payment gateway. The player remits the payments by use of the secure 
+methods such as debit cards, credit cards etc. Immediately the payment is successfully made, the booking 
+is confirmed and receipt sent. In case of paying failure, it is deemed to cancel the reservation, and the 
+player is recommended to redo it. 
+Those activities should be conducted by the coach, the attendance made, and the performance of the 
+player measured during the training sessions. The coach will possess another set of criteria which they 
+will base their performance points where they will in volve improvement in performance skills, hard 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 88 
+work and consistency. The system captures this data and reflects in the performance dash board of a 
+player whereby the players can measure their performance over a certain duration of time through 
+analytics and reports. 
+ 
+Swim Lane Diagram  
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 89 
+4.2 Screens 
+ADMIN INTERFACES 
+ 
+1.Dashboard 
+Admin Dashboard is an overview of the whole platform which shows the most important metrics: total 
+users, bookings, and activity of the system. It allows the administrators to track the performance, monitor 
+the latest activities and see forthcoming tasks. Dashboard provides effective decision -making through 
+the display of real -time insights. It is also the central control panel on how to control the system 
+operations 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 90 
+2.Coach verification 
+Coach Verification module will allow the administrator to examine and confirm coach registration 
+requests. It also shows a lot of details such as personal data, expertise, experience, and uploaded 
+certification documents. These papers are scrutinized by th e administrator so that there is authenticity 
+and credibility. According to the assessment, the admin may accept or disapprove the coach application. 
+The admin can demand some extra documents to verify the information in case of the absence of 
+information or its invalidity. This will process will make sure that only qualified and verified coaches 
+can work as coaches on the platform. It improves the trust and preserves the quality of coaching services 
+delivered to players. On the whole, this module is important to achieve the security and reliability of the 
+system. 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 91 
+3.User Management 
+User Management module also enables the administrator to easily control all registered users in the 
+system. It enables an all encompassing perspective regarding various user positions such as players, 
+coaches, and business owners. The administrator is able to create, read, update, and delete user accounts 
+when required. It also allows the search, filtering, as well as sorting of users on different criteria to get 
+quick access. The system provides the access control of roles; therefore, proper authorization will be 
+granted to every type of user. Administrators are able to update users, turn off accounts as well as delete 
+users when required. This module assists in preserving data integrity, security as well as organization of 
+the systems. In general, it is in strumental in the provision of well -flowing user administrations and 
+management of platforms. 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 92 
+4.Report and analytics 
+Reports and Analytics module can give the administrator the deep understanding of the system 
+performance and user actions. It shows important statistics on the total number of users, number of 
+booking, revenue, and history of transactions. The module can b e used to filter data by date, user 
+permissions and by individual activities to understand them better. Charts and other graphical 
+representations can be used to make sense of trends and patterns. Admins will be able to track the growth 
+of a system, detect problems, and make valuable decisions. It also helps in creation and export of reports 
+like PDF or Excel. This module is a benefit to transparent management and data-driven management of 
+the platform. All in all, it is critical in planning strategy and performance appraisal. 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 93 
+PLAYER INTERFACES 
+1.Profile 
+The Player Profile screen enables users to access and edit their personal data in the system. It contains 
+information about the name, contact details, likes sport, his/her level of skills, and location. The player 
+can update their profile, so that they hav e correct recommendations and the system can interact better 
+with the player. Past training history, attendance, and points given to players by coaches can also be 
+reflected on the profile. It assists players to monitor their performance and see what aspec ts they are 
+doing poorly. Also, the profile provides customized suggestions of coaches using up-to-date information. 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 94 
+2.Dashboard 
+The Player Dashboard gives a detailed view of what the user has done and what the user has achieved 
+in the platform. It shows important data like the next training sessions, recent booking and 
+performance summaries. The dashboard enables a faster access to certain key features such as coach 
+recommendations and ground bookings. It also brings out announcements and changes regarding 
+training and system events. Different modules can be easily accessed by the user through this central 
+interface. The information is real-time which keeps the players updated on their schedules and 
+progress. This aspect adds usability and makes general user experience better. It is the primary control 
+unit in talking to the players. 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 95 
+3.Performance tracking 
+The Performance Tracking module will allow the players to see their progress and development as time 
+goes by. It shows the performance points given to coaches according to different evaluation parameters. 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 96 
+4.Training schedules 
+Training Schedules screen, enables the player to see and organize their future training programs. It also 
+presents a professional calendar with the dates and timings of session, and the coaches designated. 
+Detailed representations of every session such as location and training plans can be made available to 
+players. The system will update the schedules in real-time to prevent any conflict. 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 97 
+Coach Interfaces 
+1.Dashboard 
+The Coach dashboard gives a simplified view of everything done by coaches in the platform. It shows 
+the major details including students assigned, the following training sessions, and latest requests. The 
+management of schedules and tracking results are rather significant features that coaches can easily turn 
+to. New training requests and updates on the system are also indicated in the dashboard. 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 98 
+2.Students 
+The My Students module will enable the coaches to see and navigate through all assigned players. It will 
+provide specifics about every student, such as the skill level, the history of the training, and the progress. 
+Internet-based coaches will be able to track individual performance and attendance records. The module 
+can be beneficial in keeping track of lists of students as a way of managing training better Coaches can 
+also use the module to get the profile of students in order to plan individual training sessions. The feature 
+facilitates proper communication and relationship between coach and players. It provides the trainer with 
+full access to the trainees. On the whole, it enhances the efficiency and engagement of students during 
+training. 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 99 
+3.Performance evaluation 
+The Performance Evaluation module allows coaches to evaluate and chart performance of players. Some 
+of the aspects on which coaches can assign performance points include skill, effort and consistency. It 
+makes it possible to add detailed comments and feedback concerning the players. The system keeps the 
+data on evaluation and makes changes in the performance records of the player. Past evaluations can be 
+reviewed by coaches so that they can estimate progress. This module facilitates development of training 
+on the basis of data. It guarantees openness between the coach and the player in terms of performance. 
+All in all, it is an important aspect that promotes the development of the players 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 100 
+4.Training Requests 
+ 
+The Training Requests module enables coaches with management of incoming session requests of 
+players. It shows contents including the player information, the most favorable schedule, and the training 
+needs. Coaches will be able to check every request and d etermine if they want to accept it or not 
+depending on the availability. The system reports status of the request and informs players of this. It 
+assists the coaches in effectively scheduling and controlling their workload. The scheduling problems 
+are also avoided in the module as it displays the traditional commitments. 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 101 
+Business Owner interfaces 
+1.Dashboard 
+The Business Owner Dashboard is a tool that offers centralization of all the activities of the store on the 
+platform. It presents the major information like sales performance, recent orders and listing of products. 
+Different features such as inventory mana gement and the subscription details can be accessed quickly 
+by the owners of the business. Other notifications that are also available to the dashboard ought to include 
+alert of orders, stock and the system. Live data can be used to track performance and growth of business.  
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 102 
+2.Sales Overview 
+Sales Overview module gives an in -depth information in the financial performance of the business. It 
+also shows some of the main metrics like total revenue, quantified orders and sales over time. Graphs 
+and visual charts can be used in the examination of p atterns and the determination of the periods when 
+sales are highest. Owners of businesses are able to filter the data according to date ranges to make it 
+easier to analyse. This module aids in tracking the performance of products and customer demand.  
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 103 
+3.Products 
+Products module enables business owners to maintain their sport gears listing management with ease. It 
+gives choices of adding, updating and deleting products in the store. The products have information, 
+including name, category, price, stock quantity and photos. The system makes the product information 
+to be updated in real time. Owners of business could track inventory status and control the stock. This 
+module aids in sustaining a well organized and navigable marketplace. It also aids in enhancing the 
+customer experience in terms of correct product knowledge. All in all, it is critical to proper product and 
+inventory control. 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 104 
+4.Subscription Plans 
+The Subscription Plan module is used to organize the listing packages of the business owners in the 
+platform. It shows the existing plans like Basic, Pro and Premium together with their features and 
+price. The owners of the businesses would have the option of subscribing, upgrading, downgrading or 
+renewing their plans when the need arises. The system maintains system status of subscriptions, expiry 
+dates and listing limits. Safe payment processing guarantees safe transactions when one updates his/her 
+subscription. Renewal notifications and plan changes are given out.  
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 105 
+4.3 Additional Information 
+It is a Final Year Project being created by four students of the Bachelor of Science in Computer Science 
+course of the University of Central Punjab, with the academic supervision of Prof. Sheeza Shabir. This 
+work has been given the project identifier of FYP26-CS-G22. Any design decisions recorded during this 
+specification can be directly traced to those non -functional and functional requirements that were first 
+provided in the SRS Phase 1 document provided in the previous phase. The platform will actually b e a 
+real-life prototype assuming practicality in the field of digital sports management as opposed to an 
+academic project. 
+ 
+5. Other Design Details 
+The Sports Ecosystem Platform contains some varieties of design considerations that are new to the basic 
+architectural and component ones that were covered in previous sections. This information will deal with 
+particular behavioral needs, edge cases management approaches, and additional design decisions that all 
+play a role in ensuring the overall consistency, justice, and integrity of the platform. 
+Simultaneous Booking Disparagement. 
+A design issue that can be technically complex in the platform is the ground booking workflow where 
+several players may compete to book within the same time slot. To cope with this situation without 
+inviting any cases of duplication of bookings, the system  employs a provisional slot booking system 
+when a player book a slot and the payment has not been initiated. The chosen slot is placed as occupied 
+in the database during a set period of time which is usually five minutes to allow the player ample time 
+to finalize the payment process. In the event of successful payment in the same window, a hold is turned 
+into a confirmed booking. In the event of defaulting services or the lapse of time during which the hold 
+is not completed, it is automatically lifted and the slot will be set on available again. This strategy averts 
+race conditions among simultaneous booking requests without the use of complicated locking systems 
+of the database, which would slow down the normal user rate. 
+Enforcement of Quota of Subscriptions. 
+The quota system of listing products to business owners needs to be strictly observed ensuring that the 
+owners do not go beyond the package limits by making consecutive submissions. Instead of verifying 
+quota availability at the time submission of products, it will have a running number of used listing slots 
+as a special variable on the subscription record. Each adding the product makes this counter go down 
+and each deleting the product makes this counter go up. The service reads the value of the current counter 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 106 
+and immediately it rejects the request when there is a current quota of creating a new product and it has 
+already been served so sending a clear error is the only response the service will give back to the owner 
+to upgrade his/her subscription. It is more effective than counting the active product records on each 
+submission as a counter -based method is used, which assumes that a complete scan of the collection 
+does not occur on a listing action attempt. 
+Coach Freshness The recommendation was made to increase freshness to the maximum amount 
+permitted by legal regulations.<|human|>Coach Recommendation Freshness 
+ Determining the maximum amount of freshness allowed by legal regulations. 
+The recommendation engine shall be configured to use live information againstrest results which means 
+that once a newly verified coach is given to the player, they will instantly get a position on the list of 
+recommendations as soon as the administrative approval is finalized. The new query on a database with 
+the current state of coach collection based on the verification status, sport type, location proximity, and 
+availability after each recommendation request. This method of real time computation was chosen over 
+a pre -computed ranking cache because the number of coaches in the platform is currently not even 
+sufficiently large to put live querying under a performance concern, and the logic of cache invalidation 
+would be an added level of complexity, which this project cannot afford at this point in its development. 
+Information- Accuracy of Account Suspension. 
+The platform does not pace off or archive the records belonging to a user after that administrator suspends 
+the user account. Active training sessions, pending bookings and open orders that are associated with a 
+suspended account are retained in the database and will still retain their current status quos. This will be 
+a good design choice because other stakeholders linked to the suspended user, such as coaches whose 
+sessions have been booked in advance or business owners with awaiting orders, will not face  the issue 
+of broken references or missing data. The account is only suspended and the user cannot log into it, but 
+all the relational data associated with the account still exists and it will be available to the people involved 
+in the accounts. 
+Document Audit Trail: Verification. 
+Each verification rejected or approved by an administrator committed to a coach or business owner 
+registration is stored with a time critical and account identifier of the administrator. This audit trail is 
+registered together with the verification status in user record and permanently accessible in the respect 
+of the admin panel. The reason behind keeping this trail is so as to give accountability on the basis where 
+there could be a verification decision and to also offer a point of reference in case of an applicant being 
+rejected and wishes to challenge the decision or re-applies with new records at a later date. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 107 
+6. Revised Project Plan 
+Sports Ecosystem Platform is already in its initial stages and much of the planning design has already 
+been accomplished. This phase of the requirements analysis was successfully ended by the presentation 
+of SRS Phase 1 which reflected all functional requi rements, specifications of use cases, interactions of 
+actors, and non-functional constraints of all four user roles. Continuing on that basis, SDS Phase 2 has 
+been done on system architecture, component design, database structure, data flow diagrams and 
+interface specifications. 
+The frontend prototype of all four role -based panels, namely; the Player, Coach, Business Owner, and 
+Admin panel has been started on de domain of the frontend with the main layout framework, navigator, 
+and initial screens established. Application Backend development is at an initial stage, and authentication 
+service, user management endpoints partially developed. The schema of a database has been designed 
+on the basis of the document model of MongoDB and collection structures are being configured. The 
+frontend and the backend layers are yet to be integrated and are scheduled as an activity in the future. 
+There was a slight delay when the interface design phase met the complexity of designing four different 
+types of workflow per user which took a bit longer than the one initially calculated. This is delay that 
+has been compensated on the existing schedule without much effect on the ultimate delivery schedule. 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 108 
+7. References 
+[1] Pressman, R. S., & Maxim, B. R. (2020). Software Engineering: A Practitioner's Approach  (9th Edition). 
+McGraw-Hill Education, New York. Pages 145 -189 (Understanding Requirements). ISBN: 978 -1260548006. 
+Available at: https://www.mheducation.com/highered/product/software-engineering-practitioner-s-approach-
+pressman-maxim/M9781260548006.html 
+[2] Dennis, A., Wixom, B. H., & Tegarden, D. (2021). Systems Analysis and Design: An Object -Oriented 
+Approach with UML  (6th Edition). John Wiley & Sons, Hoboken, New Jersey. Pages 87 -134 (Requirements 
+Determination). ISBN: 978 -1119803782. Available at: https://www.wiley.com/en-
+us/Systems+Analysis+and+Design%3A+An+Object+Oriented+Approach+with+UML%2C+6th+Edition-p-
+9781119803782 
+[3] Pohl, K., & Rupp, C. (2021). Requirements Engineering Fundamentals: A Study Guide for the Certified 
+Professional for Requirements Engineering Exam (3rd Edition). Rocky Nook, San Rafael, California. Pages 112-
+167 (Requirements Elicitation and Documentation). ISBN: 978 -1681988825. Available at: 
+https://rockynook.com/shop/photography/requirements-engineering-fundamentals-3rd-edition/ 
+[4] IEEE Computer Society. (2018). ISO/IEC/IEEE International Standard - Systems and Software Engineering 
+- Life Cycle Processes - Requirements Engineering. IEEE Std 29148-2018. Institute of Electrical and Electronics 
+Engineers, New York. Pages 1-104. Available at: https://standards.ieee.org/standard/29148-2018.html 
+[5] Leffingwell, D., & Widrig, D. (2020). Managing Software Requirements: A Use Case Approach (3rd Edition). 
+Addison-Wesley Professional, Boston. Pages 201-256 (Use Case Modeling). ISBN: 978-0135792667. Available 
+at: https://www.pearson.com/en-us/subject-catalog/p/managing-software-requirements-a-use-case-
+approach/P200000003289 
+[6] Seidl, M., Scholz, M., Huemer, C., & Kappel, G. (2022). UML @ Classroom: An Introduction to Object -
+Oriented Modeling  (2nd Edition). Springer International Publishing, Cham, Switzerland. Pages 45 -98 (UML 
+Diagrams and Notation). ISBN: 978 -3030828448. DOI: 10.1007/978 -3-030-82845-5. Available at: 
+https://link.springer.com/book/10.1007/978-3-030-82845-5 
+[7] Ramakrishnan, R., & Gehrke, J. (2023). Database Management Systems  (4th Edition). McGraw -Hill 
+Education, New York. Pages 34-89 (Entity-Relationship Model and Database Design). ISBN: 978-1260507904. 
+Available at: https://www.mheducation.com/highered/product/database-management-systems-ramakrishnan-
+gehrke/M9781260507904.html 
+[8] Kumar, A., Singh, R., & Sharma, P. (2022). Web -Based Sports Management Systems: A Comprehensive 
+Review. International Journal of Advanced Computer Science and Applications (IJACSA) , Volume 13, Issue 6. 
+Pages 234 -242. DOI: 10.14569/IJACSA.2022.0130629. Available at: 
+https://thesai.org/Publications/ViewPaper?Volume=13&Issue=6&Code=IJACSA&SerialNo=29 
+ 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 109 
+Appendix A: Glossary 
+ 
+ 
+Appendix B: IV & V Report 
+Duplicate ground booking in which two players would buy the same slot at the same time happened 
+during testing of the ground booking module. The conflict was solved by introducing slot-locking and 
+validation. Status: Resolved. Fix Time: 3 hours 30 minutes. 
+There were incorrect coaches that are shown when testing the recommendation modules in the player 
+search results. This problem was solved with the help of filters of verification in the visualization of 
+coaches. Status: Resolved. Fix Time: 2 hours 15 minutes. 
+When a player requested a session, a notification about the training was not sent to coaches. The 
+problem was initiated in the notification service layer and resolved by fixing the event trigger in order 
+to submit the request. Status: Resolved. Fix Time: 1 hour 45 minutes. 
+After the testing of the attendance module, incorrect attendance records were maintained with the 
+players at the end of the session. The problem was addressed by resolving database mapping on player 
+IDs. Status: Resolved. Fix Time: 2 hours. 
+The failure to make payments did not free up temporarily booked slots of the payment and booking 
+integration tests. The problem was corrected and automatic rollback of failed payment was introduced. 
+Status: Resolved. Fix Time: 4 hours 20 minutes. 
+Owners of businesses could go beyond quota of products listed regardless of subscription plans. It is a 
+flaw that arose in the subscription management module and was resolved through limitations on listing 
+counts. Status: Resolved. Fix Time: 2 hours 40 minutes. 
+JWT authentication tokens had too short a lifetime and were forced to keep logging in again during 
+authentication testing. It was possible to resolve the problem by adding a duration of token validity and 
+correct token refresh. Status: Resolved. Fix Time: 1 hour 30 minutes. 
+Lack of inventory in Notification of low stocks was not activated in the business owner products in the 
+case of inventory management testing. The fault was corrected by incorporating stock alerts which are 
+threshold-based. Status: Resolved. Fix Time: 2 hours 10 minutes. 
+When testing the reports in the analytics, the count of total bookings was not correct in the admin 
+dashboard. The solution to this problem was to find a solution to the query on booking aggregation. 
+Status: Resolved. Fix Time: 1 hour 50 minutes. 
+Sports echosystem platform 
+ 
+Fyp26-CS-G22 SDP Phase II (SDS) zPage 110 
+During checking on the verification module, verification of coach verification documents were not 
+uploading properly to a file storage. The problem was resolved through the amendment of the file 
+upload API settings. Status: Resolved. Fix Time: 3 hours. 
+During the testing of performance tracking, the score of player performance was not updated on the 
+dashboard following assessments by coaches. It was determined that the problem was addressed by 
+updating dashboard data after submission of evaluation. Status: Resolved. Fix Time: 2 hours 25 
+minutes. 
+Role-based access control made it possible to use the pages with accents of an Administrator in the 
+process of security testing. This was resolved through making the authorization of the controlled routes 
+stricter. Status: Resolved. Fix Time: 4 hours. 
+(Independent verification & validation) 
+IV & V Resource 
+ 
+ 
+Name          Signature 
+ 
+ 
+ 
+S# Defect Description Origin Stage Status Fix Time 
+Hours Minutes 
+1      
+2      
+3      
+…      
+Table 1: List of non-trivial defects 
+ 
+ 
+This document has been adapted from the following: 
+1. Previous project templates at UCP 
+2. High-level Technical Design, Centers for Medicare & Medicaid Services. (www.cms.gov) 

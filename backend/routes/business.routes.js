@@ -1,0 +1,31 @@
+const { Router } = require('express');
+const { body } = require('express-validator');
+const b = require('../controllers/businessController');
+const { authenticate, requireRole, loadUser } = require('../middleware/auth');
+const { upload } = require('../middleware/upload');
+
+const r = Router();
+r.use(authenticate, loadUser, requireRole('business_owner'));
+
+r.get('/me/profile', b.getProfile);
+r.put('/me/profile', b.updateProfile);
+r.post('/subscription', [body('package').isIn(['basic', 'pro', 'premium'])], b.subscribe);
+r.post('/subscription/renew', b.renewSubscription);
+r.put('/store', b.updateStore);
+r.get('/products', b.listMyProducts);
+r.post('/products', b.addProduct);
+r.put('/products/:id', b.updateProduct);
+r.delete('/products/:id', b.deleteProduct);
+r.patch('/products/:id/pricing', [body('price').isFloat({ min: 0 })], b.patchPricing);
+r.patch('/products/:id/stock', [body('stock').isInt({ min: 0 })], b.patchStock);
+r.post('/products/:id/images', upload.single('image'), b.addProductImage);
+r.get('/orders', b.listOrders);
+r.patch('/orders/:id', [body('status').notEmpty()], b.updateOrderStatus);
+r.get('/reports/sales', b.salesReport);
+r.get('/coaches', b.listCoachesDirectory);
+r.post('/coaches/:coachId/partnership', [body('message').notEmpty()], b.sendPartnership);
+r.get('/notifications', b.listNotifications);
+r.post('/documents', upload.single('file'), b.uploadBusinessDoc);
+r.get('/documents', b.listBusinessDocs);
+
+module.exports = r;

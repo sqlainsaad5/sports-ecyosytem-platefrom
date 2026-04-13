@@ -1,0 +1,2287 @@
+ University of Central Punjab 
+ 
+BSCS FINAL YEAR PROJECT 
+SRS PHASE-1 
+ 
+      SPORTS ECOSYSTEM PLATFORM 
+ 
+ 
+ 
+ 
+ 
+Project Advisor 
+ 
+PROF SHEEZA SHABIR 
+ 
+ 
+ 
+Presented by:  
+Group ID: FYP26-CS-G22 
+ 
+Student Reg#   Student Name 
+                         S3F22UBSCS016                                       M ANAS 
+                                 S3F22UBSCS038                                     ANAS ALI 
+                                 S3F22UBSCS062                                       M KAIF 
+                                 S3F22UBSCS066                               SAMEER FAROOQ 
+ 
+ 
+Faculty of Information Technology & Computer Science 
+ 
+University of Central Punjab 
+
+ University of Central Punjab 
+ 
+Software Requirements 
+Specification  
+Version <Version> 
+ 
+SPORTS ECOSYSTEM PLATFORM 
+Advisor: PROF SHEEZA SHABIR 
+                    
+ 
+Member Name Primary Responsibility 
+M ANAS Assisted in project research, documentation, 
+and diagram reviews 
+ANAS ALI Lead developer, main contributor to coding, 
+diagrams, and SRS preparation 
+M KAIF Co-developer, significant contribution to 
+coding, diagrams, and testing 
+SAMEER FAROOQ Assisted in testing, documentation, and final 
+compilation of the project 
+  
+  
+  
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page i 
+Table of Contents 
+Table of Contents ........................................................................................................................... i 
+Revision History ............................................................................................................................ ii 
+Previous Phases Feedback ............................................................................................................ ii 
+Abstract ...........................................................................................................................................1 
+1. Introduction and Background ................................................................................................2 
+1.1 Product (Problem Statement) ....................................................................................................... 3 
+1.2 Background .................................................................................................................................. 3 
+1.3 Scope ........................................................................................................................................... 4 
+1.4 Objective(s)/Aim(s)/Target(s) ..................................................................................................... 4 
+1.5 Challenges ................................................................................................................................... 4 
+1.6 Learning Outcomes ..................................................................................................................... 4 
+1.7 Nature of End Product ................................................................................................................. 5 
+1.8 Completeness Criteria.................................................................................................................. 5 
+1.9 Business Goals ............................................................................................................................. 5 
+1.10 Related Work/ Literature Survey/ Literature Review .................................................................. 5 
+1.11 Document Conventions ............................................................................................................... 5 
+2. Overall Description ..................................................................................................................6 
+2.1 Product Features .......................................................................................................................... 7 
+2.2 User Classes and Characteristics ................................................................................................. 7 
+2.3 Operating Environment ............................................................................................................... 7 
+2.4 Design and Implementation Constraints ...................................................................................... 7 
+2.5 Assumptions and Dependencies .................................................................................................. 7 
+3. Functional Requirements ........................................................................................................8 
+3.1 Name of Use-Case 1 .................................................................................................................... 9 
+3.2 Name of Use-Case 2 (and so on) ............................................................................................... 10 
+3.3 Requirements Analysis and Modeling ....................................................................................... 13 
+4. Nonfunctional Requirements ................................................................................................44 
+4.1 Performance Requirements ........................................................................................................ 44 
+4.2 Safety Requirements .................................................................................................................. 45 
+4.3 Security Requirements ............................................................................................................... 45 
+4.4 Additional Software Quality Attributes ..................................................................................... 45 
+5. Other Requirements ..............................................................................................................46 
+6. Revised Project Plan ..............................................................................................................48 
+7. References ...............................................................................................................................50 
+Appendix A: Glossary..................................................................................................................51 
+Appendix B: IV & V Report .......................................................................................................53 
+ 
+ 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page ii 
+Revision History 
+Name Date Reason For Changes Version 
+    
+    
+ 
+ 
+ 
+ 
+Previous Phases Feedback 
+ 
+Idea Defence Feedback (Screenshot) 
+ 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 1 
+Abstract 
+The Sports Ecosystem Platform is a web-based-software application inspired by the identifiable gap in 
+the industry when it comes to having a single digital platform to deal with sports training, coaching 
+services, indoor ground bookings, and sales of sports equipment. As it stands, the sports related business, 
+players and coaches all operate independently and therefore there is poor communication, little access 
+to certified coach, manual scheduling and no performance tracking. The proposed project suggests 
+addressing these problems with the help of an organized, centralized system that will help to interconnect 
+all the stakeholders in a single digital environment. 
+The platform allows players to create profiles, become members, automatically get recommendations of 
+coaches based on the kind of sport, level of skills, and whereabouts, reserve indoor grounds, and monitor 
+training schedules, attendance and performance points. Coaches have the ability to administer their 
+profiles, add verification files, set their availability, accept training invitations, create performance 
+appraisal, and track the players. Business owners receive applications to build and operate online stores 
+of sports equipment, manage the stock of products and orders. Admin panel also provides system 
+integrity by verifying, monitoring and in general management of the platform.Such areas of knowledge 
+as software engineering, web application development, database design, requirement analysis, and 
+system modeling are used in this project. Its application hinges on a ro le-based access control, secure 
+access, and effective data management as measures to make it reliable and scalable. 
+ It is expected that by the end of the project, an operational sports management ecosystem will be realized 
+and make sports training and ser vices more accessible, transparent and efficient. The system will 
+facilitate a better level of data -driven decision-making, improved user experience and enable a viable 
+digital solution to the current sports management. 
+ 
+ 
+ 
+ 
+ 
+ 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 2 
+1. Introduction and Background 
+ The fast advancement of digital developments in technology have modified the way  services are 
+delivered across various industries, including sports and fitness. Most conventional sports management 
+systems are usually based on manual operation, personal recommendation and non -joinable 
+communication lines. Consequently, players often have problems when seeking qualified coaches, 
+reservation of indoor fields, training times, monitoring performance development, and acquiring genuine 
+sportswear in good sources. These are some of the struggles that have led to a collective need to adopt 
+integrated and consolidated computerized solution that might streamline sports related activities within 
+one integrated solution. 
+Despite the increasing popularity of sports such as cricket and badminton, there is still a lack of structured 
+systems that connect all stakeholders in one ecosystem. Players often depend on informal networks to 
+locate coaches, while coaches struggle to reach potential trainees efficiently. Similarly, business owners 
+selling sports equipment operate independently without direct integration with training or booking 
+services. This fragmentation results in inefficiencies, lack of transparency, time wastage, and limited 
+growth opportunities for stakeholders. 
+To overcome such problems this project will design of Sports Ecosystem Platform , a centralized web-
+based system that connects players, coaches, business owners, and administrators into one integrated 
+environment. The platform is designed to digitize and automate key sports-related operations including 
+coach recommendations, indoor ground booking, training session management, attendance tracking, 
+performance evaluation, feedback management, and online equipment sales. 
+The system adds intelligent services like automated coach recommendation by profile of players, skill 
+and location. It also enables to organize the training management because coaches can impose 
+performance points, track attendance, and the performance of players over time. Moreover, the 
+inclusion of an online sports equipment store in the same platform makes it convenient and accessible 
+to the user, as he would not have to use several different services. 
+Administratively, the website is transparent and secure because it has user verification, document 
+approval, complaint management, and monitoring. This increases credibility and confidence in the 
+ecosystem. The system creates efficiency in the overall sports activities, communication between the 
+parties, and development of professional sport actively by centralizing all sports-related services. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 3 
+1.1 Product (Problem Statement) 
+The Sports Ecosystem represents a software -based web platform offered to offer an inclusive platform 
+through which it is possible to manage sports training, coaching, indoo r ground bookings, and sports 
+equipment sales. Players are currently using a manual or unconnected platform to locate coaches, 
+organize training, performance, and acquire equipment. This inefficiency, poor coordination and 
+unmonitored limits are caused by the lack of integration. 
+The proposed system will eliminate this issue by providing the single solution, under which players can 
+be registered, automatically recommended coaches, training sessions and book of indoor grounds, to 
+track their performance, under the administrative supervision of they coach and business owners of their 
+services respectively. 
+1.2 Background 
+The sports training industry implies a number of stakeholders such as players, coaches, facilities 
+providers, and salesmen of equipment. Historically, these stakeholders have been functioning in isolation 
+and hence coordinating them is not easy. As the other organised training, performance tracking, and 
+systematic use of facilities demand more and more structure, centralized digital platform is required. 
+The field in which this project functions is sports management systems, mainly on indoor sports, e.g. 
+cricket and badminton. This system provides a training management, booking of a facility and e -
+commerce facility as one ecosystem to assist service providers as well as the users. 
+1.3 Scope 
+The area of this SRS will include the design and functional necessities of the Sports Ecosystem system. 
+The system includes: 
+ Registration and coach suggestions of players and their profile. 
+ The registration, verification and training of coaches. 
+Features: Indoor sports Booking of cricket and badminton ground. 
+ Planning and tracking of training sessions. 
+ Performance appraisal and training plans once a week. 
+ Management by business owners of sports equipment stores. 
+ Monitoring, reporting and administrative verification. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 4 
+1.4 Objectives 
+The goals of the project are: 
+ To offer a sports training and management centralized platform. 
+ To make coach recommendations an automated process that depends on the profile of the 
+player and the location. 
+ To allow the successful reservation of sports grounds indoors. 
+ To monitor attendance and performance of the players on a digital platform. 
+ To enable business owners to sell sports equipments in the internet. 
+ To provide system reliability in terms of administrative verification and monitoring. 
+1.5 Challenges 
+The main obstacles that are discussed within the framework of the present project are: 
+ The use of various user permissions. 
+ Providing correct coach recommendations on the basis of player data. 
+ Organizing the training and ground availability. 
+ Sustaining data security and integrity. 
+ Reactions to real time files and updates. 
+1.6 Learning Outcomes 
+The following learning outcomes have been attained after working on this project: 
+Precision of software requirement study and report. 
+ Experience in multi-role system design. 
+The understanding of CRUD, workflow management. 
+ Better awareness of system security and control of access. 
+ Scalability record in relations to designing sports management systems. 
+1.7 Nature of End Product 
+The final product is an online Sports Ecosystem system that allows players, coaches, entrepreneurs and 
+administrators to access it using their own roles. Through a built in system, the system assists in training 
+management, service bookings, performance monitoring as well as equipment sales online. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 5 
+1.8 Completeness Criteria 
+The project will be termed as complete when: 
+ Every user is able to register a user role and log in successfully. 
+Coach suggestions work as expected. 
+ There are no conflicts in training sessions, and in ground bookings. 
+ There is accuracy in recording performance points and attendance. 
+ Owners of businesses are able to control products and orders. 
+ Features of admin verification and monitoring are completely active. 
+1.9 Business Goals 
+The business objectives that are tackled in this software are: 
+ Enhancing the avenue of professional sports coaching. 
+ Vancommoding the use of indoor sporting facilities. 
+ Offering an online shop of sport supplies. 
+ Increasing transparency and accountability with performance following. 
+ Scalability support to support future sport category. 
+1.10 Related Work/ Literature Survey/ Literature Review 
+Current management systems in sports are usually designed with one of the booking aspects of facilities 
+or training allocation. Not many services incorporate coaching, monitoring of performances, ground 
+booking, and resale of equipment in one system. The project is based on these ideas and incorporates 
+more than one service into a single ecosystem that enhances the efficiency and the user experience. 
+1.11 Document Conventions 
+This Software Requirements Specification is written in a structured format in numeric sections with 
+subsections. 
+ Headings are bold, and the numbers are made clear. 
+Functional words like Player, Coach, Admin, and Business Owner are capitalized to depict system 
+roles. 
+Diagrams used further in the paper are based on standard UML notation. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 6 
+2. Overall Description 
+2.1 Product Features 
+ Significant characteristics for the Sports Ecosystem Platform consist of: 
+ Registration and safe logging in of the players. 
+ Coach registration, verification and availability administration. 
+ Self-service coach recommendation system. 
+ Request and schedule of training sessions. 
+Indoor ground booking system: 
+ The tracking of attendance and performance. 
+ Today, sport equipment retailing on the Web. 
+ Admin checking and surveillance system. 
+ Reminder and update notification system. 
+ Player Payments to Coaches: Players are able to pay coaches on the platform  through secure 
+forms of card payment. Major debit/credit cards will be accepted in the system, and the records 
+will be able to maintain the accountability of the transactions. 
+Business Owner Listing Payments: Companies may pay to have their products listed on the site: 
+ Entry Level: 20 listings a month. 
+ Pro Pack - 40 listings in a month. 
+Premium Package: 60 listings every month. 
+ Every subscription will be billed on secure card payments, and automated reminders of renewal 
+and generation of invoices. 
+ 
+ 
+ 
+ 
+ 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 7 
+ 
+2.2 User Classes and Characteristics 
+ Player (End User): This is the person, which is non technical, trains or books in a system, enters 
+the system with the assistance of web and mobile. 
+ Coach: semi-technical user, controls training schedules and attendance, allocates performance 
+points. 
+Basic technical skills, products, orders, inventory, and pricing, Business Owner. 
+ Admin: Intense user, does system verification, system monitoring, can access complete system. 
+ 
+2.3 Operating Environment 
+The platform shall be web-based. 
+ Browsers ( Chrome, Edge, Firefox). 
+ Back end server and central database will be employed. 
+ Win and Linux server compatible. 
+ 
+2.4 Design and Implementation Constraints 
+ 
+ The role-based access control will be adhered to. 
+ There will be a need of secure authentication. 
+ There will be a need to ensure that the database remains consistent. 
+  The system will be limited to Cricket and Badminton only. 
+ Internet connectivity will be necessary. 
+ Internet connectivity will be required. 
+ 
+2.5 Assumptions and Dependencies 
+ Customers will be able to access the internet. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 8 
+ Coaches and owners of businesses will present valid documents. 
+ Verification will be done by the system administrator. 
+ Database server will be available round the clock. 
+ It will support browser compatibility. 
+3. Functional Requirements 
+ 
+The Sports Ecosystem Platform has all its functional requirements in the form of use cases defined. The 
+use cases relate to an interaction between the system and external actor. These use cases together define 
+how the system behaves in different scenarios 
+Use Case Diagram (Overview) 
+The key players of the system are the following: 
+ Player 
+ Coach 
+ Business Owner 
+ Admin 
+The systems handle the Player, who communicates with the system in order to register, choose the 
+coaches, order the trainings, and reserve the indoor fields, order the sports equipment. 
+The Coach handles the training sessions, as well as attendance and player performance. 
+Sports products and orders are handled by the Business Owner. 
+The Admin manages the verification, monitoring, and the general management of the system. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 9 
+ 
+USE CASE  DIAGRAM 
+ 
+ 
+ 
+ 
+
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 10 
+ 
+ERD DIAGRAM 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 11 
+ABSTRACT CLASS Diagram 
+ 
+ 
+ 
+
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 12 
+SEQUENCE DIAGRAM 
+ 
+
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 13 
+COMPREHENSIVE USE CASES 
+ 
+Coach and Business Owner Use Cases 
+COACH USE CSES 
+1.1 UC-C1: Coach Registration and Login 
+Identifier: UC-C1 
+Purpose: To allow coaches to register with verification documents and login securely 
+Priority: High 
+Pre-conditions: 
+• Coach has access to the internet 
+• Coach has valid certification documents and academy location details 
+Post-conditions: 
+• Coach account is created and pending admin verification 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach select account as coach 
+choice 
+System shows coach sign_up form 
+2 Coach provide profile data 
+(name, email, expertise, 
+experience, sport type, academy 
+location) 
+System validates entered information 
+3 Coach uploads verification 
+certificates and location proof 
+(Google Maps authentication or 
+similar) 
+System accepts and stores documents for admin review 
+4 Coach submits registration System creates account with pending status and notifies 
+admin for verification 
+5 Coach receives notification System sends email notification that account is under 
+review 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Coach enters false or incomplete 
+information 
+System displays validation errors and highlights required 
+fields 
+2 Coach uploads invalid document 
+format 
+System rejects upload and specifies acceptable formats 
+(PDF, JPG, PNG) 
+1.2 UC-C2: Coach Profile Management 
+Identifier: UC-C2 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 14 
+Purpose: To allow coaches to manage their profile, expertise, experience, and verification documents 
+Priority: Medium 
+Pre-conditions: 
+• Coach successfully enters the system 
+• Coach account is verified by admin 
+Post-conditions: 
+• Coach profile is updated successfully 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach navigates to profile 
+management 
+System shows existing coach profile with all details 
+2 Coach updates expertise, 
+experience, sport type, or 
+location 
+System validates updated information 
+3 Coach uploads new certificates 
+if needed 
+System stores documents and marks them for admin re-
+verification if critical changes 
+4 Coach saves changes System updates profile and displays confirmation 
+1.3 UC-C3: Set Availability and Training Schedule 
+Identifier: UC-C3 
+Purpose: To allow coaches to define their availability for training sessions 
+Priority: High 
+Pre-conditions: 
+• Coach successfully enters the system 
+• Coach account is verified 
+Post-conditions: 
+• Coach availability is updated and visible for player recommendations 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach access to availability 
+management 
+System shows calendar interface with current availability 
+2 Coach selects days and time 
+slots for availability 
+System highlights selected time slots 
+3 Coach sets recurring schedule or 
+one-time availability 
+System saves schedule pattern 
+4 Coach confirms availability 
+schedule 
+System saves availability and makes coach visible for 
+player recommendations during those times 
+1.4 UC-C4: Receive Player Recommendations from System 
+Identifier: UC-C4 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 15 
+Purpose: To allow coaches to view players recommended by the system based on matching criteria 
+Priority: Medium 
+Pre-conditions: 
+• Coach successfully enters the system 
+• Coach has set availability and profile is complete 
+Post-conditions: 
+• Coach views list of recommended players 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach enters into the section of 
+player recommendations. 
+System shows list of players according to sport type, 
+location and availability of coach. 
+2 Coach views player profiles System shows player skill level, training goals, and 
+location 
+3 Coach can send training 
+invitations to recommended 
+players 
+System facilitates outreach to potential students 
+1.5 UC-C5: Manage Training Session Requests 
+Identifier: UC-C5 
+Purpose: To allow coaches to view, accept, or reject training session requests from players 
+Priority: High 
+Pre-conditions: 
+• Coach is logged  
+• Players have sent training requests 
+Post-conditions: 
+• Training request is approved or rejected and player is notified 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach views pending training 
+requests 
+System displays list of player requests with player details 
+and requested time slots 
+2 Coach reviews player profile 
+and request details 
+System shows complete player information including skill 
+level and training goals 
+3 Coach accepts or rejects request 
+with optional message 
+System updates request status 
+4 Coach confirms schedule System notifies the player of decision and creates training 
+session if approved 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Coach's schedule has conflict 
+with request 
+System highlights conflict and suggests alternative times 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 16 
+2 Coach is at maximum student 
+capacity 
+System warns coach about capacity and allows override or 
+rejection 
+1.6 UC-C6: Review and Approve Automated Training Plans 
+Identifier: UC-C6 
+Purpose: To allow coaches to review system-generated weekly training plans and make modifications 
+Priority: Medium 
+Pre-conditions: 
+• Coach successfully enters the system 
+• Training sessions have been scheduled 
+Post-conditions: 
+• Training plan is reviewed and approved or modified 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach goes to training plans 
+section. 
+System shows automatic weekly training programs of 
+every player. 
+2 Coach reviews suggested 
+exercises, duration, and goals 
+System shows plan details with rationale 
+3 Coach approves plan or makes 
+modifications 
+System saves changes and marks plan as coach-reviewed 
+4 Coach finalizes training plan System makes plan available to player and schedules 
+notifications 
+1.7 UC-C7: Mark Player Attendance 
+Identifier: UC-C7 
+Purpose: To allow coaches to record attendance for training sessions 
+Priority: High 
+Pre-conditions: 
+• Coach successfully enters the system 
+• Training session has been conducted or is in progress 
+Post-conditions: 
+• Attendance record is saved in the system 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach moves to attendance 
+management 
+System shows list of scheduled sessions and enrolled 
+players 
+2 Coach selects session and marks 
+each player as present or absent 
+System records attendance status for each player 
+3 Coach adds notes for absent 
+players if needed 
+System stores attendance notes 
+4 Coach saves attendance System stores attendance records and updates player 
+attendance history 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 17 
+1.8 UC-C8: Assign Weekly Performance Points 
+Identifier: UC-C8 
+Purpose: To allow coaches to evaluate players and assign weekly performance points 
+Priority: High 
+Pre-conditions: 
+• Coach successfully enters the system  
+• Training sessions have been conducted 
+Post-conditions: 
+• Performance points and evaluations are recorded and visible to player 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach moves to performance 
+evaluation section 
+System shows list of players and their current performance 
+metrics 
+2 Coach selects a player to 
+evaluate 
+System shows player's recent attendance, effort, and skill 
+progression 
+3 Coach assigns performance 
+points for various aspects 
+(technique, fitness, attitude, etc.) 
+System validates point ranges and calculates total score 
+4 Coach adds evaluation 
+comments and identifies weak 
+points 
+System saves detailed evaluation 
+5 Coach submits evaluation System records performance data, updates player 
+dashboard, and notifies player 
+1.9 UC-C9: View Player Progress and Performance History 
+Identifier: UC-C9 
+Purpose: To allow coaches to track individual player development over time 
+Priority: Medium 
+Pre-conditions: 
+• Coach successfully enters the system 
+• Players have completed multiple training sessions 
+Post-conditions: 
+• Coach views comprehensive player progress data 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach navigates to player 
+progress section 
+System displays list of all assigned players 
+2 Coach selects a player to review System shows historical performance graphs, attendance 
+trends, and skill development 
+3 Coach analyzes progress 
+patterns and areas needing 
+attention 
+System provides analytics and comparison with player's 
+goals 
+4 Coach uses insights to plan 
+future training 
+System offers to adjust training plan based on progress 
+data 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 18 
+1.10 UC-C10: Manage Booked Indoor Grounds 
+Identifier: UC-C10 
+Purpose: To allow coaches to view and manage ground bookings for their training sessions 
+Priority: Medium 
+Pre-conditions: 
+• Coach successfully enters the system 
+• Coach has training sessions scheduled 
+Post-conditions: 
+• Coach views ground booking information 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach gets forward to bookings 
+section. 
+System shows all the grounds that were booked to coach. 
+2 Coach views booking details 
+(date, time, location, sport type) 
+System shows complete booking information and 
+directions 
+3 Coach checks for booking 
+conflicts or issues 
+System highlights any scheduling conflicts or 
+cancellations 
+1.11 UC-C11: View Ratings and Feedback from Players 
+Identifier: UC-C11 
+Purpose: To allow coaches to see player ratings and feedback on their coaching quality 
+Priority: Medium 
+Pre-conditions: 
+• Coach successfully enters the system  
+• Players have provided ratings and feedback 
+Post-conditions: 
+• Coach views all ratings and feedback 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach get forward to ratings and 
+feedback section 
+System displays overall rating, rating distribution, and 
+individual feedback 
+2 Coach reads detailed feedback 
+from players 
+System shows feedback with player names (if not 
+anonymous) and dates 
+3 Coach analyzes feedback 
+patterns 
+System provides summary of common themes and areas of 
+strength/improvement 
+4 Coach can respond to feedback  System records coach responses and notifies players 
+1.12 UC-C12: Receive Payment from Players 
+Identifier: UC-C12 
+Purpose: To allow coaches to receive training fees from players via the platform 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 19 
+Priority: High 
+Pre-conditions: 
+• Coach successfully enters the system  
+• Coach account has payment details configured 
+• Players have made payments 
+Post-conditions: 
+• Coach views payment transactions and account balance 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach get forward to payments 
+section 
+System shows payment dashboard including current 
+balance and history of payment transactions 
+2 Coach views individual payment 
+transactions 
+System shows payment details (player name, amount, 
+date, status) 
+3 Coach requests withdrawal to 
+bank account 
+System processes withdrawal request and provides 
+confirmation 
+4 Coach receives payment 
+confirmation 
+System sends notification and updates balance after 
+successful transfer 
+1.13 UC-C13: Create and Modify Weekly Training Plans 
+Identifier: UC-C13 
+Purpose: To allow coaches to create customized weekly training plans for individual players 
+Priority: High 
+Pre-conditions: 
+• Coach successfully enters the system 
+• Coach has accepted player for training 
+Post-conditions: 
+• Weekly training plan is created and assigned to player 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach get forward to training 
+plan creation 
+System displays plan creation interface with templates 
+2 Coach selects player and 
+training week 
+System shows player's current skill level and goals 
+3 Coach adds exercises, drills, 
+duration, and objectives 
+System validates plan structure 
+4 Coach sets performance targets 
+for the week 
+System records targets for evaluation 
+5 Coach saves and assigns training System makes plan available to player and sends msgs 
+1.14 UC-C14: Receive and Manage Notifications 
+Identifier: UC-C14 
+Purpose: To allow coaches to receive system notifications about requests, approvals, and updates 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 20 
+Priority: Medium 
+Pre-conditions: 
+• Coach successfully enters the system 
+Post-conditions: 
+• Coach receives and views notifications 
+Typical Course of Action 
+S# Actor Action System Response 
+1 System generates notification 
+for coach 
+System creates notification for relevant events (training 
+request, payment received, admin verification, player 
+feedback) 
+2 Coach receives notification System displays notification in coach dashboard and sends 
+email/SMS 
+3 Coach views notification details System shows complete notification with action links if 
+applicable 
+4 Coach acts on notification 
+(optional) 
+System processes coach action and updates relevant 
+records 
+1.15 UC-C15: Upload and Update Certification Documents 
+Identifier: UC-C15 
+Purpose: To allow coaches to add or update their professional certifications 
+Priority: Medium 
+Pre-conditions: 
+• Coach successfully enters the system 
+Post-conditions: 
+• New or updated certificates are uploaded and pending admin verification 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Coach move forward to 
+certification management 
+System shows current certificates and their verification 
+status 
+2 Coach uploads new certificate or 
+updates existing one 
+System accepts document upload and validates file format 
+3 Coach adds certificate details 
+(name, issuing authority, date, 
+expiry) 
+System stores certificate metadata 
+4 Coach submits for verification System marks certificate as pending verification and 
+notifies admin 
+5 Coach receives verification 
+result 
+System notifies coach when admin approves or rejects 
+certificate 
+2. BUSINESS OWNER USE CASES 
+2.1 UC-B1: Business Owner Registration and Login 
+Identifier: UC-B1 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 21 
+Purpose: To allow business owners to register with legal documents and login securely 
+Priority: High 
+Pre-conditions: 
+• There is internet access by the business owner. 
+• Business owner has valid legal documents and shop details 
+Post-conditions: 
+• Business owner account is created and pending admin verification 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner selects register 
+as business owner option 
+System displays business registration form 
+2 Business owner enters business 
+profile (name, email, shop 
+name, location, business type) 
+System validates entered information 
+3 Business owner uploads legal 
+documents (business license, tax 
+registration, etc.) 
+System accepts and stores documents for admin review 
+4 Business owner submits 
+registration 
+System creates account with pending status and notifies 
+admin for verification 
+5 Business owner receives 
+notification 
+System sends email notification that account is under 
+review 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Business owner enters invalid 
+business information 
+System displays validation errors and highlights issues 
+2 Business owner uploads 
+incomplete documentation 
+System lists required documents that are missing 
+2.2 UC-B2: Business Profile Management 
+Identifier: UC-B2 
+Purpose: To allow business owners to manage their business profile and shop details 
+Priority: Medium 
+Pre-conditions: 
+• The owner of the business is logged into the system. 
+• Business account is verified by admin 
+Post-conditions: 
+• Profile of business is modified. 
+ 
+Typical Course of Action 
+S# Actor Action System Response 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 22 
+1 Business owner movess to 
+profile management 
+System shows current business profile with all details 
+2 Business owner updates shop 
+details, location, or contact 
+information 
+System validates updated information 
+3 Business owner uploads updated 
+legal documents if needed 
+System stores documents and marks them for admin re-
+verification if critical changes 
+4 Business owner saves changes System updates profile and displays confirmation 
+2.3 UC-B3: Subscribe to Product Listing Package 
+Identifier: UC-B3 
+Purpose: To allow business owners to subscribe to listing packages (Basic, Pro, Premium) for 
+showcasing products 
+Priority: High 
+Pre-conditions: 
+• Business owner has a registered and verified account 
+• Business owner has valid payment method 
+Post-conditions: 
+• Subscription is activated and listing limit is updated based on selected package 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner is subscribing 
+(or expired) to the business) 
+System displays package details with pricing and features 
+2 Business owner reviews 
+package details and pricing 
+System shows monthly cost and benefits comparison 
+3 Business owner enters payment 
+card details 
+System verifies payment information securely 
+4 Business owner confirms 
+subscription 
+System processes payment and activates subscription 
+5 Business owner receives 
+confirmation 
+System sends confirmation email with invoice, updates 
+listing limits, and enables product management 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Payment fails at the time of 
+processing 
+System displays error message and allows retry with 
+different payment method 
+2 Business owner already has 
+active subscription 
+System offers upgrade/downgrade options instead of new 
+subscription 
+2.4 UC-B4: Manage and Renew Subscription 
+Identifier: UC-B4 
+Purpose: To allow business owners to view, upgrade, downgrade, or cancel their subscriptions 
+Priority: High 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 23 
+Pre-conditions: 
+• Business owner is logged into the system 
+• Business owner has an active or expired subscription 
+Post-conditions: 
+• Subscription status is updated according to business owner action 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner navigates to 
+subscription management 
+System displays current subscription details (package, 
+expiry date, listing usage) 
+2 Business owner selects action 
+(renew, upgrade, downgrade, 
+cancel) 
+System shows relevant options and pricing 
+3 Business owner confirms action 
+and processes payment if needed 
+System updates subscription, processes payment, and 
+adjusts listing limits 
+4 Business owner receives 
+confirmation 
+System sends email confirmation and updates account 
+immediately 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Business owner attempts to 
+downgrade but has more 
+products than new limit 
+System warns about exceeding limit and prompts to 
+remove excess products first 
+2.5 UC-B5: Create and Configure Online Equipment Store 
+Identifier: UC-B5 
+Purpose: To allow business owners to set up their online sports equipment store 
+Priority: High 
+Pre-conditions: 
+• Business owner is enetr nto the system 
+• Business owner has active subscription 
+Post-conditions: 
+• Online store is created and configured 
+Typical Course of Action 
+S# Actor Action System Response 
+1 In order to permit the owners of 
+the business to put on new 
+sports equipments in their store. 
+ 
+System displays store configuration wizard 
+2 Business owner enters store 
+details (name, description, 
+policies, shipping info) 
+System validates store information 
+3 Business owner uploads store 
+logo and banner images 
+System stores branding assets 
+4 Business owner configures 
+payment and shipping settings 
+System saves configuration 
+5 Business owner activates store System makes store visible to customers and displays store 
+URL 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 24 
+2.6 UC-B6: Add Sports Products (Create) 
+Identifier: UC-B6 
+Purpose: To allow business owners to add new sports equipment products to their store 
+Priority: High 
+Pre-conditions: 
+• Business owner is logged into the system 
+• Business owner has active subscription with available listing slots 
+Post-conditions: 
+• Product is added to store and visible to customers 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner navigates to 
+product management 
+System displays product dashboard and available listing 
+count 
+2 Clicks on business owner add 
+product 
+System displays product creation form 
+3 Business proprietor keeps 
+product information (name, 
+category, description, price, 
+stock quantity) 
+ 
+Product creation form is displayed on system 
+4 Business owner uploads product 
+images 
+System stores images and generates thumbnails 
+5 Business owner saves product System creates product listing, decrements available slots, 
+and makes product visible in store 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Business owner has reached 
+listing limit 
+System prevents adding new product and prompts to 
+upgrade subscription 
+2.7 UC-B7: Update Sports Products 
+Identifier: UC-B7 
+Purpose: To allow business owners to modify existing product information 
+Priority: Medium 
+Pre-conditions: 
+• Business owner is logged into the system 
+• Products exist in the store 
+Post-conditions: 
+• Updating of product information is accomplished. 
+ 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 25 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Owner of business visits the 
+product management. 
+ 
+System displays list of all products 
+2 Business owner chooses a 
+product to be edited. 
+ 
+System displays product details in editable form 
+3 Business owner modifies 
+product information (price, 
+stock, description, images) 
+System validates changes 
+4 Business owner saves changes System updates product, maintains version history, and 
+reflects changes immediately in store 
+2.8 UC-B8: Delete Sports Products 
+Identifier: UC-B8 
+Purpose: To enable business owners to take off products in the store. 
+ 
+Priority: Medium 
+Pre-conditions: 
+• Business owner is logged into the system 
+• Products exist in the store 
+Post-conditions: 
+• Product is removed from store and listing slot is freed 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner navigates to 
+product management 
+System displays list of all products 
+2 Business owner selects product 
+to delete 
+System displays product details and delete confirmation 
+3 Business owner confirms 
+deletion 
+System checks for pending orders with this product 
+4 Business owner proceeds with 
+deletion 
+System removes product, frees listing slot, and archives 
+product data 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Product has pending orders System warns business owner and suggests marking as out 
+of stock instead of deleting 
+2.9 UC-B9: Manage Product Pricing 
+ 
+Identifier: UC-B9 
+Purpose: To allow business owners to set and update product prices and discounts 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 26 
+Priority: Medium 
+Pre-conditions: 
+• Business owner is logged into the system 
+• Products exist in the store 
+Post-conditions: 
+• Product pricing is updated successfully 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner navigates to 
+pricing management 
+System displays products with current pricing 
+2 Business owner updates prices 
+or sets discounts 
+System validates pricing (no negative values, discount 
+doesn't exceed price) 
+3 Business owner sets sale period 
+for discounts (optional) 
+System schedules automatic price changes 
+4 Business owner saves pricing 
+changes 
+System updates prices and displays new values in store 
+immediately 
+2.10 UC-B10: Manage Product Stock and Inventory 
+Identifier: UC-B10 
+Purpose: To allow business owners to track and update product inventory levels 
+Priority: High 
+Pre-conditions: 
+• Business owner is logged into the system 
+• Products exist in the store 
+Post-conditions: 
+• Stock levels are updated and reflected in store availability 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner navigates to 
+inventory management 
+System displays all products with current stock levels and 
+low stock alerts 
+2 Business owner updates stock 
+quantities 
+System validates stock values (non-negative) 
+3 Business owner sets low stock 
+threshold for alerts 
+System configures automatic notifications 
+4 Business owner saves stock 
+changes 
+System updates inventory, adjusts product availability, and 
+sends low stock alerts if needed 
+2.11 UC-B11: Manage Product Images 
+Identifier: UC-B11 
+Purpose: To allow business owners to upload, update, and organize product images 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 27 
+Priority: Medium 
+Pre-conditions: 
+• Business owner is logged into the system 
+• Products exist in the store 
+Post-conditions: 
+• Product images are updated successfully 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner navigates to 
+product image management 
+System displays products and their current images 
+2 Business owner selects product 
+to update images 
+System shows image gallery for that product 
+3 Business owner uploads new 
+images or reorders existing ones 
+System validates image formats and sizes 
+4 Business owner sets primary 
+image 
+System saves image changes and regenerates thumbnails 
+2.12 UC-B12: View and Manage Customer Orders 
+Identifier: UC-B12 
+Purpose: To allow business owners to view orders placed by customers 
+Priority: High 
+Pre-conditions: 
+• Business owner is logged into the system 
+• Customers have placed orders 
+Post-conditions: 
+• Business owner views order details and can update order status 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner navigates to 
+orders section 
+System displays list of all orders with status filters 
+(pending, processing, shipped, completed) 
+2 Business owner selects an order 
+to view details 
+System shows complete order information (customer, 
+products, quantities, prices, shipping address) 
+3 The update of images of 
+products is successful. 
+ 
+Status of orders updated by the business owner. 
+ 
+4 Business owner adds tracking 
+information for shipped orders 
+System saves order updates and notifies customer 
+2.13 UC-B13: View Basic Sales Reports 
+Identifier: UC-B13 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 28 
+Purpose: To allow business owners to view sales analytics and performance metrics 
+Priority: Medium 
+Pre-conditions: 
+• Business owner is logged into the system 
+• Sales transactions have occurred 
+Post-conditions: 
+• Business owner views sales reports and analytics 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner moves to 
+reports section 
+System displays dashboard with key sales metrics (total 
+revenue, orders, popular products) 
+2 The options of report type and 
+date range are selected by the 
+business owner. 
+ 
+System produces report of sales information, tendencies 
+and comparisons. 
+ 
+3 Business owner analyzes sales 
+patterns 
+System provides visual charts and graphs 
+4 Business owner exports report 
+(optional) 
+System generates downloadable report in PDF or Excel 
+format 
+2.14 UC-B14: Hire or Connect with Coaches 
+Identifier: UC-B14 
+Purpose: To allow business owners to establish partnerships or sponsorships with coaches 
+Priority: Low 
+Pre-conditions: 
+• Business owner enter  into the system 
+• Coaches are registered in the system 
+Post-conditions: 
+• Connection request is sent to coach 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner navigates to 
+coach directory 
+System displays list of verified coaches with their 
+specialties and locations 
+2 Business owner searches for 
+coaches by sport type or 
+location 
+System filters and displays matching coaches 
+3 Business owner views coach 
+profile 
+System shows coach details, ratings, and player count 
+4 Business owner sends 
+partnership or sponsorship  
+System delivers message to coach and awaits response 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 29 
+2.15 UC-B15: Receive Approval and Reminder Notifications 
+Identifier: UC-B15 
+Purpose: To allow business owners to receive notifications about verification, orders, and subscription 
+status 
+Priority: Medium 
+Pre-conditions: 
+• Business owner is registered in the system 
+Post-conditions: 
+• Business owner receives and views notifications 
+Typical Course of Action 
+S# Actor Action System Response 
+1 System generates notification 
+for business owner 
+System creates notification for events (admin 
+approval/rejection, new order, subscription renewal 
+reminder, low stock alert) 
+2 Business owner receives 
+notification 
+System displays notification in dashboard and sends email 
+3 Business owner views 
+notification details 
+System shows complete notification with action links 
+4 Business owner acts on 
+notification if needed 
+System processes action (e.g., view order, renew 
+subscription) 
+2.16 UC-B16: Upload and Update Verification Documents 
+Identifier: UC-B16 
+Purpose: To enable the owners of businesses to add or edit their legal and business documents 
+Priority: Medium 
+Pre-conditions: 
+• The system logs the business owner into it. 
+ 
+Post-conditions: 
+• Documents are uploaded and pending admin verification 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Business owner navigates to 
+document management 
+System displays current documents and their verification 
+status 
+2 Business owner uploads new 
+document or updates existing 
+one 
+System accepts document upload and validates file format 
+3 Business owner adds document 
+details (type, issue date, expiry 
+date) 
+System stores document metadata 
+4 Business owner submits for 
+verification 
+System marks documents as pending verification and 
+notifies admin 
+5 Business owner receives results System notifies owner when admin approves or rejects  
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 30 
+COMPREHENSIVE USE CASES 
+ Player and Admin Use Cases 
+3. PLAYER USE CASES 
+3.1 UC-P1: Player Registration and Login 
+Identifier: UC-P1 
+Purpose: To allow a player to register and securely log into the system 
+Priority: High 
+Pre-conditions: 
+• The internet is accessible to the user. 
+• The player is not already registered (for registration) 
+Post-conditions: 
+• The player account is successfully created or logged in 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player chooses register or log in 
+option. 
+ 
+Registration/login form is displayed in the system. 
+ 
+2 Player enters required 
+information (name, email, 
+password, sport selection, skill 
+level, location) 
+System validates entered data 
+3 Player submits the form System creates account or logs in the player 
+4 Player accesses dashboard System displays player dashboard with profile summary 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Player keying in unauthorized or 
+valid email. 
+ 
+System provides relevant error message. 
+ 
+2 Player retries login or 
+registration 
+System redisplays login/registration form 
+3.2 UC-P2: Player Profile Management 
+ 
+Identifier: UC-P2 
+Purpose: To allow players to update their profile information and preferences 
+Priority: Medium 
+Pre-conditions: 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 31 
+• Player is logged into the system 
+Post-conditions: 
+• Player profile is updated successfully 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player goes to the profile 
+management section. 
+ 
+Profile displays prevailing profile details. 
+ 
+2 Player updates personal details, 
+sport selection, skill level, or 
+location 
+System validates the updated information 
+3 Player saves changes System updates profile and displays confirmation message 
+3.3 UC-P3: Automated Coach Recommendation 
+Identifier: UC-P3 
+Purpose: To recommend suitable coaches based on player profile, sport type, skill level, and location 
+Priority: High 
+Pre-conditions: 
+• Player is entered the system 
+• Player profile is completed with sport type and location 
+Post-conditions: 
+• A list of recommended coaches is displayed to the player 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player requests coach 
+recommendations 
+System analyzes player profile, sport type, skill level, and 
+location 
+2 Player views the list of 
+recommended coaches 
+System filters and displays matching verified coaches with 
+their expertise, experience, and ratings 
+3 Player views detailed coach 
+profiles 
+System displays complete coach information including 
+certifications, availability, and player feedback 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 No coach is available for the 
+selected sport and location 
+System displays availability notification and suggests 
+nearby alternatives 
+3.4 UC-P4: Request Training Session 
+Identifier: UC-P4 
+Purpose: To allow a player to request a training session with a selected coach 
+Priority: High 
+Pre-conditions: 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 32 
+• Player is logged in 
+• A coach has been selected from recommendations 
+Post-conditions: 
+• Training request is sent to the selected coach 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player chooses a coach and 
+clicks request training session. 
+ 
+System displays coach availability in request form. 
+ 
+2 Player selects preferred date and 
+time 
+System checks coach availability for selected slot 
+3 Player submits request with 
+optional message 
+System sends request to coach and displays confirmation 
+4 Player receives notification System notifies player of request status (pending, 
+accepted, rejected) 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Selected time slot is unavailable System suggests alternative available time slots 
+3.5 UC-P5: View Training Schedule and Weekly Plans 
+Identifier: UC-P5 
+Purpose: To allow players to view their training schedules and automated weekly training plans 
+Priority: Medium 
+Pre-conditions: 
+• Player is logged into the system 
+• At least one training session has been approved 
+Post-conditions: 
+• Player views their complete training schedule and weekly plans 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player navigates to training 
+schedule section 
+System displays calendar view of upcoming training 
+sessions 
+2 Player selects a specific session 
+or week 
+System displays detailed training plan including exercises, 
+duration, and coach notes 
+3 Player views assigned coach and 
+location details 
+System shows complete session information with coach 
+contact and venue 
+3.6 UC-P6: Indoor Ground Booking 
+Identifier: UC-P6 
+Purpose: To allow players to book indoor sports grounds for cricket and badminton 
+Priority: High 
+Pre-conditions: 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 33 
+• Player is logged in 
+• There are ground and time slot. 
+Post-conditions: 
+• Booking confirmation is generated and ground is reserved 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player selects ground booking 
+option 
+System displays available grounds filtered by location and 
+sport type 
+2 Player selects sport type 
+(cricket/badminton), date, and 
+time 
+System checks real-time slot availability and pricing 
+3 Player makes reservation and 
+goes to checkout. 
+ 
+System processes payment and reserves the ground 
+4 Player receives booking 
+confirmation 
+System saves booking, sends confirmation email, and 
+displays booking details 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Chosen slot has already been 
+booked. 
+ 
+System displays error message and shows alternative 
+available slots 
+2 Payment fails System releases the temporary reservation and prompts 
+player to retry payment 
+3.7 UC-P7: View Performance Points and Progress 
+Identifier: UC-P7 
+Purpose: To allow players to track their performance points, attendance, and overall progress 
+Priority: Medium 
+Pre-conditions: 
+• Player is logged into the system 
+• Training sessions have been conducted 
+Post-conditions: 
+• Player views their performance metrics and progress history 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player navigates to dashboard or 
+performance section 
+System displays performance dashboard with graphs and 
+statistics 
+2 Player views weekly 
+performance points 
+System shows points assigned by coach with detailed 
+breakdown 
+3 Player checks attendance record 
+and weak points 
+System displays attendance history, identified weak areas, 
+and improvement suggestions 
+4 Player views progress over time System presents visual charts showing performance trends  
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 34 
+3.8 UC-P8: Purchase Sports Equipment 
+Identifier: UC-P8 
+Purpose: To allow players to browse and purchase sports equipment from business owner stores 
+Priority: Medium 
+Pre-conditions: 
+• Player is logged into the system 
+• Products are available in the marketplace 
+Post-conditions: 
+• Order is placed and payment is processed 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player navigates to equipment 
+store 
+System displays product listings with filters and categories 
+2 Player searches and selects 
+products 
+System shows product details, images, pricing, and 
+availability 
+3 Player adds items to cart and 
+proceeds to checkout 
+System displays cart summary and checkout form 
+4 Player completes payment System processes payment, creates order, and sends 
+confirmation 
+3.9 UC-P9: Rate and Provide Feedback to Coach 
+Identifier: UC-P9 
+Purpose: To allow players to rate coaches and provide feedback on training quality 
+Priority: Medium 
+Pre-conditions: 
+• Player is logged into the system 
+• At least one training session has been completed 
+Post-conditions: 
+• Feedback is recorded and visible to coach and admin 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player navigates to coach profile 
+or completed sessions 
+System displays feedback/rating option 
+2 Player selects rating (1-5 stars) 
+and writes feedback 
+System validates input 
+3 Player submits feedback System saves feedback, updates coach rating, and notifies 
+coach 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 35 
+3.10 UC-P10: Player Payment to Coach 
+Identifier: UC-P10 
+Purpose: To allow players to pay training fees to coaches via secure card payments 
+Priority: High 
+Pre-conditions: 
+• Player has a registered account 
+• Player has selected a coach for training 
+Post-conditions: 
+• Payment is processed, coach account is credited, and transaction record is generated 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Player selects coach and clicks 
+'Pay Fee' 
+System displays secure payment gateway with fee amount 
+2 Player enters card details and 
+amount 
+System verifies card details and validates amount 
+3 Player confirms payment System processes payment and updates coach account 
+balance 
+4 System sends confirmation System records transaction, sends receipt to player and 
+notification to coach 
+3.11 UC-P11: Receive System Notifications 
+Identifier: UC-P11 
+Purpose: To notify players about coach assignments, booking status, and training reminders 
+Priority: Medium 
+Pre-conditions: 
+• Player is registered in the system 
+Post-conditions: 
+• Player receives and views notifications 
+Typical Course of Action 
+S# Actor Action System Response 
+1 System triggers notification 
+event 
+System generates notification for relevant event (booking 
+confirmation, coach assignment, session reminder) 
+2 Player receives notification System displays notification in player dashboard and 
+sends email/SMS 
+3 Player views notification details System shows complete notification with action links if 
+applicable 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 36 
+4. ADMIN USE CASES 
+4.1 UC-A1: Admin Login 
+Identifier: UC-A1 
+Purpose: To provide secure authentication for system administrators 
+Priority: High 
+Pre-conditions: 
+• Admin has valid credentials 
+• Admin panel is accessible 
+Post-conditions: 
+• Admin is successfully logged in and dashboard is displayed 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin has been logged 
+successfully and dashboard has 
+been displayed. 
+ 
+System shows login form of the administrator. 
+ 
+2 Username and password inputs 
+are made (admin). 
+ 
+System authenticates authorization. 
+ 
+3 Admin submits login form System authenticates admin and grants access to admin 
+panel 
+4 Admin accesses dashboard System displays admin dashboard with system statistics 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Invalid credentials are typed in 
+by Admin. 
+ 
+System will display the error message and to restart. 
+ 
+4.2 UC-A2: View Admin Dashboard and Statistics 
+Identifier: UC-A2 
+Purpose: To give administrators a view of activity and most indicative metrics of the system. 
+Priority: High 
+Pre-conditions: 
+• Admin is logged into the system 
+Post-conditions: 
+• Admin views comprehensive system statistics and activity 
+Typical Course of Action 
+S# Actor Action System Response 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 37 
+1 Admin accesses dashboard System displays key metrics (total users, coaches, business 
+owners, bookings, revenue) 
+2 Admin views recent activities System shows recent registrations, verifications, bookings, 
+and transactions 
+3 Admin checks pending 
+verifications 
+System displays count and list of pending coach and 
+business owner verifications 
+4 Admin reviews system health 
+indicators 
+System shows server status, database performance, and 
+error logs 
+4.3 UC-A3: Verify and Approve Coach 
+Identifier: UC-A3 
+Purpose: To allow admin to verify coach credentials, certificates, and academy location before 
+granting access 
+Priority: High 
+Pre-conditions: 
+• Admin is logged into the system 
+• Coach has submitted registration with required documents 
+Post-conditions: 
+• Coach verification status is updated and coach is notified 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin moves to coach 
+verification section 
+System shows list of pending coach verifications 
+2 Admin selects a coach to review System displays coach profile, uploaded certificates, and 
+location details 
+3 Admin verifies certificates and 
+checks academy location (via 
+Google Maps or similar) 
+System shows document viewer and location verification 
+tools 
+4 Admin approves or rejects coach 
+with comments 
+System updates coach status to verified/rejected 
+5 System sends notification to 
+coach 
+System sends email notification about verification 
+decision 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Admin requests additional 
+documents from coach 
+System marks verification as pending and notifies coach to 
+upload more documents 
+4.4 UC-A4: Verify and Approve Business Owner 
+Identifier: UC-A4 
+Purpose: To allow admin to verify business owner credentials and legal documents before granting 
+marketplace access 
+Priority: High 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 38 
+Pre-conditions: 
+• Admin is logged into the system 
+• Business owner has submitted registration with legal documents 
+Post-conditions: 
+• Business owner verification status is updated and owner is notified 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to business 
+owner verification section 
+System displays list of pending business owner 
+verifications 
+2 Admin selects a business owner 
+to review 
+System displays business profile, uploaded legal 
+documents, and shop details 
+3 Admin verifies legal documents 
+and business legitimacy 
+System provides document viewer and verification 
+checklist 
+4 Admin approves or rejects 
+business owner with comments 
+System updates business owner status to verified/rejected 
+5 System sends notification to 
+business owner 
+System sends email about verification decision and next 
+steps 
+Alternate Course of Action 
+S# Actor Action System Response 
+1 Admin requests additional 
+documentation 
+System marks verification as pending and notifies owner 
+to provide more documents 
+4.5 UC-A5: Manage Users (CRUD Operations) 
+Identifier: UC-A5 
+Purpose: To allow admin to create, read, update, and delete user accounts 
+Priority: High 
+Pre-conditions: 
+• Admin is logged into the system 
+Post-conditions: 
+• User data is successfully managed (created, updated, or deleted) 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to user 
+management section 
+System displays list of all registered users with search and 
+filter options 
+2 Admin selects operation (create, 
+view, update, or delete) 
+System displays appropriate form or user details 
+3 Admin performs desired 
+operation 
+System validates input and executes operation 
+4 Admin confirms changes System updates database and displays confirmation 
+message 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 39 
+4.6 UC-A6: Manage Coaches (CRUD Operations) 
+Identifier: UC-A6 
+Purpose: To allow admin to manage coach accounts and profiles 
+Priority: High 
+Pre-conditions: 
+• Admin is logged into the system 
+Post-conditions: 
+• Coach data is successfully managed 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to coach 
+management section 
+System displays list of all coaches (verified, pending, 
+rejected) 
+2 Admin selects a coach to view 
+or edit 
+System displays complete coach profile with verification 
+status and documents 
+3 Admin updates coach 
+information or status 
+System validates changes 
+4 Admin saves changes or deletes 
+coach account 
+System updates database and notifies coach if status 
+changed 
+4.7 UC-A7: Manage Business Owners (CRUD Operations) 
+Identifier: UC-A7 
+Purpose: To allow admin to manage business owner accounts and store permissions 
+Priority: High 
+Pre-conditions: 
+• Admin is logged into the system 
+Post-conditions: 
+• Business owner data is successfully managed 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to business 
+owner management section 
+System displays list of all business owners with their 
+subscription status 
+2 Admin selects a business owner 
+to review 
+System displays business profile, products, and sales data 
+3 Admin updates business 
+information, subscription, or 
+listing limits 
+System validates changes 
+4 Admin saves changes or reject System updates database and notifies business owner 
+4.8 UC-A8: Manage Sports Categories 
+Identifier: UC-A8 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 40 
+Purpose: To allow admin to manage supported sports categories (cricket and badminton) 
+Priority: Medium 
+Pre-conditions: 
+• Admin is logged into the system 
+Post-conditions: 
+• Sports category settings are updated 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to sports 
+category management 
+System displays current sports categories (cricket, 
+badminton) 
+2 Admin views or updates 
+category settings 
+System shows category configuration options 
+3 Admin modifies category 
+parameters 
+System validates settings 
+4 Admin saves changes System updates category configuration and applies 
+changes system-wide 
+4.9 UC-A9: Manage Indoor Grounds and Time Slots 
+Identifier: UC-A9 
+Purpose: To allow admin to add, update, or remove indoor sports grounds and their available time 
+slots 
+Priority: High 
+Pre-conditions: 
+• Admin is logged into the system 
+Post-conditions: 
+• Ground information and time slots are successfully managed 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to ground 
+management section 
+System displays list of all registered grounds with their 
+details 
+2 Admin adds new ground or 
+selects existing ground 
+System displays ground form with fields for name, 
+location, sport type, capacity, and pricing 
+3 Admin configures time slots and 
+availability 
+System provides time slot management interface 
+4 Admin saves ground 
+information 
+System validates data, updates database, and makes 
+ground available for booking 
+4.10 UC-A10: Monitor Bookings and Training Sessions 
+Identifier: UC-A10 
+Purpose: To allow admin to view and monitor all ground bookings and training sessions 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 41 
+Priority: Medium 
+Pre-conditions: 
+• Admin is logged into the system 
+Post-conditions: 
+• Admin views comprehensive booking and session data 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to bookings 
+monitoring section 
+System displays calendar view of all bookings and training 
+sessions 
+2 Admin filters by date, ground, 
+sport type, or user 
+System applies filters and updates display 
+3 Admin views detailed booking 
+information 
+System shows booking details including player, coach, 
+ground, time, and payment status 
+4 Admin identifies conflicts or 
+issues 
+System highlights any scheduling conflicts or payment 
+issues 
+4.11 UC-A11: Monitor Performance Points and Attendance 
+Identifier: UC-A11 
+Purpose: To allow admin to track player performance evaluations and attendance records 
+Priority: Medium 
+Pre-conditions: 
+• Admin is logged into the system 
+• Training sessions have been conducted 
+Post-conditions: 
+• Admin views performance and attendance analytics 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to performance 
+monitoring section 
+System displays overview of performance points and 
+attendance across all players 
+2 Admin selects specific player or 
+coach 
+System shows detailed performance history and 
+attendance records 
+3 Admin reviews evaluation 
+patterns 
+System displays analytics including average scores, 
+improvement trends, and attendance rates 
+4 Admin identifies outliers or 
+concerns 
+System highlights unusual patterns requiring attention 
+4.12 UC-A12: Handle Complaints and Dispute Management 
+Identifier: UC-A12 
+Purpose: To allow admin to receive, review, and resolve complaints and disputes between users 
+Priority: High 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 42 
+Pre-conditions: 
+• Admin is logged into the system 
+• Complaints have been submitted by users 
+Post-conditions: 
+• Complaint is reviewed and resolved with action taken 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to complaints 
+section 
+System displays list of pending and resolved complaints 
+2 Admin selects a complaint to 
+review 
+System shows complaint details, involved parties, and 
+evidence 
+3 Admin investigates by 
+reviewing user history and 
+interactions 
+System provides access to relevant transaction and 
+communication logs 
+4 Admin takes action (warning, 
+suspension, refund, etc.) 
+System records decision and executes action 
+5 Admin notifies involved parties System sends resolution notification to complainant and 
+respondent 
+4.13 UC-A13: Generate Reports for System Monitoring 
+Identifier: UC-A13 
+Purpose: To allow admin to generate various reports for analysis and decision-making 
+Priority: Medium 
+Pre-conditions: 
+• Admin is logged into the system 
+• Sufficient data exists in the system 
+Post-conditions: 
+• Report is generated and available for download or viewing 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to reports 
+section 
+System displays available report types (user statistics, 
+revenue, bookings, performance, etc.) 
+2 Admin selects report type and 
+parameters (date range, filters) 
+System shows report configuration options 
+3 Admin generates report System processes data and creates report 
+4 Admin views or downloads 
+report 
+System displays report in dashboard or provides download 
+link (PDF, Excel) 
+4.14 UC-A14: Monitor Business Owner Subscription Payments 
+Identifier: UC-A14 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 43 
+Purpose: To allow admin to track and manage business owner subscription payments for listing 
+packages 
+Priority: High 
+Pre-conditions: 
+• Admin is logged into the system 
+• Business owners have active subscriptions 
+Post-conditions: 
+• Admin views subscription status and payment history 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to subscription 
+management 
+System displays all business owner subscriptions with 
+status (active, expired, pending) 
+2 Admin views payment history 
+for a business owner 
+System shows detailed transaction history including dates, 
+amounts, and package types 
+3 Admin handles payment issues 
+or disputes 
+System provides tools to adjust subscription status or issue 
+refunds 
+4 Admin updates subscription 
+manually if needed 
+System records manual changes and notifies business 
+owner 
+4.15 UC-A15: Configure System Settings 
+Identifier: UC-A15 
+Purpose: To allow admin to configure global system settings and parameters 
+Priority: Medium 
+Pre-conditions: 
+• Admin is logged into the system with super admin privileges 
+Post-conditions: 
+• System settings are updated and applied 
+Typical Course of Action 
+S# Actor Action System Response 
+1 Admin navigates to system 
+settings 
+System displays configuration options for various modules 
+2 Admin modifies settings 
+(payment gateways, notification 
+templates, pricing, etc.) 
+System validates settings 
+3 Admin saves configuration 
+changes 
+System applies settings and logs the changes 
+4 System confirms update System displays confirmation and restarts affected 
+services  
+ 
+ 4. Non-Functional Requirements 
+The non-functional requirements of Sports Ecosystem Platform are presented in the next section. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 44 
+ These are requirements that specify the quality of the characteristics, limitations, and terms of operation  
+of the system. 
+ 
+4.1 Performance Requirements 
+The system will have the following performance requirements to facilitate easy operation with everyone 
+using it: 
+ With normal load, the application must have a capability to respond to your request  (sign in, 
+place a flight reservation) within 2-3 seconds.  
+ After request has been placed, the results of coach recommendation should be produced and 
+displayed within 5 seconds.  
+ Ground Booking Availability Checks: In Ground booking, availability checks will be done in 
+real time in order to avoid any duplicity.  
+ The system will be able to service more than one user at a time without any significant slowing 
+of the performance. 
+ Read and write operations on the database will be streamlined so that they quickly retrieve the 
+player profile, coach information and booking details.  
+These are performance requirements required to ensure a good user experience and to prevent delays 
+when these are needed most like during training sessions requests and ground bookings which are time-
+sensitive operations. 
+4.2 Safety Requirements 
+Sports Ecosystem Platform is a programmable hardware and does not physically operate devices. Thus, 
+safety requirements are actually limited in their main intentions on how to curb abuse and loss of data. 
+ The system will not allow backing up of essential information like user accounts, booking and 
+training history by mistake. 
+ Confirmation prompts will be shown prior to mak ing some unsalvageable moves like accounts 
+deletion or booking cancellations. 
+ The system will have data backup to avert the loss in case the system fails. 
+ The unauthorized users will not be permitted to undertake actions which will impact on other 
+users and system integrity. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 45 
+These protections help in making sure that the system does not harm in an indirect way including loss of 
+valuable training or booking information.. 
+ 
+4.3 Security Requirements 
+The Sports Ecosystem Platform has a very high need of security owing to the sensitive nature of user 
+data. 
+ The system will have authorization checks with secure user authentication of all user roles 
+(Player, Coach, Business Owner, Admin). 
+ Role-based access control: This will be implemented, so that the user will be restricted to features 
+of that role. 
+ User passwords will also be stored in an encrypted manner. 
+ The system will secure personal data of the user including contact data, and location data. 
+ Only authorized administrators should be allowed to perform a dministrative functions like 
+verification, approval and generation of reports of this kind. 
+ The system will ensure that there is no unauthorized access to the database and backend services. 
+ These mandates guarantee confidentiality, integrity and controlled access of data in the system. 
+4.4 Additional Software Quality Attributes 
+The Sports Ecosystem Platform will meet the following software quality features: 
+Usability 
+ The user interface will be easy to use and non-technical users. 
+ All user panels will have the same type of navigation. 
+Reliability 
+ The application will not be affected with frequent failures when being used by ordinary people. 
+ The application will have the capability to recover without any data loss should it fail. 
+Maintainability 
+ The application would be modular in the sense that it is easy to carry out future programs together 
+with fixes in the system. 
+Code structure: 
+ Code structure will be based on standard practice of programming. 
+Scalability 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 46 
+ The application can expand later i.e. by adding new sports categories or roles. 
+Portability 
+ The application will use the normal web browsers without necessarily installing software on the 
+computer. 
+Availability 
+ The application can be access by user anytime  unless the system is undergoing an envi saged 
+maintenance period. 
+5. Other Requirements 
+The section contains the further requirements of the Sports Ecosystem Platform not explicitly mentioned 
+in the previous sections of this Software Requirements Specification. 
+5.1 Database Requirements 
+ The application will entail the use of centralized database in which all the application data will 
+be assembled in the form of player profile, coach profile, trainings sessions, ground bookings, 
+attendance record, product listing and order. 
+ Each of the user roles (Player, Coach, Business Owner, Admin) will have its unique identifier in 
+the database. 
+ The database will contain referential integrity among several entities like Player, Coach, Training 
+session, booking, product and order. 
+ The system will ensure include CRUD operations actions on all key entities. 
+ The backup mechanisms will be implemented to avoid the loss of data. 
+5.2 External Interface Requirements 
+5.2.1 User Interface 
+ The system will have dedicated user interfaces (panels) with the Players, Coaches, Business 
+Owners and Admins. 
+ The user interface can be access by standard web browsers 
+ Forms, dashboards and reports will be well labeled and user friendly. 
+. 
+5.2.2 Software Interfaces 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 47 
+ The system will have connectivity with a backend server or to p rocess requests and handle 
+information. 
+ The next point is that the frontend will be connected directly to the backend with secure means 
+of communication. 
+ The system will incorporate notification services like booking confirmation, requesting training 
+and approval notifications. 
+5.2.3 Communication Interfaces 
+ The system will be using the ordinary internet protocols. 
+ Notifications will be presented in the system interface. 
+ 
+5.3 Hardware Requirements 
+ The system will operate on a server that is powerful enough in terms of processing power and 
+memory to support a number of users. 
+ End users will demand an or an internet-enabled device with an updated web browser. 
+ No hardware is needed in order to operate the system. 
+5.4 Software Requirements 
+Various web development technologies will therefore be used in deploying the system : 
+ It shall be supported with the backend that will enable database connection and storm 
+authorization. 
+ This system will be supported by the operating environments such as windows based and 
+Linux based systems 
+ The database management platform will be of the relational type of data storage. 
+ 
+5.5 Legal and Regulatory Requirements 
+ This system will guarantee privacy of user information. 
+ The information of the user will not be distributed to third parties. 
+ The system will meet minimum standards of data protection and privacy of web-based systems. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 48 
+5.6 Reuse Objectives 
+ The application will also be made in a modular way to enable other parts of the system to be 
+reused like authentication, user management, and booking modules. 
+ Reusable components can also be reused or incorporated in the future in the works that are related 
+to sports management or online booking system. 
+6. Revised Project Plan 
+This part will provide the latest advancement of the Sp orts Ecosystem Platform and a new project plan 
+in accordance to the initial proposal. The plan provides details of activities done, work done and work 
+to be done. The schedule of the project and task dependencies are represented in a Gantt chart. 
+ 
+6.1 Project Progress Status 
+ Completed. 
+o Requirement elicitation 
+o Software purpose The Software requirements specification (SRS). 
+o High-level system design 
+o Table identification AKA schema identification. 
+ In Progress 
+o Implementation front end user interface. 
+o Backend API development 
+o Database integration 
+ Planned 
+o System validation and testing. 
+o fixing of bugs and optimization. 
+o Last documentation and deployment. 
+o Best presentation and defense preparation of project. (Sommerville, 2015) 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 49 
+6.2 Updated Project Plan (Phases) 
+Phase Activities Duration 
+Phase 1 Requirement Analysis & SRS 2 Weeks 
+Phase 2 System Design & Modeling 1 Week 
+Phase 3 Database Design 1 Week 
+Phase 4 Frontend Development 3 Weeks 
+Phase 5 Backend Development 3 Weeks 
+Phase 6 Integration & Testing 2 Weeks 
+Phase 7 Final Deployment & Documentation 1 Week 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 50 
+ 
+1. References  
+[1] Pressman, R. S., & Maxim, B. R. (2020). Software Engineering: A Practitioner's Approach  (9th Edition). 
+McGraw-Hill Education, New York. Pages 145 -189 (Understanding Requirements). ISBN:  978-1260548006. 
+Available at: https://www.mheducation.com/highered/product/software-engineering-practitioner-s-approach-
+pressman-maxim/M9781260548006.html 
+[2] Dennis, A., Wixom, B. H., & Tegarden, D. (2021). Systems Analysis and Design: An Object -Oriented 
+Approach with UML  (6th Edition). John Wiley & Sons, Hoboken, New Jersey. Pages 87 -134 (Requirements 
+Determination). ISBN: 978 -1119803782. Available at: https://www.wiley.com/en-
+us/Systems+Analysis+and+Design%3A+An+Object+Oriented+Approach+with+UML%2C+6th+Edition-p-
+9781119803782 
+[3] Pohl, K., & Rupp, C. (2021). Requirements Engineering Fundamentals: A Study Guide for the Certified 
+Professional for Requirements Engineering Exam (3rd Edition). Rocky Nook, San Rafael, California. Pages 112-
+167 (Requirements Elicitation and Documentation). ISBN: 978 -1681988825. Available at: 
+https://rockynook.com/shop/photography/requirements-engineering-fundamentals-3rd-edition/ 
+[4] IEEE Computer Society. (2018). ISO/IEC/IEEE International Standard - Systems and Software Engineering 
+- Life Cycle Processes - Requirements Engineering. IEEE Std 29148-2018. Institute of Electrical and Electronics 
+Engineers, New York. Pages 1-104. Available at: https://standards.ieee.org/standard/29148-2018.html 
+[5] Leffingwell, D., & Widrig, D. (2020). Managing Software Requirements: A Use Case Approach (3rd Edition). 
+Addison-Wesley Professional, Boston. Pages 201-256 (Use Case Modeling). ISBN: 978-0135792667. Available 
+at: https://www.pearson.com/en-us/subject-catalog/p/managing-software-requirements-a-use-case-
+approach/P200000003289 
+[6] Seidl, M., Scholz, M., Huemer, C., & Kappel, G. (2022). UML @ Classroom : An Introduction to Object -
+Oriented Modeling  (2nd Edition). Springer International Publishing, Cham, Switzerland. Pages 45 -98 (UML 
+Diagrams and Notation). ISBN: 978 -3030828448. DOI: 10.1007/978 -3-030-82845-5. Available at: 
+https://link.springer.com/book/10.1007/978-3-030-82845-5 
+[7] Ramakrishnan, R., & Gehrke, J. (2023). Database Management Systems  (4th Edition). McGraw -Hill 
+Education, New York. Pages 34-89 (Entity-Relationship Model and Database Design). ISBN: 978-1260507904. 
+Available at: https://www.mheducation.com/highered/product/database-management-systems-ramakrishnan-
+gehrke/M9781260507904.html 
+[8] Kumar, A., Singh, R., & Sharma, P. (2022). Web -Based Sports Management Systems: A Comprehensive 
+Review. International Journal of Advanced Computer Science and Applications (IJACSA) , Volume 13, Issue 6. 
+Pages 234-242. DOI: 10.14569/IJACSA.2022.0130629. Available at: 
+https://thesai.org/Publications/ViewPaper?Volume=13&Issue=6&Code=IJACSA&SerialNo=29 
+Appendix A: Glossary 
+A. Definitions 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 51 
+Term Definition 
+Admin System administrator responsible for verification, monitoring, 
+approvals, and system management. 
+Player Registered user who can book training sessions, reserve grounds, buy 
+equipment, and track performance. 
+Coach Verified professional who provides training, manages schedules, and 
+evaluates player performance. 
+Business Owner User who manages an online sports equipment store on the platform. 
+Attendance Tracking Recording player presence or absence in training sessions. 
+Coach            Recommendation 
+System 
+Automated feature that suggests suitable coaches based on player 
+data like sport, skill level, and location. 
+CRUD Operations Basic database operations: Create, Read, Update, Delete. 
+Dashboard Main interface showing summary, notifications, and system features 
+for each user role. 
+Ground Booking Reservation of indoor sports facilities for specific dates and times. 
+Performance Points Scores assigned by coaches to evaluate player skills and progress. 
+Role-Based Access Control 
+(RBAC) 
+Security system that restricts access based on user role. 
+Subscription Package Paid plan allowing Business Owners to list products (Basic, Pro, 
+Premium). 
+Training Plan Weekly schedule of exercises and goals assigned by coaches. 
+Training Session Scheduled practice meeting between coach and player. 
+Verification Admin approval process for coach and business owner documents. 
+Listing Slot Maximum number of products allowed under a subscription package 
+Low Stock Alert Notification when product inventory is low. 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 52 
+Performance Dashboard Visual interface showing graphs of player progress. 
+Pending Status Account state before admin approval. 
+B. Acronyms and Abbreviations 
+Acronym        Full Form 
+API Application Programming Interface 
+CRUD Create, Read, Update, Delete 
+DBMS Database Management System 
+ERD Entity Relationship Diagram 
+GUI Graphical User Interface 
+HTML HyperText Markup Language 
+HTTP HyperText Transfer Protocol 
+HTTPS HyperText Transfer Protocol Secure 
+JSON JavaScript Object Notation 
+PDF Portable Document Format 
+RBAC Role-Based Access Control 
+SRS Software Requirements Specification 
+SQL Structured Query Language 
+UML Unified Modeling Language 
+UC Use Case 
+UI User Interface 
+URL Uniform Resource Locator 
+ 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 53 
+C.Project-Specific Terms 
+Term Definition 
+Automated Coach Matching  System logic that matches players with coaches automatically. 
+Indoor Ground Sports facility available for booking (Cricket or Badminton). 
+Admin Panel Control panel used by admin to manage users and system. 
+Notification System Feature that sends alerts about bookings, payments, and approvals. 
+Subscription Renewal Process of extending business owner listing package after expiry. 
+ 
+Appendix B: IV & V Report 
+(Independent verification & validation) 
+IV & V Resource 
+ 
+ 
+Name          Signature 
+ 
+ 
+ 
+S# Defect Description Origin Stage Status Fix Time 
+Hours Minutes 
+1      
+2      
+3      
+…      
+Table 1: List of non-trivial defects 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Sports Eco-System Platform 
+Group ID FYP26-CS-G22 SDP Phase I (RS) Page 54 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

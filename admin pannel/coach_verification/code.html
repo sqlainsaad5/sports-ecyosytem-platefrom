@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SEP Admin Control - Coach Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Orbitron:wght@700;800;900&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-on-surface": "#2b3040",
+              "surface-container-highest": "#2f3445",
+              "tertiary-container": "#fec931",
+              "on-tertiary-container": "#6f5500",
+              "on-surface": "#dee1f7",
+              "secondary-fixed": "#ffdbd0",
+              "surface-container-high": "#25293a",
+              "outline-variant": "#3b494c",
+              "on-primary-container": "#00626e",
+              "on-primary": "#00363d",
+              "on-surface-variant": "#bac9cc",
+              "on-tertiary-fixed-variant": "#594400",
+              "on-error": "#690005",
+              "primary-container": "#00e5ff",
+              "surface-container-lowest": "#090e1c",
+              "on-tertiary": "#3e2e00",
+              "on-secondary": "#5d1900",
+              "secondary": "#ffb59d",
+              "primary-fixed-dim": "#00daf3",
+              "primary-fixed": "#9cf0ff",
+              "on-secondary-fixed": "#390c00",
+              "surface-container-low": "#161b2b",
+              "secondary-container": "#b83900",
+              "on-background": "#dee1f7",
+              "on-error-container": "#ffdad6",
+              "tertiary-fixed-dim": "#f3bf26",
+              "on-tertiary-fixed": "#251a00",
+              "error-container": "#93000a",
+              "surface-variant": "#2f3445",
+              "surface": "#0e1322",
+              "surface-dim": "#0e1322",
+              "on-secondary-fixed-variant": "#832600",
+              "surface-container": "#1a1f2f",
+              "surface-bright": "#343949",
+              "tertiary": "#ffeac0",
+              "on-primary-fixed": "#001f24",
+              "on-primary-fixed-variant": "#004f58",
+              "tertiary-fixed": "#ffdf96",
+              "inverse-surface": "#dee1f7",
+              "inverse-primary": "#006875",
+              "secondary-fixed-dim": "#ffb59d",
+              "primary": "#c3f5ff",
+              "error": "#ffb4ab",
+              "background": "#0e1322",
+              "surface-tint": "#00daf3",
+              "outline": "#849396",
+              "on-secondary-container": "#ffddd2"
+            },
+            fontFamily: {
+              "headline": ["Rajdhani", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "label": ["Space Grotesk", "sans-serif"],
+              "orbitron": ["Orbitron", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-effect {
+        backdrop-filter: blur(12px);
+        background: rgba(26, 31, 47, 0.8);
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #090e1c;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #2f3445;
+        border-radius: 10px;
+      }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container overflow-hidden">
+<!-- Sidebar Shell -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-[#0A0F1E] z-50 overflow-y-auto flex flex-col shadow-[20px_0_40px_rgba(0,229,255,0.03)]">
+<div class="p-8">
+<h1 class="text-2xl font-black font-orbitron text-[#00E5FF] tracking-tighter">SEP</h1>
+<p class="font-headline text-slate-400 text-sm tracking-widest uppercase">Admin Control</p>
+</div>
+<nav class="flex-1 mt-4">
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-all hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4">dashboard</span>
+<span class="font-headline tracking-wide">Overview</span>
+</a>
+<a class="border-l-4 border-[#00E5FF] bg-gradient-to-r from-[#00E5FF]/10 to-transparent text-[#00E5FF] font-bold flex items-center px-6 py-4 transition-all" href="#">
+<span class="material-symbols-outlined mr-4">verified_user</span>
+<span class="font-headline tracking-wide text-lg">Verification</span>
+</a>
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-all hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4">groups</span>
+<span class="font-headline tracking-wide">Management</span>
+</a>
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-all hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4">settings_applications</span>
+<span class="font-headline tracking-wide">Operations</span>
+</a>
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-all hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4">analytics</span>
+<span class="font-headline tracking-wide">Analytics</span>
+</a>
+<a class="text-slate-400 hover:text-slate-100 flex items-center px-6 py-4 transition-all hover:bg-[#1C2333]" href="#">
+<span class="material-symbols-outlined mr-4">hub</span>
+<span class="font-headline tracking-wide">Platform</span>
+</a>
+</nav>
+<div class="p-6 mt-auto border-t border-slate-800/50">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center border border-primary-container/20">
+<span class="material-symbols-outlined text-primary-container">shield_person</span>
+</div>
+<div>
+<p class="text-xs font-headline text-slate-400">Security Lead</p>
+<p class="text-sm font-bold text-on-surface">Admin Session</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Header Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-260px)] h-16 bg-[#0A0F1E]/80 backdrop-blur-xl z-40 border-b border-slate-800/50 flex justify-between items-center px-8">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative max-w-md w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xl">search</span>
+<input class="w-full bg-surface-container-lowest border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-[#00E5FF]/50 text-on-surface placeholder:text-slate-600" placeholder="Search coach ID, name or city..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="relative text-slate-400 hover:text-[#00E5FF] transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-secondary-container rounded-full"></span>
+</button>
+<button class="text-slate-400 hover:text-[#00E5FF] transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-px bg-slate-800"></div>
+<div class="flex items-center gap-3">
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full border border-primary-container/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzTggEUa9bTjNHeFgm40e3BWPg2JiufZgU9HlXsXnNIAMoSVvzcugmwektw1c53IqVekV27LPEFm22eJnGktvYE7REwXCc0P4cL6OA5IPURXD3W_JAVManyQydBc5dtzFaudIUJGnr3WkZJjLjm3SRqqGI9Oixkla_oI6wYgcC-ZHNS-oOlX9cd4l6Y2GIPQJDJPAvSSj0PCHXOmpF6sz4d05XIdWoG7E9F0stRaBsANKG3FXvhRkjjWzrSSz1UNk-5d-VttKMaAY"/>
+<span class="font-headline font-bold text-on-surface tracking-widest uppercase text-sm">Control Panel</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] pt-16 h-screen overflow-hidden flex">
+<!-- Table & List View -->
+<section class="flex-1 p-8 overflow-y-auto custom-scrollbar flex flex-col gap-6">
+<header class="flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-headline font-bold text-on-surface tracking-tight">Verification Queue</h2>
+<p class="text-slate-400 mt-1">Manage professional credentials for regional athletic instructors.</p>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors text-sm font-medium border border-slate-700/50">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                        Filter
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#00E5FF] to-[#0066FF] text-on-primary-fixed rounded-lg font-bold text-sm shadow-[0_0_15px_rgba(0,229,255,0.4)] active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">export_notes</span>
+                        Export Report
+                    </button>
+</div>
+</header>
+<!-- Filter Tabs -->
+<div class="flex gap-8 border-b border-slate-800/50 relative">
+<button class="pb-4 relative text-[#00E5FF] font-bold transition-all group">
+<div class="flex items-center gap-2">
+<span>Pending Approval</span>
+<span class="bg-secondary-container/20 text-secondary-container text-[10px] px-2 py-0.5 rounded-full font-orbitron">24</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full h-1 bg-[#00E5FF] rounded-t-full"></div>
+</button>
+<button class="pb-4 relative text-slate-500 hover:text-on-surface transition-all group">
+<div class="flex items-center gap-2">
+<span>Recently Approved</span>
+<span class="bg-slate-800 text-slate-400 text-[10px] px-2 py-0.5 rounded-full font-orbitron">142</span>
+</div>
+</button>
+<button class="pb-4 relative text-slate-500 hover:text-on-surface transition-all group">
+<div class="flex items-center gap-2">
+<span>Rejected / Appeals</span>
+<span class="bg-slate-800 text-slate-400 text-[10px] px-2 py-0.5 rounded-full font-orbitron">12</span>
+</div>
+</button>
+</div>
+<!-- Table Container -->
+<div class="bg-surface-container rounded-xl overflow-hidden shadow-2xl flex-1 border border-slate-800/30">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-high/50 sticky top-0 z-10">
+<tr class="text-slate-400 font-headline uppercase text-xs tracking-widest border-b border-slate-800/50">
+<th class="px-6 py-4 font-bold">Coach Profile</th>
+<th class="px-6 py-4 font-bold">Specialization</th>
+<th class="px-6 py-4 font-bold">Hub Location</th>
+<th class="px-6 py-4 font-bold">Submitted</th>
+<th class="px-6 py-4 font-bold">Files</th>
+<th class="px-6 py-4 font-bold">Status</th>
+<th class="px-6 py-4 font-bold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800/30">
+<!-- Row 1: Active Focus -->
+<tr class="bg-surface-container-high/40 group hover:bg-[#1C2333] transition-all cursor-pointer relative">
+<td class="absolute left-0 top-0 bottom-0 w-1 bg-[#00E5FF]"></td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 flex items-center justify-center font-orbitron text-primary-container border border-primary-container/30">UA</div>
+<div>
+<p class="font-bold text-on-surface">Usman Ali</p>
+<p class="text-xs text-slate-500">ID: #SEP-9921</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20">Cricket (Level 2)</span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-300">Karachi, Sindh</td>
+<td class="px-6 py-4 text-sm text-slate-300">Oct 12, 2023</td>
+<td class="px-6 py-4 text-sm font-orbitron text-primary-container tracking-tighter">04 Pkgs</td>
+<td class="px-6 py-4">
+<span class="bg-secondary-container/10 text-secondary-container text-xs px-3 py-1 rounded-full font-bold border border-secondary-container/20 uppercase tracking-tighter">Pending Review</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-primary-container hover:underline text-sm font-bold">Manage</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-[#1C2333] transition-all cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center font-orbitron text-slate-400 border border-slate-700">SM</div>
+<div>
+<p class="font-bold text-on-surface">Sara Malik</p>
+<p class="text-xs text-slate-500">ID: #SEP-9945</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20">Badminton Pro</span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-300">Lahore, Punjab</td>
+<td class="px-6 py-4 text-sm text-slate-300">Oct 14, 2023</td>
+<td class="px-6 py-4 text-sm font-orbitron text-primary-container tracking-tighter">03 Pkgs</td>
+<td class="px-6 py-4">
+<span class="bg-secondary-container/10 text-secondary-container text-xs px-3 py-1 rounded-full font-bold border border-secondary-container/20 uppercase tracking-tighter">Pending Review</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary-container transition-colors font-bold text-sm">Manage</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-[#1C2333] transition-all cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center font-orbitron text-slate-400 border border-slate-700">FK</div>
+<div>
+<p class="font-bold text-on-surface">Faisal Khan</p>
+<p class="text-xs text-slate-500">ID: #SEP-9812</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20">Football Head</span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-300">Islamabad, ICT</td>
+<td class="px-6 py-4 text-sm text-slate-300">Oct 15, 2023</td>
+<td class="px-6 py-4 text-sm font-orbitron text-primary-container tracking-tighter">06 Pkgs</td>
+<td class="px-6 py-4">
+<span class="bg-tertiary-container/10 text-tertiary-container text-xs px-3 py-1 rounded-full font-bold border border-tertiary-container/20 uppercase tracking-tighter">Awaiting Doc</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary-container transition-colors font-bold text-sm">Manage</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-[#1C2333] transition-all cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center font-orbitron text-slate-400 border border-slate-700">ZB</div>
+<div>
+<p class="font-bold text-on-surface">Zainab Bibi</p>
+<p class="text-xs text-slate-500">ID: #SEP-9733</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest text-primary px-3 py-1 rounded-full text-xs font-medium border border-primary/20">Yoga Instructor</span>
+</td>
+<td class="px-6 py-4 text-sm text-slate-300">Karachi, Sindh</td>
+<td class="px-6 py-4 text-sm text-slate-300">Oct 15, 2023</td>
+<td class="px-6 py-4 text-sm font-orbitron text-primary-container tracking-tighter">02 Pkgs</td>
+<td class="px-6 py-4">
+<span class="bg-secondary-container/10 text-secondary-container text-xs px-3 py-1 rounded-full font-bold border border-secondary-container/20 uppercase tracking-tighter">Pending Review</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-slate-400 hover:text-primary-container transition-colors font-bold text-sm">Manage</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer -->
+<div class="flex justify-between items-center text-sm text-slate-500">
+<p>Showing <span class="text-on-surface font-bold">1-10</span> of <span class="text-on-surface font-bold">24</span> active submissions</p>
+<div class="flex gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container border border-slate-800 text-slate-400"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container text-on-primary-container font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container border border-slate-800 text-slate-400">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container border border-slate-800 text-slate-400">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container border border-slate-800 text-slate-400"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+</section>
+<!-- Slide-in Detail Drawer -->
+<aside class="w-[450px] bg-surface-container border-l border-slate-800/50 flex flex-col h-full shadow-[-20px_0_60px_rgba(0,0,0,0.5)] z-30">
+<header class="p-6 border-b border-slate-800/50 flex justify-between items-center bg-surface-container-high/30">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">person_search</span>
+<h3 class="font-headline font-bold text-xl tracking-wide uppercase">Coach Dossier</h3>
+</div>
+<button class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</header>
+<div class="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-8">
+<!-- Profile Summary -->
+<div class="flex flex-col items-center text-center">
+<div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-primary-container to-blue-600 p-1 mb-4">
+<div class="w-full h-full rounded-xl bg-surface-container flex items-center justify-center overflow-hidden">
+<img alt="Usman Ali Portrait" class="w-full h-full object-cover" data-alt="professional portrait of a middle-aged Pakistani athletic coach with a short beard and sports whistle wearing a sleek navy blue polo shirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzTwxB1Wi9tLMXDaVR9UeLFY2O6G2YmIuaytNQEFQQqJRm08djycuKfcOkf-L8-SvV4R1qiSBvW2lvfAE_FsTfr47ZgDcHDliuJ8rPY3jDZ54Ar5LZ_NWrZcTz4ZrXvhJmOMRbUrcj3qcbZKAqO-GdwGnCgj5IxiljU5PmSA4jSV6YS_F5Q77C7wjC8-nSSVLdBPlVJo2LWjwg9E1aBGsnkCsLW8DNAsOBmqE0f-D_dLYddnJb3YSyFwl5mlOC_P0_NrNxF50DXvc"/>
+</div>
+</div>
+<h4 class="text-2xl font-headline font-bold text-on-surface">Usman Ali</h4>
+<p class="text-primary-container font-orbitron text-xs tracking-widest uppercase mb-2">Cricket Specialist (Elite)</p>
+<div class="flex gap-2">
+<span class="bg-surface-container-highest px-3 py-1 rounded text-xs text-slate-400">EXP: 8 YEARS</span>
+<span class="bg-surface-container-highest px-3 py-1 rounded text-xs text-slate-400">KARACHI HUB</span>
+</div>
+</div>
+<!-- Document Previews -->
+<section>
+<h5 class="text-xs font-headline font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Evidence &amp; Documentation</h5>
+<div class="grid grid-cols-2 gap-3">
+<div class="group relative rounded-lg border border-slate-800 overflow-hidden aspect-video bg-black/20 hover:border-primary-container/50 transition-colors cursor-zoom-in">
+<img class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" data-alt="close-up of a high-quality scanned professional coaching certificate with gold foil seal and elegant serif typography on textured paper" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtVSggoFywlrQD4a-E9KB-Z8gqD8yQqPp7BCx4D6NDdG4hjULOVvNzDcim9Un4InIPwavCeW2Ub6Lde9qU0NFxulv3AYPPUHH7wLVMA_58APYBSqldYEskwF5Ku7ghvdPp17B-aJY73iTMKfAoiByh662oBdfjufGgrdI0p_5JsgQrF95dGo180sbE_UWvP2-QhSaEkZuWN6n3oo0dxOaKQrryPDPe1Sh6gZO8cthMeAM13J40_RiGh5q5Tn-NmluGLXE22XxPyqY"/>
+<div class="absolute bottom-0 left-0 right-0 p-2 bg-black/60 backdrop-blur-sm">
+<p class="text-[10px] font-medium truncate">PCB_Level2_Cert.pdf</p>
+</div>
+</div>
+<div class="group relative rounded-lg border border-slate-800 overflow-hidden aspect-video bg-black/20 hover:border-primary-container/50 transition-colors cursor-zoom-in">
+<img class="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" data-alt="scanned national identity card with biometric details and professional security watermarks under bright studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLIIeW7cZvbtTsd16QLi70STlYktXRnp5n18bR_WATWyY56pyLLW8goof4KGgP2RA2DD-0FmjxR40KrRB1LMkHyrwF0Zi3Y8pauLfKJgqrmosR716W5Hi5xtCOIQqigUPgPnDs4lb_ZszhMwmBxBziH8GWBp3w7WMpUI5UUrpgFFGT4hWoSxlUr7cJRywV3ZRGwvD7kP20jDSvYw0DeNx_yf-tUYvAnoTvUXy7NBBIa7k514ZUJOExY2YErorITxLSt4Lg2ed8bc4"/>
+<div class="absolute bottom-0 left-0 right-0 p-2 bg-black/60 backdrop-blur-sm">
+<p class="text-[10px] font-medium truncate">CNIC_Front_Back.jpg</p>
+</div>
+</div>
+</div>
+<button class="w-full mt-3 py-2 text-xs font-bold text-primary-container border border-primary-container/20 rounded-lg hover:bg-primary-container/10 transition-colors">VIEW ALL 4 DOCUMENTS</button>
+</section>
+<!-- Map Embed -->
+<section>
+<h5 class="text-xs font-headline font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Operational Base</h5>
+<div class="rounded-xl overflow-hidden h-32 border border-slate-800 relative group">
+<div class="absolute inset-0 bg-primary-container/5 z-10 pointer-events-none"></div>
+<img class="w-full h-full object-cover filter grayscale contrast-125" data-alt="dark mode stylized satellite map of a metropolitan sports complex area in Karachi with cyan tactical markers and glowing infrastructure lines" data-location="Karachi" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnjoWpaSCcks7DTGmyAQepClF5a-VzMpHcD5udwdQbGYojNWfsiJqmy0NnRjMrgzHDmZsq24offn3glaGoE3-i-wh1sluQuFYWb-EpfF-SAeU5MAAui_E33XhrfjB1QY0ZYONpcG21ewVrvJ-B2wCAsYw7-Uz9yaXq_OgdKJ99X8oXHIBEIG2FRJH1U-mt-WOFnCkShNfx3HLk9oHhMwW6r6rWgKSrpFSGO2R7WELpAQ_mn7oc2OyQM8mnF9PG1hk0yxazF4JFbhc"/>
+<div class="absolute inset-0 flex items-center justify-center z-20">
+<div class="flex flex-col items-center">
+<span class="material-symbols-outlined text-primary-container text-4xl" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<span class="text-[10px] font-bold bg-surface-container px-2 py-0.5 rounded border border-slate-700 mt-1">GULSHAN-E-IQBAL HUB</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Checklist -->
+<section class="bg-surface-container-low p-4 rounded-xl border border-slate-800/50">
+<h5 class="text-xs font-headline font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Verification Checklist</h5>
+<div class="space-y-3">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded bg-slate-900 border-slate-700 text-primary-container focus:ring-0" type="checkbox"/>
+<span class="text-sm text-on-surface">Identity Authenticity</span>
+<span class="material-symbols-outlined text-green-500 text-sm ml-auto">verified</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="rounded bg-slate-900 border-slate-700 text-primary-container focus:ring-0" type="checkbox"/>
+<span class="text-sm text-on-surface">PCB License Validity</span>
+<span class="material-symbols-outlined text-green-500 text-sm ml-auto">verified</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="rounded bg-slate-900 border-slate-700 text-primary-container focus:ring-0" type="checkbox"/>
+<span class="text-sm text-on-surface">Background Safety Check</span>
+<span class="text-xs text-secondary-container font-bold ml-auto">IN PROGRESS</span>
+</label>
+</div>
+</section>
+</div>
+<footer class="p-6 border-t border-slate-800/50 bg-surface-container-high/30 grid grid-cols-2 gap-3">
+<button class="col-span-2 py-3 bg-gradient-to-r from-[#00E5FF] to-[#0066FF] text-on-primary-fixed rounded-lg font-bold shadow-[0_0_20px_rgba(0,229,255,0.3)] hover:scale-[1.02] transition-transform">
+                    APPROVE COACH
+                </button>
+<button class="py-2.5 border border-error-container text-error rounded-lg text-sm font-bold hover:bg-error-container/10 transition-colors">
+                    REJECT
+                </button>
+<button class="py-2.5 border border-slate-700 text-slate-400 rounded-lg text-sm font-bold hover:bg-slate-700/30 transition-colors">
+                    REQUEST INFO
+                </button>
+</footer>
+</aside>
+</main>
+<!-- Modal Backdrop (Hidden by default, shown for Rejection) -->
+<div class="fixed inset-0 bg-[#0A0F1E]/60 backdrop-blur-md z-[100] flex items-center justify-center p-6 opacity-0 pointer-events-none transition-opacity duration-300">
+<div class="w-full max-w-md bg-surface-container-high border border-slate-800 rounded-2xl shadow-[0_20px_80px_rgba(0,0,0,0.8)] overflow-hidden scale-95 transition-transform duration-300">
+<div class="p-6 bg-error-container/10 border-b border-slate-800">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error text-3xl">warning</span>
+<div>
+<h3 class="text-xl font-headline font-bold text-on-surface uppercase tracking-wider">Reject Verification</h3>
+<p class="text-xs text-slate-400">Coach: Usman Ali (#SEP-9921)</p>
+</div>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<p class="text-sm text-slate-300">Please provide a specific reason for rejection. This comment will be visible to the coach in their dashboard.</p>
+<div>
+<label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Rejection Comments</label>
+<textarea class="w-full h-32 bg-surface-container-lowest border border-slate-700 rounded-lg p-3 text-sm focus:ring-1 focus:ring-error text-on-surface placeholder:text-slate-600 resize-none" placeholder="e.g. Identity documents are expired or blurry..."></textarea>
+</div>
+<div class="flex items-center gap-2 text-xs text-slate-400 bg-black/20 p-3 rounded-lg">
+<span class="material-symbols-outlined text-sm">info</span>
+<span>Rejection triggers an automated email notification.</span>
+</div>
+</div>
+<div class="p-6 bg-surface-container flex gap-3 justify-end">
+<button class="px-6 py-2 text-sm font-bold text-slate-400 hover:text-on-surface transition-colors">CANCEL</button>
+<button class="px-8 py-2 bg-error text-on-error rounded-lg text-sm font-bold shadow-lg hover:bg-error/90 transition-all">CONFIRM REJECTION</button>
+</div>
+</div>
+</div>
+</body></html>

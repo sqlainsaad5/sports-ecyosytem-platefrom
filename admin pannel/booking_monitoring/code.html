@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Booking Monitoring | STADIUM ADMIN</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&amp;family=Orbitron:wght@400;700&amp;family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "secondary": "#ffb59d",
+                        "on-primary-fixed-variant": "#004f58",
+                        "on-surface-variant": "#bac9cc",
+                        "on-tertiary-fixed-variant": "#594400",
+                        "on-secondary": "#5d1900",
+                        "on-secondary-fixed-variant": "#832600",
+                        "error": "#ffb4ab",
+                        "surface-container": "#1a1f2f",
+                        "on-surface": "#dee1f7",
+                        "on-primary": "#00363d",
+                        "inverse-surface": "#dee1f7",
+                        "tertiary-container": "#fec931",
+                        "primary-fixed": "#9cf0ff",
+                        "on-tertiary-fixed": "#251a00",
+                        "background": "#0e1322",
+                        "tertiary-fixed": "#ffdf96",
+                        "primary-container": "#00e5ff",
+                        "surface-variant": "#2f3445",
+                        "outline-variant": "#3b494c",
+                        "on-primary-fixed": "#001f24",
+                        "tertiary-fixed-dim": "#f3bf26",
+                        "inverse-primary": "#006875",
+                        "on-secondary-fixed": "#390c00",
+                        "error-container": "#93000a",
+                        "surface-bright": "#343949",
+                        "on-secondary-container": "#ffddd2",
+                        "surface": "#0e1322",
+                        "primary-fixed-dim": "#00daf3",
+                        "tertiary": "#ffeac0",
+                        "surface-container-high": "#25293a",
+                        "surface-tint": "#00daf3",
+                        "on-background": "#dee1f7",
+                        "surface-container-highest": "#2f3445",
+                        "on-tertiary": "#3e2e00",
+                        "on-error": "#690005",
+                        "secondary-fixed": "#ffdbd0",
+                        "primary": "#c3f5ff",
+                        "on-primary-container": "#00626e",
+                        "surface-container-lowest": "#090e1c",
+                        "inverse-on-surface": "#2b3040",
+                        "outline": "#849396",
+                        "secondary-fixed-dim": "#ffb59d",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#0e1322",
+                        "surface-container-low": "#161b2b",
+                        "on-tertiary-container": "#6f5500",
+                        "secondary-container": "#b83900"
+                    },
+                    fontFamily: {
+                        "headline": ["Rajdhani"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"],
+                        "data": ["Orbitron"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(26, 31, 47, 0.6);
+            backdrop-filter: blur(12px);
+        }
+        .active-glow {
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0A0F1E; }
+        ::-webkit-scrollbar-thumb { background: #2F3445; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00E5FF; }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface font-body min-h-screen">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#0A0F1E]/80 backdrop-blur-xl shadow-[0_20px_40px_rgba(0,229,255,0.08)]">
+<div class="flex justify-between items-center px-8 h-16 w-full">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-bold tracking-tighter text-cyan-400 font-['Orbitron']">STADIUM ADMIN</span>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-slate-400 font-medium hover:text-cyan-300 transition-colors font-['Rajdhani'] uppercase tracking-wider" href="#">Support</a>
+<a class="text-slate-400 font-medium hover:text-cyan-300 transition-colors font-['Rajdhani'] uppercase tracking-wider" href="#">Docs</a>
+<a class="text-slate-400 font-medium hover:text-cyan-300 transition-colors font-['Rajdhani'] uppercase tracking-wider" href="#">System Status</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-cyan-400">notifications</span>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer hover:text-cyan-400">settings</span>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-cyan-400/30">
+<img alt="Admin Profile Avatar" class="w-full h-full object-cover" data-alt="professional portrait of a high-level stadium operations administrator wearing a tactical headset in a dark tech environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyuV-FrRteZnwlatekrhgw15z3e95GEyHalZueaAixetUom7fxisLsfk_OI1TSp06eKcFFEfGTyagTBZIyOXcT4aUC0Yi50P3i0uWZWqxbWwrJBfLuUQLmm0Pn_EZ0quxtEi420z7ieonvjY9BRC0uSrkV30KW0LGWJDrPjQmDEmnCix6REXCJmM3jyetVFih_ZHcSBmMkySmIyV9SxoncZG_ZnDo_2NWkK9U2LqOYF0E5HNLO2tuubdzbdrl60eYJQqrNFeb90Ew"/>
+</div>
+</div>
+</div>
+<div class="bg-[#1C2333] h-[1px] w-full mt-auto"></div>
+</nav>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-40 bg-[#0A0F1E] border-r border-slate-800/50 flex flex-col pt-20 pb-8 h-full">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-cyan-400" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-cyan-400 font-['Orbitron'] text-xl tracking-widest uppercase">COMMAND</span>
+</div>
+<p class="text-slate-500 font-['Rajdhani'] text-xs tracking-widest uppercase">Elite Operations</p>
+</div>
+<nav class="flex-1">
+<div class="cursor-pointer flex items-center gap-3 text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-['Rajdhani'] font-semibold text-lg">Overview</span>
+</div>
+<div class="cursor-pointer flex items-center gap-3 text-cyan-400 border-l-4 border-cyan-400 bg-gradient-to-r from-cyan-500/10 to-transparent pl-4 py-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-['Rajdhani'] font-semibold text-lg">Verification</span>
+</div>
+<div class="cursor-pointer flex items-center gap-3 text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-['Rajdhani'] font-semibold text-lg">Management</span>
+</div>
+<div class="cursor-pointer flex items-center gap-3 text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1">
+<span class="material-symbols-outlined">stadium</span>
+<span class="font-['Rajdhani'] font-semibold text-lg">Operations</span>
+</div>
+<div class="cursor-pointer flex items-center gap-3 text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-['Rajdhani'] font-semibold text-lg">Analytics</span>
+</div>
+<div class="cursor-pointer flex items-center gap-3 text-slate-500 pl-4 py-3 hover:text-cyan-200 transition-all hover:bg-slate-800/40 hover:translate-x-1">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span class="font-['Rajdhani'] font-semibold text-lg">Platform</span>
+</div>
+</nav>
+<div class="mt-auto px-4">
+<div class="cursor-pointer flex items-center gap-3 text-slate-500 pl-4 py-3 hover:text-error transition-all hover:bg-error-container/10 rounded-lg">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-['Rajdhani'] font-semibold text-lg">Logout</span>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="pl-64 pt-16 min-h-screen">
+<div class="p-8 space-y-8">
+<!-- Header & Filter Section -->
+<header class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<h1 class="text-4xl font-headline font-bold text-on-surface uppercase tracking-tight">Booking Monitoring</h1>
+<p class="text-on-surface-variant font-body mt-1">Real-time oversight of facility usage and player engagement.</p>
+</div>
+<div class="flex flex-wrap items-center gap-4">
+<div class="bg-surface-container-high rounded-lg px-4 py-2 flex items-center gap-3 border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary-container">calendar_today</span>
+<span class="font-label text-sm font-bold">OCT 01 - OCT 31, 2023</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">expand_more</span>
+</div>
+<div class="bg-surface-container-high rounded-lg px-4 py-2 flex items-center gap-3 border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary-container">filter_list</span>
+<span class="font-label text-sm font-bold uppercase">All Grounds</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">expand_more</span>
+</div>
+<button class="bg-gradient-to-br from-primary-container to-blue-600 text-on-primary-container font-headline font-bold px-6 py-2 rounded shadow-lg active-glow uppercase tracking-wider">Export Report</button>
+</div>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Monthly Calendar Grid (Span 8) -->
+<section class="col-span-12 lg:col-span-8 bg-surface-container rounded-xl overflow-hidden shadow-2xl">
+<div class="p-6 border-b border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<h2 class="font-headline text-xl font-bold uppercase tracking-widest text-primary-container">October 2023</h2>
+<div class="flex gap-1">
+<button class="p-1 hover:bg-surface-variant rounded transition-colors"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="p-1 hover:bg-surface-variant rounded transition-colors"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+<div class="flex gap-2">
+<span class="bg-primary-container/10 text-primary-container text-[10px] px-2 py-0.5 rounded-full border border-primary-container/20 uppercase font-bold tracking-tighter">Peak Occupancy</span>
+</div>
+</div>
+<div class="grid grid-cols-7 border-b border-outline-variant/10">
+<div class="p-3 text-center text-xs font-headline font-bold text-on-surface-variant/60 uppercase">Mon</div>
+<div class="p-3 text-center text-xs font-headline font-bold text-on-surface-variant/60 uppercase">Tue</div>
+<div class="p-3 text-center text-xs font-headline font-bold text-on-surface-variant/60 uppercase">Wed</div>
+<div class="p-3 text-center text-xs font-headline font-bold text-on-surface-variant/60 uppercase">Thu</div>
+<div class="p-3 text-center text-xs font-headline font-bold text-on-surface-variant/60 uppercase">Fri</div>
+<div class="p-3 text-center text-xs font-headline font-bold text-on-surface-variant/60 uppercase">Sat</div>
+<div class="p-3 text-center text-xs font-headline font-bold text-on-surface-variant/60 uppercase">Sun</div>
+</div>
+<div class="grid grid-cols-7 bg-surface-container-lowest/30">
+<!-- Empty days -->
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 text-on-surface-variant/20 font-data">25</div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 text-on-surface-variant/20 font-data">26</div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 text-on-surface-variant/20 font-data">27</div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 text-on-surface-variant/20 font-data">28</div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 text-on-surface-variant/20 font-data">29</div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 text-on-surface-variant/20 font-data">30</div>
+<!-- Current Month -->
+<div class="h-28 p-2 border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-all cursor-pointer group">
+<div class="flex justify-between items-start">
+<span class="font-data text-lg">01</span>
+<span class="bg-primary-container text-on-primary-container text-[10px] px-1.5 py-0.5 rounded font-bold font-data">12</span>
+</div>
+</div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-all cursor-pointer group">
+<div class="flex justify-between items-start">
+<span class="font-data text-lg">02</span>
+<span class="bg-primary-container text-on-primary-container text-[10px] px-1.5 py-0.5 rounded font-bold font-data">08</span>
+</div>
+</div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 hover:bg-surface-variant/20 transition-all cursor-pointer group bg-cyan-400/5 border-l-2 border-l-cyan-400">
+<div class="flex justify-between items-start">
+<span class="font-data text-lg text-primary-container">03</span>
+<span class="bg-primary-container text-on-primary-container text-[10px] px-1.5 py-0.5 rounded font-bold font-data">24</span>
+</div>
+<div class="mt-2 space-y-1">
+<div class="h-1 w-full bg-cyan-400/20 rounded-full overflow-hidden">
+<div class="h-full bg-cyan-400 w-full"></div>
+</div>
+<span class="text-[9px] uppercase font-bold text-cyan-400/80">Full House</span>
+</div>
+</div>
+<!-- More days simplified for layout -->
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 hover:bg-surface-variant/20 cursor-pointer"><span class="font-data text-lg">04</span></div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 hover:bg-surface-variant/20 cursor-pointer"><span class="font-data text-lg">05</span></div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 hover:bg-surface-variant/20 cursor-pointer"><span class="font-data text-lg">06</span></div>
+<div class="h-28 p-2 border-r border-b border-outline-variant/10 hover:bg-surface-variant/20 cursor-pointer"><span class="font-data text-lg">07</span></div>
+<div class="h-28 p-2 border-b border-outline-variant/10 hover:bg-surface-variant/20 cursor-pointer"><span class="font-data text-lg">08</span></div>
+</div>
+<!-- Slide-down panel mockup (Always visible for demonstration as per instructions) -->
+<div class="bg-surface-container-highest/50 border-t border-cyan-500/30 p-6 animate-pulse-subtle">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-4">
+<span class="font-headline font-bold uppercase text-primary-container">Daily Panel: October 03</span>
+<span class="text-xs font-body text-on-surface-variant">24 Active Bookings</span>
+</div>
+<button class="text-xs uppercase font-headline font-bold text-cyan-400 hover:underline">View All for this Day</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="bg-surface-container-low p-3 rounded-lg border-l-4 border-primary-container flex justify-between items-center">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">09:00 - 10:00</p>
+<p class="font-headline text-sm font-bold">MARCUS RASHFORD</p>
+</div>
+<span class="material-symbols-outlined text-primary-container text-lg">stadium</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg border-l-4 border-primary-container flex justify-between items-center">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">10:30 - 11:30</p>
+<p class="font-headline text-sm font-bold">KYLIAN MBAPPÉ</p>
+</div>
+<span class="material-symbols-outlined text-primary-container text-lg">stadium</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg border-l-4 border-secondary-container flex justify-between items-center">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">12:00 - 13:00</p>
+<p class="font-headline text-sm font-bold">ERLING HAALAND</p>
+</div>
+<span class="material-symbols-outlined text-secondary-container text-lg">pending_actions</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Status Summary (Span 4) -->
+<section class="col-span-12 lg:col-span-4 space-y-6">
+<div class="bg-surface-container rounded-xl p-6 border border-outline-variant/10">
+<h3 class="font-headline font-bold uppercase tracking-widest text-on-surface-variant text-sm mb-6">Live Capacity</h3>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs font-label uppercase text-on-surface-variant">Central Pitch</span>
+<span class="font-data text-2xl text-primary-container">88%</span>
+</div>
+<div class="w-32 h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-[88%] shadow-[0_0_8px_#00E5FF]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs font-label uppercase text-on-surface-variant">North Arena</span>
+<span class="font-data text-2xl text-secondary-container">42%</span>
+</div>
+<div class="w-32 h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[42%] shadow-[0_0_8px_#FF6B35]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-xs font-label uppercase text-on-surface-variant">West Court</span>
+<span class="font-data text-2xl text-cyan-200">65%</span>
+</div>
+<div class="w-32 h-2 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-cyan-200 w-[65%] shadow-[0_0_8px_#A5F3FC]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container rounded-xl p-6 border border-outline-variant/10 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+<h3 class="font-headline font-bold uppercase tracking-widest text-on-surface-variant text-sm mb-4">Urgent Actions</h3>
+<div class="space-y-3">
+<div class="flex items-start gap-4 p-3 rounded-lg bg-error-container/10 border border-error/20">
+<span class="material-symbols-outlined text-error text-xl">report</span>
+<div>
+<p class="font-body text-sm font-semibold text-on-surface">Double Booking Conflict</p>
+<p class="text-xs text-on-surface-variant">Pitch 4 - 18:00 Today</p>
+</div>
+</div>
+<div class="flex items-start gap-4 p-3 rounded-lg bg-secondary-container/10 border border-secondary-container/20">
+<span class="material-symbols-outlined text-secondary-container text-xl">payments</span>
+<div>
+<p class="font-body text-sm font-semibold text-on-surface">Pending Verification</p>
+<p class="text-xs text-on-surface-variant">4 Manual Payments Awaiting</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Table View (Span 12) -->
+<section class="col-span-12 bg-surface-container rounded-xl overflow-hidden shadow-2xl">
+<div class="p-6 border-b border-outline-variant/20 flex items-center justify-between">
+<h2 class="font-headline text-xl font-bold uppercase tracking-widest text-on-surface">Recent Booking Activity</h2>
+<div class="flex gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-low border border-outline-variant/30 rounded-lg pl-10 pr-4 py-1.5 text-sm focus:outline-none focus:border-cyan-400 transition-colors" placeholder="Search Player or ID..." type="text"/>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-highest/30">
+<tr>
+<th class="px-6 py-4 font-headline font-bold text-xs uppercase tracking-tighter text-on-surface-variant/70">ID</th>
+<th class="px-6 py-4 font-headline font-bold text-xs uppercase tracking-tighter text-on-surface-variant/70">Player Name</th>
+<th class="px-6 py-4 font-headline font-bold text-xs uppercase tracking-tighter text-on-surface-variant/70">Ground / Sport</th>
+<th class="px-6 py-4 font-headline font-bold text-xs uppercase tracking-tighter text-on-surface-variant/70">Date &amp; Time</th>
+<th class="px-6 py-4 font-headline font-bold text-xs uppercase tracking-tighter text-on-surface-variant/70">Payment</th>
+<th class="px-6 py-4 font-headline font-bold text-xs uppercase tracking-tighter text-on-surface-variant/70">Status</th>
+<th class="px-6 py-4 font-headline font-bold text-xs uppercase tracking-tighter text-on-surface-variant/70 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-highest/40 transition-colors group">
+<td class="px-6 py-4 font-data text-xs text-primary-container">#BK-9901</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded bg-surface-variant border border-outline-variant/30 overflow-hidden">
+<img alt="Player" class="w-full h-full object-cover" data-alt="close-up portrait of a determined young athlete with athletic features in soft professional studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlgmF8yzXPVbxSh0SDMx-Q7_06SsNV3YxnwHhoJTv4kelprxKVa7wEoWCV0Qq_pHKm86cdvtSYiberhQzpcess_Wyp5aXSTurvEfw_LQ-vhIBZg_Ui7zC2YSrQmNuXGjfL7etvgynMxyox_oz33gaF8l3uno_SY3t7968Ol_senV1iMSyj0WHsgFZG2xgjgUWO5_5gELNWKCOZufqttmOLRAQT9r_CPpkQnRA3iBO99haZ9cpTsq2CYBjpilyJJXGKRt_cUorzIzc"/>
+</div>
+<span class="font-headline font-semibold uppercase">Marcus Rashford</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-on-surface">Main Stadium</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Football 11x11</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-semibold">Oct 24, 2023</span>
+<span class="text-xs font-data text-on-surface-variant">18:00 - 20:00</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-green-500/10 text-green-400 border border-green-500/20 uppercase">Paid</span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary-container/10 text-primary-container border border-primary-container/20 uppercase">Confirmed</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-cyan-400 hover:text-white transition-colors"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-highest/40 transition-colors group">
+<td class="px-6 py-4 font-data text-xs text-primary-container">#BK-9902</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded bg-surface-variant border border-outline-variant/30 overflow-hidden">
+<img alt="Player" class="w-full h-full object-cover" data-alt="professional portrait of a high-performance female tennis athlete in a sleek sports environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOpCIqYi3iQX-ERyQ74bX1Po7qjGexHTFR17WAPxQl7QZFrrPRPr4-BGctd6FCeATkNHGYpB5JYp0ngMNOWy5E4GfYHGEsYyi1YKHpfk2YgklaukHqh9FwrNVx_f-t4xAH7KkWwW_ofKlGZZoBIolr-ngZO_0GBHEWSTIBNuRI8T-Y8X4LiBxA9g68-iyJ5UrpU96qFW0GCnF52Zg5obaxL6C-j18PyDngTwdDcNZ0gZlOxVrT4qeiVPUN3y62HlRxGEuRzyENyQk"/>
+</div>
+<span class="font-headline font-semibold uppercase">Serena J.</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-on-surface">West Arena</span>
+<span class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Tennis Single</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex flex-col">
+<span class="text-sm font-semibold">Oct 25, 2023</span>
+<span class="text-xs font-data text-on-surface-variant">09:00 - 10:30</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-secondary-container/10 text-secondary-container border border-secondary-container/20 uppercase">Pending</span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-secondary-container/10 text-secondary-container border border-secondary-container/20 uppercase">Tentative</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-cyan-400 hover:text-white transition-colors"><span class="material-symbols-outlined">visibility</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Booking Detail Modal -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-surface-dim/80 backdrop-blur-xl"></div>
+<div class="relative bg-surface-container-highest border border-outline-variant/40 rounded-xl w-full max-w-2xl shadow-[0_30px_60px_rgba(0,0,0,0.5)] overflow-hidden">
+<!-- Modal Header -->
+<div class="p-6 border-b border-outline-variant/20 flex items-center justify-between bg-gradient-to-r from-primary-container/5 to-transparent">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary-container text-2xl">confirmation_number</span>
+<div>
+<h2 class="font-headline text-2xl font-bold uppercase tracking-tight">Booking Details</h2>
+<p class="text-xs font-data text-primary-container/70 tracking-widest uppercase">ID: BK-9901</p>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Modal Content -->
+<div class="p-8 grid grid-cols-2 gap-8">
+<!-- Player Info -->
+<div class="space-y-6">
+<section>
+<h4 class="text-[10px] font-headline font-bold text-on-surface-variant uppercase tracking-[0.2em] mb-3">Player Info</h4>
+<div class="flex items-center gap-4">
+<div class="h-14 w-14 rounded-lg bg-surface-variant border border-primary-container/20 overflow-hidden">
+<img alt="Player" class="w-full h-full object-cover" data-alt="headshot of a young professional athlete in high-contrast cinematic lighting with stadium vibes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbKR51GCy_DEbiWpOfzb1i2JgVEDI-ggC0QHm-J9Wj43EcKJWDwVSPcRW_iiW_bA1Y0Et8rYeV-JIwFWG6pOqBPpjpjLHV59fXLeKZirbjVCwSHhtagJY1n2Zu9q0LA7V1hQ917U4BLQslBDZ5eLgw601nlY67eX5gWdYgvuRopx16CGDT7pkhCpjZOzbvpD3EnafP3dKRd1g-r2rut8N_Cy6HeBytxAmfLCuGALKEkTaWu2XnNi18-EaUwcgZJs3l9x0JAM8U8_U"/>
+</div>
+<div>
+<p class="font-headline text-lg font-bold uppercase">Marcus Rashford</p>
+<p class="text-sm text-on-surface-variant font-body">marcus.r@stadium.hq</p>
+<p class="text-xs text-primary-container font-data uppercase mt-1">PRO MEMBER</p>
+</div>
+</div>
+</section>
+<section>
+<h4 class="text-[10px] font-headline font-bold text-on-surface-variant uppercase tracking-[0.2em] mb-3">Ground Detail</h4>
+<div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant/20 space-y-2">
+<div class="flex justify-between">
+<span class="text-xs text-on-surface-variant uppercase">Facility</span>
+<span class="text-xs font-bold uppercase">Main Stadium</span>
+</div>
+<div class="flex justify-between">
+<span class="text-xs text-on-surface-variant uppercase">Pitch No</span>
+<span class="text-xs font-bold uppercase">Field Alpha-1</span>
+</div>
+<div class="flex justify-between">
+<span class="text-xs text-on-surface-variant uppercase">Sport Category</span>
+<span class="text-xs font-bold uppercase">Football 11x11</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Slot Info -->
+<div class="space-y-6">
+<section>
+<h4 class="text-[10px] font-headline font-bold text-on-surface-variant uppercase tracking-[0.2em] mb-3">Schedule &amp; Timing</h4>
+<div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant/20 space-y-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">event_available</span>
+<div>
+<p class="text-xs text-on-surface-variant uppercase">Date</p>
+<p class="font-headline font-bold">Tuesday, October 24</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-container">schedule</span>
+<div>
+<p class="text-xs text-on-surface-variant uppercase">Time Slot</p>
+<p class="font-data font-bold text-lg text-primary-container">18:00 - 20:00</p>
+</div>
+</div>
+</div>
+</section>
+<section>
+<h4 class="text-[10px] font-headline font-bold text-on-surface-variant uppercase tracking-[0.2em] mb-3">Financials</h4>
+<div class="flex items-center justify-between">
+<span class="text-xs text-on-surface-variant uppercase">Total Amount</span>
+<span class="font-data text-xl text-primary-container">$120.00</span>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-xs text-on-surface-variant uppercase">Method</span>
+<span class="text-xs font-bold uppercase flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">credit_card</span> Visa ···· 4492</span>
+</div>
+</section>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="p-6 bg-surface-container border-t border-outline-variant/20 flex items-center justify-between">
+<button class="text-on-surface-variant font-headline font-bold uppercase text-sm px-6 py-2 hover:bg-surface-variant rounded transition-colors tracking-widest">Download Receipt</button>
+<div class="flex gap-4">
+<button class="bg-[#FF3D57] hover:bg-[#FF3D57]/80 text-white font-headline font-bold px-6 py-2 rounded uppercase tracking-wider text-sm transition-all shadow-[0_0_15px_rgba(255,61,87,0.3)]">Cancel Booking</button>
+<button class="bg-primary-container text-on-primary-container font-headline font-bold px-6 py-2 rounded uppercase tracking-wider text-sm active-glow transition-all">Reschedule</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

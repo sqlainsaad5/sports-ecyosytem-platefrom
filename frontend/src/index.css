@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* SEP admin shell — .admin-app only (DESIGN.md + sep_admin_dashboard / user_management mocks) */
+.admin-app {
+  @apply min-h-screen bg-admin-canvas antialiased;
+  font-family: Inter, system-ui, sans-serif;
+  color: #dee1f7;
+}
+
+.admin-app ::selection {
+  background-color: rgba(0, 229, 255, 0.25);
+  color: #00363d;
+}
+
+.admin-app .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.admin-app .admin-glass {
+  background: rgba(28, 35, 51, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.05);
+}
+
+.admin-app .admin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.admin-app .admin-scrollbar::-webkit-scrollbar-track {
+  background: #0a0f1e;
+}
+.admin-app .admin-scrollbar::-webkit-scrollbar-thumb {
+  background: #2f3445;
+  border-radius: 10px;
+}
+.admin-app .admin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #00e5ff;
+}

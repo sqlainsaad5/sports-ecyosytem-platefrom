@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>STADIUM OPS — TRAINING SESSIONS MONITORING</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Orbitron:wght@400;700&amp;family=Space+Grotesk:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-low": "#161b2b",
+              "primary": "#c3f5ff",
+              "on-tertiary-fixed-variant": "#594400",
+              "surface-container": "#1a1f2f",
+              "tertiary-fixed-dim": "#f3bf26",
+              "on-secondary-container": "#ffddd2",
+              "on-background": "#dee1f7",
+              "primary-fixed": "#9cf0ff",
+              "inverse-surface": "#dee1f7",
+              "on-tertiary-fixed": "#251a00",
+              "on-secondary-fixed": "#390c00",
+              "outline-variant": "#3b494c",
+              "on-primary-container": "#00626e",
+              "tertiary-fixed": "#ffdf96",
+              "on-primary-fixed-variant": "#004f58",
+              "on-error-container": "#ffdad6",
+              "surface-dim": "#0e1322",
+              "surface-variant": "#2f3445",
+              "surface-container-lowest": "#090e1c",
+              "background": "#0e1322",
+              "on-primary-fixed": "#001f24",
+              "secondary": "#ffb59d",
+              "outline": "#849396",
+              "on-surface": "#dee1f7",
+              "inverse-on-surface": "#2b3040",
+              "surface-container-highest": "#2f3445",
+              "secondary-container": "#b83900",
+              "on-surface-variant": "#bac9cc",
+              "on-secondary-fixed-variant": "#832600",
+              "on-secondary": "#5d1900",
+              "secondary-fixed-dim": "#ffb59d",
+              "error-container": "#93000a",
+              "surface-container-high": "#25293a",
+              "on-tertiary-container": "#6f5500",
+              "primary-fixed-dim": "#00daf3",
+              "on-error": "#690005",
+              "tertiary-container": "#fec931",
+              "tertiary": "#ffeac0",
+              "secondary-fixed": "#ffdbd0",
+              "primary-container": "#00e5ff",
+              "inverse-primary": "#006875",
+              "on-tertiary": "#3e2e00",
+              "on-primary": "#00363d",
+              "error": "#ffb4ab",
+              "surface-tint": "#00daf3",
+              "surface-bright": "#343949",
+              "surface": "#0e1322"
+            },
+            fontFamily: {
+              "headline": ["Rajdhani"],
+              "body": ["Inter"],
+              "label": ["Space Grotesk"],
+              "stats": ["Orbitron"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-panel {
+        background: rgba(26, 31, 47, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+      }
+      .primary-gradient {
+        background: linear-gradient(135deg, #00E5FF, #0066FF);
+      }
+      .stadium-glow {
+        box-shadow: 0 0 30px rgba(0, 229, 255, 0.1);
+      }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #0A0F1E; }
+      ::-webkit-scrollbar-thumb { background: #2f3445; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface-dim text-on-surface font-body min-h-screen overflow-x-hidden">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 flex flex-col bg-[#0A0F1E] dark:bg-[#0A0F1E] shadow-2xl shadow-cyan-900/10 z-[60]">
+<div class="flex flex-col h-full py-6">
+<div class="px-6 mb-10">
+<h1 class="font-['Rajdhani'] text-2xl font-bold tracking-tighter text-[#00E5FF]">SEP CONTROL</h1>
+<p class="text-[10px] tracking-[0.2em] text-slate-500 font-bold uppercase mt-1">COMMAND CENTER</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-headline tracking-wide">OVERVIEW</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-headline tracking-wide">VERIFICATION</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#00E5FF] border-l-2 border-[#00E5FF] bg-gradient-to-r from-cyan-500/10 to-transparent" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-headline tracking-wide">MANAGEMENT</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span class="font-headline tracking-wide">OPERATIONS</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-headline tracking-wide">ANALYTICS</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-400 font-medium hover:bg-[#1C2333] hover:text-[#00E5FF] transition-all duration-300" href="#">
+<span class="material-symbols-outlined">layers</span>
+<span class="font-headline tracking-wide">PLATFORM</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 px-4 primary-gradient text-on-primary font-bold rounded-lg flex items-center justify-center gap-2 active:scale-[0.98] brightness-125 transition-all">
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+<span class="font-headline text-sm tracking-widest">DEPLOY UPDATE</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-16 z-50 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-white/5 shadow-[0_20px_40px_rgba(0,229,255,0.08)]">
+<div class="flex justify-between items-center px-8 w-full h-full">
+<div class="flex items-center gap-8">
+<span class="font-['Rajdhani'] text-xl font-black text-white tracking-widest uppercase">STADIUM OPS</span>
+<div class="relative group">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 group-focus-within:text-primary-container">
+<span class="material-symbols-outlined text-sm">search</span>
+</span>
+<input class="bg-surface-container-lowest border-none text-sm rounded-full pl-10 pr-4 py-2 w-64 focus:ring-1 focus:ring-primary-container text-on-surface transition-all" placeholder="QUICK SEARCH..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-slate-400">
+<button class="hover:text-cyan-400 hover:bg-white/5 p-2 rounded-full transition-colors"><span class="material-symbols-outlined">notifications</span></button>
+<button class="hover:text-cyan-400 hover:bg-white/5 p-2 rounded-full transition-colors"><span class="material-symbols-outlined">settings</span></button>
+<button class="hover:text-cyan-400 hover:bg-white/5 p-2 rounded-full transition-colors"><span class="material-symbols-outlined">help_outline</span></button>
+</div>
+<div class="flex items-center gap-3 border-l border-white/10 pl-6">
+<div class="text-right">
+<p class="text-xs font-bold text-white tracking-wider">H. KHAN</p>
+<p class="text-[10px] text-primary-container font-stats">LEVEL 4 ADMIN</p>
+</div>
+<img class="w-10 h-10 rounded-lg border border-primary-container/30 object-cover" data-alt="professional headshot of a middle-aged Pakistani man with a neat beard and professional business attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCcsSpqfafn0I2xLMHyD964sT99b0clla1na8Wvr8ziylikLeDmUHcqcExLYndyWl493iqhKM5csN-yA6lbi7TM2NWhN43oM-EIRmKhfccY7GR_mJ60UeHAeOsVPyDJDc5r9yvWbsBsVzqj6pnLCcI9g3mpKX8VRVbtt3Zz7GBt3N9aCfutbMG5OJEnchMF2MUfnmkI9RidOaGXsJsZN_-lXDnom5s5TumpRpepkts0Ggnp20fpHtViiqiFarkect3vUOP8UIsYgw"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-24 px-8 pb-12">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="text-4xl font-headline font-bold tracking-tight text-white">SESSION MONITORING</h2>
+<div class="flex items-center gap-2 mt-1">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+<p class="text-sm font-label text-on-surface-variant tracking-wider">LIVE FEED: 14 ACTIVE SESSIONS ACROSS LAHORE COMPLEX</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-5 py-2 glass-panel text-white font-headline text-sm tracking-widest hover:bg-white/5 flex items-center gap-2 rounded-lg">
+<span class="material-symbols-outlined text-base">ios_share</span> EXPORT DATA
+                </button>
+<button class="px-5 py-2 primary-gradient text-on-primary font-headline font-bold text-sm tracking-widest flex items-center gap-2 rounded-lg shadow-lg shadow-cyan-500/20">
+<span class="material-symbols-outlined text-base">add_circle</span> SCHEDULE SESSION
+                </button>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="glass-panel p-4 rounded-xl mb-8 flex flex-wrap gap-4 items-center">
+<div class="flex-1 min-w-[200px]">
+<label class="block text-[10px] font-stats text-primary-container mb-1 tracking-widest uppercase">Coach Filter</label>
+<select class="w-full bg-surface-container-lowest border-none rounded text-sm text-on-surface focus:ring-1 focus:ring-primary-container">
+<option>All Coaches</option>
+<option>Coach Babar Azam</option>
+<option>Coach Shaheen Afridi</option>
+<option>Coach Shadab Khan</option>
+</select>
+</div>
+<div class="flex-1 min-w-[200px]">
+<label class="block text-[10px] font-stats text-primary-container mb-1 tracking-widest uppercase">Player Filter</label>
+<select class="w-full bg-surface-container-lowest border-none rounded text-sm text-on-surface focus:ring-1 focus:ring-primary-container">
+<option>All Players</option>
+<option>Zainab Abbas</option>
+<option>Haris Rauf</option>
+<option>Naseem Shah</option>
+</select>
+</div>
+<div class="flex-1 min-w-[200px]">
+<label class="block text-[10px] font-stats text-primary-container mb-1 tracking-widest uppercase">Date Range</label>
+<input class="w-full bg-surface-container-lowest border-none rounded text-sm text-on-surface focus:ring-1 focus:ring-primary-container" type="date"/>
+</div>
+<div class="flex-1 min-w-[150px]">
+<label class="block text-[10px] font-stats text-primary-container mb-1 tracking-widest uppercase">Status</label>
+<div class="flex gap-2">
+<button class="bg-primary-container/20 text-primary-container px-3 py-1.5 rounded text-xs font-bold flex-1 border border-primary-container/30">ALL</button>
+<button class="bg-surface-container-lowest text-slate-400 px-3 py-1.5 rounded text-xs font-bold flex-1 hover:bg-surface-variant transition-colors">LIVE</button>
+</div>
+</div>
+<button class="mt-5 p-2 bg-surface-container-highest rounded-lg text-primary-container hover:brightness-125 transition-all">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+<!-- Table Container -->
+<div class="glass-panel rounded-xl overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high/50 border-b border-white/5">
+<th class="px-6 py-4 text-[10px] font-stats text-primary-container tracking-widest">ID</th>
+<th class="px-6 py-4 text-[10px] font-stats text-primary-container tracking-widest">PLAYER</th>
+<th class="px-6 py-4 text-[10px] font-stats text-primary-container tracking-widest">COACH</th>
+<th class="px-6 py-4 text-[10px] font-stats text-primary-container tracking-widest">SPORT</th>
+<th class="px-6 py-4 text-[10px] font-stats text-primary-container tracking-widest">SCHEDULE</th>
+<th class="px-6 py-4 text-[10px] font-stats text-primary-container tracking-widest">ATTENDANCE</th>
+<th class="px-6 py-4 text-[10px] font-stats text-primary-container tracking-widest">PERFORMANCE</th>
+<th class="px-6 py-4 text-[10px] font-stats text-primary-container tracking-widest">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<!-- Row 1 -->
+<tr class="hover:bg-primary-container/5 transition-colors group">
+<td class="px-6 py-4 font-stats text-xs text-slate-400">#TR-8821</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full border border-white/10" data-alt="portrait of a young Pakistani female athlete with focused expression and athletic headband" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDcrJokXSI3vKkuuOlWVfGn1eOjNAXxIZB4wuTP8lWU1lHD-FfndFj4G43EjDYHv5yoxseW3KdocQEob1-XR4BDd5fR6tOEACVFPem_p1y4wu9GX7_1Kwgpq-UuyEQZdzXwQ9emM5Re1i2hT2H4ng98-e2c9P3lLW-i2DU9qJUzxC7N5idf-NCVuwy3pKFGsW7-15L-eG-9QCQhza0d9uQ3xxQ8pYhWgfMpjS65HrXOu2fC2K0EI7OasJvxMdyMcBiAVT3ScFow8wg"/>
+<div>
+<p class="text-sm font-bold text-white">Zainab Abbas</p>
+<p class="text-[10px] text-slate-500">U-19 SQUAD</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full border border-white/10" data-alt="headshot of a mature athletic coach with short dark hair and coaching whistle around neck" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4iEhzjnfJLubazCXO0SW9-u1Ugq7gr43yTI0NXRXVt4It_P7VsHpEVYHbdy6RNuVLDXDSeLFesZSw25BPbjJJuPH7caXs-C5dp1tUtC4RP5P2w_stuZRBSKQ28Cuo77NMKbe0J4luZOYbuTFtO7p1wEgh4foACVgqEcS39JXnE3Wrod8SImAPkNDXhp9uyrkJ_sNTVe6qtZKrrxU920pRAD40Vgjy0vxlEgJiTOnBoGUh0Lcin7Tc4AZ3cDMtybtycRe5mpDHczQ"/>
+<p class="text-sm font-medium text-slate-300">Babar Azam</p>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-label text-slate-400 px-2 py-1 bg-white/5 rounded">CRICKET</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-xs font-medium text-white">Oct 24, 2023</p>
+<p class="text-[10px] text-primary-container font-stats">18:00 - 20:00</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-tighter">PRESENT</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="text-lg font-stats text-primary-container">92</span>
+<span class="text-[10px] text-slate-500">pts</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<button class="text-primary-container hover:underline font-headline text-xs tracking-widest font-bold">VIEW DETAILS</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-primary-container/5 transition-colors group">
+<td class="px-6 py-4 font-stats text-xs text-slate-400">#TR-8822</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full border border-white/10" data-alt="portrait of a young Pakistani male athlete in a white jersey looking determined" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIyL-qZVLXmpATxF57_HbJ0fpqLvFkJCOue2PK4q8hsLSWTKe-bIwvJPy4b2Mz939m0Xq0hTSlBpCRzoChlHVbAZyK1xfSu3xQxv6DXAjJJ74Gxg4sqPpVXuY-eFV7AGxMksabK6MMU3Vmn62DoCr7S_dySWhmMlP-IVBSXz2EvV3R9cAVc0N14BW3vqLbPSxLN_hu_U2qpa6Tvn52_LwbsixTM1UYIycjdWLq6m-twiLw5wddQ5tgZEro1eXMieLAV1-CjIOwLGA"/>
+<div>
+<p class="text-sm font-bold text-white">Haris Rauf</p>
+<p class="text-[10px] text-slate-500">SENIOR TEAM</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full border border-white/10" data-alt="portrait of an experienced sporting professional with a focused gaze" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7bfs5MWJls3szM54ZlUbSUsY9LktUp83_HzsQYiqibTaqpy9h7TRAbxtR3pb_EM8RyVDxucJMMkql7MjCZ50ZEPfWaKAEZcJaEfFUYBcU7CwBxwd1gGjqYq-OOAjdUoATp7PogMsVapgm5YhnENRSVDL4NGLW6YlqWaIRQ3Rg4_QOpIiYaoHSQL6PjgxTPjPcNWUVHyXJPKfmfOowT5KOogEF6er5mBzn6RS4avm93v5i4KBfM9QTgnCTFBAtIb6c4JtvKTtBzKM"/>
+<p class="text-sm font-medium text-slate-300">Shaheen Afridi</p>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-label text-slate-400 px-2 py-1 bg-white/5 rounded">FOOTBALL</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-xs font-medium text-white">Oct 24, 2023</p>
+<p class="text-[10px] text-primary-container font-stats">19:30 - 21:30</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-primary-container/10 text-primary-container border border-primary-container/20 uppercase tracking-tighter">LIVE NOW</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="text-lg font-stats text-slate-600">--</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<button class="text-primary-container hover:underline font-headline text-xs tracking-widest font-bold">VIEW DETAILS</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-primary-container/5 transition-colors group">
+<td class="px-6 py-4 font-stats text-xs text-slate-400">#TR-8823</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full border border-white/10" data-alt="close-up portrait of a South Asian male athlete wearing team training gear" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATVv-uJfu8rjgpgVo1L1kL5JVYU01rw6w41rMbmj9LeT0WO5Zftbmc7DIeZVGDAXQqljbKV485fKVsPiBvRPxR53zRtvaT5Wgs4aRFQPdqc4dcmwJJmTHPtXERrfMm0mzXXQhsdCkSACdls3u6SBv29vXz84o_qg_x4rJFhz_cmRNapbUEW4W1gPr2eDxQMEKG_WEwg8dCjxmuSesT8LwY3l8XldWv-LaP_oxyLVr27igkENsxFObEfHzhEr5mVSgGXIXDI65Ai6g"/>
+<div>
+<p class="text-sm font-bold text-white">Naseem Shah</p>
+<p class="text-[10px] text-slate-500">ACADEMY</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full border border-white/10" data-alt="professional sports trainer portrait with outdoor stadium lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzsSjzmPS8GfEyGNYqJtXY9XzGM6KO-nlkJtrC400cIz_dFqcEl0PlSoA5JUNuRoXiKBY04nkYZs_9viPFM8-lj8JN3Es8VveHXRnYu1bMT8jPSkayOBo1Jm1N6RuHsbNF0wyrjtM5a2CN1iX6nxXZQQhDzVF_faWGkCBvp4ruJF0WZe9jTEh1ogVx-KZUPgiV6Tvmb_s7bVIVDhs59oM-FBSXa0ag1lsmeRa1RuvUVvD8x-aASNk8aUFwhFMq56ahBkctAcryJ0g"/>
+<p class="text-sm font-medium text-slate-300">Shadab Khan</p>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs font-label text-slate-400 px-2 py-1 bg-white/5 rounded">TENNIS</span>
+</td>
+<td class="px-6 py-4">
+<p class="text-xs font-medium text-white">Oct 23, 2023</p>
+<p class="text-[10px] text-primary-container font-stats">16:00 - 17:30</p>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold bg-secondary-container/10 text-secondary border border-secondary-container/20 uppercase tracking-tighter">ABSENT</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="text-lg font-stats text-error">0</span>
+<span class="text-[10px] text-slate-500">pts</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<button class="text-primary-container hover:underline font-headline text-xs tracking-widest font-bold">VIEW DETAILS</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination & Summary -->
+<div class="flex justify-between items-center mt-6">
+<p class="text-xs text-slate-500 font-label tracking-wide">SHOWING 1-10 OF 142 SESSIONS</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container hover:bg-surface-variant text-slate-400 transition-all">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container text-on-primary-container font-stats text-xs">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container hover:bg-surface-variant text-slate-400 font-stats text-xs">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container hover:bg-surface-variant text-slate-400 font-stats text-xs">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-container hover:bg-surface-variant text-slate-400 transition-all">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Session Detail Panel (Right Side Slide-in Overlay Simulation) -->
+<div class="fixed top-0 right-0 h-screen w-[450px] bg-surface-container shadow-[-20px_0_60px_rgba(0,0,0,0.5)] border-l border-white/5 z-[70] transform translate-x-0 overflow-y-auto">
+<div class="p-8">
+<div class="flex justify-between items-start mb-10">
+<div>
+<span class="text-[10px] font-stats text-primary-container tracking-widest block mb-2">SESSION DOSSIER</span>
+<h3 class="text-2xl font-headline font-bold text-white tracking-tight">#TR-8821 DETAIL</h3>
+</div>
+<button class="p-2 hover:bg-white/5 rounded-full text-slate-400 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Profile Summary -->
+<div class="flex items-center gap-4 mb-8 p-4 bg-surface-container-high rounded-xl border-l-4 border-primary-container">
+<img class="w-16 h-16 rounded-lg object-cover" data-alt="focused Pakistani female athlete portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr_98RPR_iuPyDyTpzd1YhkOmGBft-4DPdL5RM6UML1mzXumCjkVpFDpQejQ1veqHMoKCxiKloKfnb1miKPuu7hMQoFjLVKtKDxAMNE7kBJ5IFMNXvdZxqUYx3suknL_oM_l0lkSEJKvxrxnvzJsxSz7_EtStYnte7qJ-FDaIVv0a9B4SUK3BDWR338__r1vJA_XOajvEUUOFgT6jnm6qmn1163QpllORFFXBqm6pFY0Gx4p3Ot2fmBgoaM00PVCyd3i16vsq28c8"/>
+<div>
+<p class="text-lg font-headline font-bold text-white">Zainab Abbas</p>
+<p class="text-xs text-slate-400 font-label">Lahore High Performance Center</p>
+<div class="flex gap-4 mt-2">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-primary-container">sports_cricket</span>
+<span class="text-[10px] text-slate-300 font-stats">CRICKET</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-primary-container">calendar_today</span>
+<span class="text-[10px] text-slate-300 font-stats">OCT 24</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Training Plan -->
+<section class="mb-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary-container">list_alt</span>
+<h4 class="font-headline font-bold text-white tracking-widest text-sm uppercase">Training Plan Summary</h4>
+</div>
+<div class="space-y-3">
+<div class="p-3 bg-surface-container-lowest rounded-lg border border-white/5">
+<p class="text-xs font-bold text-primary-container mb-1">PHASE 1: CONDITIONING</p>
+<p class="text-xs text-slate-400 leading-relaxed">High-intensity interval sprints followed by core stability exercises focusing on lateral movement speed.</p>
+</div>
+<div class="p-3 bg-surface-container-lowest rounded-lg border border-white/5">
+<p class="text-xs font-bold text-primary-container mb-1">PHASE 2: TECHNICAL DRILLS</p>
+<p class="text-xs text-slate-400 leading-relaxed">Specific focus on wrist position during delivery and follow-through mechanics under match-simulated pressure.</p>
+</div>
+</div>
+</section>
+<!-- Evaluation Breakdown -->
+<section class="mb-10">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container">analytics</span>
+<h4 class="font-headline font-bold text-white tracking-widest text-sm uppercase">Performance Metrics</h4>
+</div>
+<span class="text-2xl font-stats text-primary-container">92<span class="text-xs text-slate-500 ml-1">AVG</span></span>
+</div>
+<div class="space-y-5">
+<div>
+<div class="flex justify-between text-[10px] font-stats mb-2">
+<span class="text-slate-400">AGILITY &amp; SPEED</span>
+<span class="text-primary-container">95%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full primary-gradient rounded-full stadium-glow" style="width: 95%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-stats mb-2">
+<span class="text-slate-400">TECHNICAL PRECISION</span>
+<span class="text-primary-container">88%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full primary-gradient rounded-full stadium-glow" style="width: 88%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-stats mb-2">
+<span class="text-slate-400">STAMINA DRAIN</span>
+<span class="text-secondary">72%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 72%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-stats mb-2">
+<span class="text-slate-400">TACTICAL AWARENESS</span>
+<span class="text-primary-container">90%</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full primary-gradient rounded-full stadium-glow" style="width: 90%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Coach Notes -->
+<section class="mb-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary-container">edit_note</span>
+<h4 class="font-headline font-bold text-white tracking-widest text-sm uppercase">Coach Notes</h4>
+</div>
+<div class="p-4 bg-surface-container-highest rounded-xl italic text-sm text-slate-300 border-l-2 border-secondary leading-loose">
+                    "Zainab showed exceptional focus during the technical phase today. Her reaction times are currently 5% above the squad average. Need to monitor her recovery as she reported minor fatigue in her left quad towards the end of the session."
+                    <div class="flex items-center gap-2 mt-4 not-italic">
+<img class="w-6 h-6 rounded-full" data-alt="coach avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIHoh2KhhtGL2s4K3TZjZYhnoDnR482ybuR4EsiJQcknOtvc1HBG2FL6hz37tDAcY2XlKCO6BgoeFB8iunBSsZAD_uDDZ0GnnaGdJZjVmwiEc2jwz_WSKpv7UBFVUOyowo9gxIc8rB_ff346AoyQ41t9cPG6Aog5pTqrNISgLF7tPGs3o7fMY4GPGLTbkFN9vGBcuhhL8-Uj3HuhscqQOcL9PyFhSm2ZvC5Xy9hLA-96JwIUO-wbb0rlAIUeElXWukKRUcTlro-zc"/>
+<span class="text-[10px] font-stats text-slate-400">— Coach Babar Azam</span>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="grid grid-cols-2 gap-4 pt-6 border-t border-white/5">
+<button class="py-3 px-4 glass-panel text-white font-headline font-bold text-xs tracking-widest rounded-lg flex items-center justify-center gap-2 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined text-sm">download</span> REPORT
+                </button>
+<button class="py-3 px-4 primary-gradient text-on-primary font-headline font-bold text-xs tracking-widest rounded-lg flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-sm">check_circle</span> ARCHIVE
+                </button>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,18 @@
+const mongoose = require('mongoose');
+
+const trainingPlanSchema = new mongoose.Schema(
+  {
+    coach: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    player: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    weekStartDate: { type: Date, required: true },
+    title: String,
+    goals: String,
+    exercises: String,
+    status: { type: String, enum: ['draft', 'published'], default: 'published' },
+  },
+  { timestamps: true }
+);
+
+trainingPlanSchema.index({ coach: 1, player: 1, weekStartDate: 1 });
+
+module.exports = mongoose.model('TrainingPlan', trainingPlanSchema);

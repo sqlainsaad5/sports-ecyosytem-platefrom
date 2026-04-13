@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SEP Admin Control - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Orbitron:wght@600;800&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-on-surface": "#2b3040",
+              "surface-container-highest": "#2f3445",
+              "tertiary-container": "#fec931",
+              "on-tertiary-container": "#6f5500",
+              "on-surface": "#dee1f7",
+              "secondary-fixed": "#ffdbd0",
+              "surface-container-high": "#25293a",
+              "outline-variant": "#3b494c",
+              "on-primary-container": "#00626e",
+              "on-primary": "#00363d",
+              "on-surface-variant": "#bac9cc",
+              "on-tertiary-fixed-variant": "#594400",
+              "on-error": "#690005",
+              "primary-container": "#00e5ff",
+              "surface-container-lowest": "#090e1c",
+              "on-tertiary": "#3e2e00",
+              "on-secondary": "#5d1900",
+              "secondary": "#ffb59d",
+              "primary-fixed-dim": "#00daf3",
+              "primary-fixed": "#9cf0ff",
+              "on-secondary-fixed": "#390c00",
+              "surface-container-low": "#161b2b",
+              "secondary-container": "#b83900",
+              "on-background": "#dee1f7",
+              "on-error-container": "#ffdad6",
+              "tertiary-fixed-dim": "#f3bf26",
+              "on-tertiary-fixed": "#251a00",
+              "error-container": "#93000a",
+              "surface-variant": "#2f3445",
+              "surface": "#0e1322",
+              "surface-dim": "#0e1322",
+              "on-secondary-fixed-variant": "#832600",
+              "surface-container": "#1a1f2f",
+              "surface-bright": "#343949",
+              "tertiary": "#ffeac0",
+              "on-primary-fixed": "#001f24",
+              "on-primary-fixed-variant": "#004f58",
+              "tertiary-fixed": "#ffdf96",
+              "inverse-surface": "#dee1f7",
+              "inverse-primary": "#006875",
+              "secondary-fixed-dim": "#ffb59d",
+              "primary": "#c3f5ff",
+              "error": "#ffb4ab",
+              "background": "#0e1322",
+              "surface-tint": "#00daf3",
+              "outline": "#849396",
+              "on-secondary-container": "#ffddd2"
+            },
+            fontFamily: {
+              "headline": ["Rajdhani", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+              "label": ["Space Grotesk", "sans-serif"],
+              "orbitron": ["Orbitron", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0A0F1E;
+            font-family: 'Inter', sans-serif;
+            color: #dee1f7;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1a1f2f;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #00E5FF;
+            border-radius: 10px;
+        }
+        .glass-panel {
+            background: rgba(26, 31, 47, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.05);
+        }
+        .orbitron-stat {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .rajdhani-head {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- SideNavBar (Execution from JSON) -->
+<aside class="fixed left-0 top-0 h-full w-[260px] bg-[#0A0F1E] dark:bg-[#0A0F1E] z-50 overflow-y-auto flex flex-col shadow-[20px_0_40px_rgba(0,229,255,0.03)]">
+<div class="p-8">
+<h1 class="text-2xl font-black font-orbitron text-[#00E5FF] tracking-tighter">SEP</h1>
+<p class="text-xs font-headline text-slate-500 font-bold uppercase tracking-widest">Admin Control</p>
+</div>
+<nav class="flex-1 mt-4">
+<a class="border-l-4 border-[#00E5FF] bg-gradient-to-r from-[#00E5FF]/10 to-transparent text-[#00E5FF] font-bold flex items-center px-6 py-4 transition-all" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="dashboard">dashboard</span>
+<span class="font-headline tracking-wide">Overview</span>
+</a>
+<a class="text-slate-400 hover:bg-[#1C2333] hover:text-[#00E5FF] flex items-center px-6 py-4 transition-all" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="verified_user">verified_user</span>
+<span class="font-headline tracking-wide">Verification</span>
+</a>
+<a class="text-slate-400 hover:bg-[#1C2333] hover:text-[#00E5FF] flex items-center px-6 py-4 transition-all" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="groups">groups</span>
+<span class="font-headline tracking-wide">Management</span>
+</a>
+<a class="text-slate-400 hover:bg-[#1C2333] hover:text-[#00E5FF] flex items-center px-6 py-4 transition-all" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="settings_applications">settings_applications</span>
+<span class="font-headline tracking-wide">Operations</span>
+</a>
+<a class="text-slate-400 hover:bg-[#1C2333] hover:text-[#00E5FF] flex items-center px-6 py-4 transition-all" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="analytics">analytics</span>
+<span class="font-headline tracking-wide">Analytics</span>
+</a>
+<a class="text-slate-400 hover:bg-[#1C2333] hover:text-[#00E5FF] flex items-center px-6 py-4 transition-all" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="hub">hub</span>
+<span class="font-headline tracking-wide">Platform</span>
+</a>
+</nav>
+<div class="p-6 mt-auto">
+<div class="bg-surface-container-low p-4 rounded-xl border border-white/5 flex items-center gap-3">
+<img alt="Admin Avatar" class="w-10 h-10 rounded-lg object-cover" data-alt="Close up of a professional administrative user profile photo with clean lighting and corporate aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8uuKvBVFJjiBhEomV-rmfGfHmy3xqYRSS8Lr4ocjtcICVWOPa6Lqa-BM_wM7e_apr7ecrL_4ocv8JIz8hzzyt6ggOrnNsTEjIzoZGfApPXyENoeVHaj162_BkNte1RnJ_N8_bCxHTaDBEOFh2KCimhDOdeBsI4X7Ms6Qp9-jnc3nc1zk4K3ncjFbKi9JZRCA62poP1t4WHSRRa3qlr5xPjRYbJdLzvKe7L3jQhWTl_uHI6GN3E_J8omS99dq38ajN914Q9rSuLbQ"/>
+<div>
+<p class="text-sm font-bold text-white">Ahmed Raza</p>
+<p class="text-[10px] text-primary-container">System Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[260px] w-[calc(100%-260px)] h-screen overflow-y-auto custom-scrollbar bg-[#0A0F1E]">
+<!-- TopNavBar (Execution from JSON) -->
+<header class="sticky top-0 right-0 w-full h-16 z-40 bg-[#0A0F1E]/80 backdrop-blur-xl border-b border-slate-800/50 flex justify-between items-center px-8">
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-[#00E5FF]" data-icon="search">search</span>
+<input class="bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-sm w-80 focus:ring-1 focus:ring-[#00E5FF]/50 transition-all text-slate-200" placeholder="Search platform data..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-400 hover:text-[#00E5FF] transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-secondary-container rounded-full"></span>
+</button>
+<button class="text-slate-400 hover:text-[#00E5FF] transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-6 w-px bg-slate-800"></div>
+<div class="font-orbitron text-[#00E5FF] uppercase tracking-widest text-xs font-bold">Admin Control Panel</div>
+</div>
+</header>
+<div class="p-8 space-y-8">
+<!-- Stat Cards Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Card 1 -->
+<div class="glass-panel p-6 rounded-xl border-l-4 border-primary-container relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-slate-400 text-xs font-headline font-bold uppercase tracking-wider">Total Players</p>
+<h3 class="orbitron-stat text-3xl font-black text-white mt-1">12,842</h3>
+</div>
+<div class="p-3 bg-primary-container/10 rounded-lg">
+<span class="material-symbols-outlined text-primary-container" data-icon="sports_kabaddi">sports_kabaddi</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">+12%</span>
+<span class="text-slate-500 text-[10px]">vs last month</span>
+</div>
+<!-- Sparkline Mockup -->
+<div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-container/20 to-transparent"></div>
+</div>
+<!-- Card 2 -->
+<div class="glass-panel p-6 rounded-xl border-l-4 border-tertiary-container relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-slate-400 text-xs font-headline font-bold uppercase tracking-wider">Total Coaches</p>
+<h3 class="orbitron-stat text-3xl font-black text-white mt-1">1,402</h3>
+</div>
+<div class="p-3 bg-tertiary-container/10 rounded-lg">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="strategy">strategy</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">+5.4%</span>
+<span class="text-slate-500 text-[10px]">vs last month</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-panel p-6 rounded-xl border-l-4 border-secondary-container relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-slate-400 text-xs font-headline font-bold uppercase tracking-wider">Business Owners</p>
+<h3 class="orbitron-stat text-3xl font-black text-white mt-1">892</h3>
+</div>
+<div class="p-3 bg-secondary-container/10 rounded-lg">
+<span class="material-symbols-outlined text-secondary-container" data-icon="storefront">storefront</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">+2.1%</span>
+<span class="text-slate-500 text-[10px]">vs last month</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-panel p-6 rounded-xl border-l-4 border-primary-fixed relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-slate-400 text-xs font-headline font-bold uppercase tracking-wider">Total Revenue</p>
+<h3 class="orbitron-stat text-3xl font-black text-white mt-1">₨ 4.2M</h3>
+</div>
+<div class="p-3 bg-primary-fixed/10 rounded-lg">
+<span class="material-symbols-outlined text-primary-fixed" data-icon="payments">payments</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-[10px] font-bold">+18.2%</span>
+<span class="text-slate-500 text-[10px]">vs last month</span>
+</div>
+</div>
+</div>
+<!-- Middle Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Area Chart Container -->
+<div class="lg:col-span-2 glass-panel p-8 rounded-xl relative">
+<div class="flex justify-between items-center mb-10">
+<div>
+<h2 class="rajdhani-head text-xl font-bold text-white">Booking Activity</h2>
+<p class="text-slate-500 text-sm">30-day transaction volume trend</p>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-xs bg-[#00E5FF]/10 text-[#00E5FF] rounded-lg border border-[#00E5FF]/20">Daily</button>
+<button class="px-3 py-1 text-xs text-slate-500 hover:text-white transition-colors">Weekly</button>
+</div>
+</div>
+<!-- Chart Placeholder -->
+<div class="h-64 w-full flex items-end justify-between gap-2 px-2 relative">
+<div class="absolute inset-0 flex flex-col justify-between py-2 pointer-events-none opacity-10">
+<div class="border-t border-slate-400 w-full"></div>
+<div class="border-t border-slate-400 w-full"></div>
+<div class="border-t border-slate-400 w-full"></div>
+<div class="border-t border-slate-400 w-full"></div>
+</div>
+<!-- Simulated Bars for Area Chart Look -->
+<div class="w-full h-full relative overflow-hidden rounded-t-lg">
+<svg class="w-full h-full preserve-3d" viewbox="0 0 1000 300">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#00E5FF" stop-opacity="0.5"></stop>
+<stop offset="100%" stop-color="#00E5FF" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,250 Q100,180 200,210 T400,120 T600,180 T800,80 T1000,100 L1000,300 L0,300 Z" fill="url(#chartGradient)"></path>
+<path d="M0,250 Q100,180 200,210 T400,120 T600,180 T800,80 T1000,100" fill="none" stroke="#00E5FF" stroke-linecap="round" stroke-width="4"></path>
+</svg>
+</div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] font-orbitron text-slate-500 uppercase">
+<span>Day 01</span>
+<span>Day 10</span>
+<span>Day 20</span>
+<span>Day 30</span>
+</div>
+</div>
+<!-- Donut Chart Container -->
+<div class="glass-panel p-8 rounded-xl flex flex-col justify-between">
+<div>
+<h2 class="rajdhani-head text-xl font-bold text-white mb-2">User Distribution</h2>
+<p class="text-slate-500 text-sm mb-8">Role segment analysis</p>
+</div>
+<div class="relative w-48 h-48 mx-auto flex items-center justify-center">
+<!-- Simulated Donut -->
+<div class="absolute inset-0 rounded-full border-[12px] border-surface-container-high"></div>
+<div class="absolute inset-0 rounded-full border-[12px] border-primary-container border-t-transparent border-l-transparent rotate-45"></div>
+<div class="absolute inset-0 rounded-full border-[12px] border-tertiary-container border-b-transparent border-r-transparent -rotate-12"></div>
+<div class="text-center">
+<p class="orbitron-stat text-2xl font-black text-white">15.1K</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Total Users</p>
+</div>
+</div>
+<div class="space-y-3 mt-8">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+<span class="text-sm text-slate-300">Players</span>
+</div>
+<span class="orbitron-stat text-sm font-bold">85%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-tertiary-container"></div>
+<span class="text-sm text-slate-300">Coaches</span>
+</div>
+<span class="orbitron-stat text-sm font-bold">9%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary-container"></div>
+<span class="text-sm text-slate-300">Owners</span>
+</div>
+<span class="orbitron-stat text-sm font-bold">6%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-12">
+<!-- Pending Verifications -->
+<div class="lg:col-span-2 glass-panel rounded-xl overflow-hidden">
+<div class="p-6 bg-surface-container-high/50 border-b border-white/5 flex justify-between items-center">
+<h2 class="rajdhani-head text-xl font-bold text-white">Pending Verifications</h2>
+<span class="px-2 py-1 rounded bg-secondary-container/20 text-secondary-container text-[10px] font-black uppercase">5 Urgent</span>
+</div>
+<div class="divide-y divide-white/5">
+<!-- Row 1 -->
+<div class="p-5 flex items-center justify-between hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<img alt="Fatima Khan" class="w-10 h-10 rounded-lg object-cover" data-alt="Portrait of a professional athletic female coach wearing sportswear in a bright indoor stadium setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFSoiCagsYXshSTzqYMsDkeyd0BfPw-RzNXNQyykGkX7eQBRlOyI3A-KNrPbp7SrB3v0IssmS1L9aOBZvyGzx8Lgn77EX1P1dcBG85jjihc22K8cp2oy2gh_QcpA0c2KFdCmedEKgcmVoV80EoIjbH72MsTQA3ylaW-KJWLsMG93bHTDwm4MoSD6ChOeZeCdoGQwMqDj8gZohjYmPyVljGovSnm3LHbsNQVwdJdQxxj3_hMhSPN9rSZyZejjMmRiDiEriUdeHcJXA"/>
+<div>
+<p class="text-sm font-bold text-white">Fatima Khan</p>
+<p class="text-xs text-slate-500">Tennis Pro • Karachi, PK</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-1.5 rounded-lg border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold hover:bg-[#00E5FF]/10 transition-all">Review</button>
+<button class="px-4 py-1.5 rounded-lg bg-emerald-500 text-white text-xs font-bold hover:shadow-[0_0_15px_rgba(16,185,129,0.4)] transition-all">Approve</button>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="p-5 flex items-center justify-between hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<img alt="Zia Ullah" class="w-10 h-10 rounded-lg object-cover" data-alt="Close up profile photo of a business owner in professional attire with soft focus urban office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLi0yhC4y5-ABSu5tA2T-MNH74qi0PnNqi3ZcZa-jRi5LA-FGveQkwKvJVJZjEdd429rO_kvq30qnwuGq7XbI9R_nlVlT5lAzqyCwsuQHRTS3JEhyVtfuxq-UlgKwF3rW9ms6zurmEBcvABZBOJLVltBsw4du32eX1hQXSCAP0tpNTzWdmZ1kAvArrDhZGcYOqvEPUHvscZOsHLIREwLn6GBdAEtHhVT5IFHAhKex7nAtCtFIlGYrKRtajAD3J-fox_V4nJHkxwZo"/>
+<div>
+<p class="text-sm font-bold text-white">Zia Ullah</p>
+<p class="text-xs text-slate-500">Arena Owner • Lahore, PK</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-1.5 rounded-lg border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold hover:bg-[#00E5FF]/10 transition-all">Review</button>
+<button class="px-4 py-1.5 rounded-lg bg-emerald-500 text-white text-xs font-bold">Approve</button>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="p-5 flex items-center justify-between hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<img alt="Bilal Abbas" class="w-10 h-10 rounded-lg object-cover" data-alt="Action shot profile photo of a cricket coach on a lush green field under bright outdoor lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF_OXZqvQ0pmzoXGq66r3BLJOAxKp2G3B1WBVTKeYuZView-oqQuVSfTT-ikkD_LNTyIdM8xsEtHQB45eJMs5TYK3u_2b2cEoJQcdywZv2LlBuFa2sWbqCXlGVgvkwJhI35Mtqfifbqqq3O5NRaqMov4wdTW2n63k6U2IXr6S0aLlfDb8XWCpoko_adZTOHjxc7VQGG8EtKyDTKdn9NL5gTAtbzH7mwQC2-4S-q-jEWVsWNFmdtxkp0zMoMqrJb7cukMHSoXQbMU0"/>
+<div>
+<p class="text-sm font-bold text-white">Bilal Abbas</p>
+<p class="text-xs text-slate-500">Cricket Coach • Islamabad, PK</p>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-1.5 rounded-lg border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-bold hover:bg-[#00E5FF]/10 transition-all">Review</button>
+<button class="px-4 py-1.5 rounded-lg bg-emerald-500 text-white text-xs font-bold">Approve</button>
+</div>
+</div>
+</div>
+<div class="p-4 text-center">
+<button class="text-slate-500 text-xs font-bold hover:text-white transition-colors uppercase tracking-widest">View All Verifications</button>
+</div>
+</div>
+<!-- Activity & Health -->
+<div class="space-y-8">
+<!-- Recent Activity -->
+<div class="glass-panel p-6 rounded-xl h-[340px] flex flex-col">
+<h2 class="rajdhani-head text-lg font-bold text-white mb-6">Recent Activity</h2>
+<div class="flex-1 overflow-y-auto custom-scrollbar space-y-6 pr-2">
+<div class="flex gap-4 relative">
+<div class="w-0.5 bg-slate-800 absolute left-2 top-6 bottom-[-1.5rem]"></div>
+<div class="w-4 h-4 rounded-full bg-[#00E5FF] shadow-[0_0_10px_#00E5FF] z-10 shrink-0 mt-1"></div>
+<div>
+<p class="text-xs text-white">New high-value booking by <span class="text-primary-container font-bold">User #2931</span></p>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-orbitron">2 Mins Ago</p>
+</div>
+</div>
+<div class="flex gap-4 relative">
+<div class="w-0.5 bg-slate-800 absolute left-2 top-6 bottom-[-1.5rem]"></div>
+<div class="w-4 h-4 rounded-full bg-secondary-container z-10 shrink-0 mt-1"></div>
+<div>
+<p class="text-xs text-white">Server latency spike detected in <span class="text-secondary-container font-bold">South Node</span></p>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-orbitron">15 Mins Ago</p>
+</div>
+</div>
+<div class="flex gap-4 relative">
+<div class="w-0.5 bg-slate-800 absolute left-2 top-6 bottom-[-1.5rem]"></div>
+<div class="w-4 h-4 rounded-full bg-emerald-500 z-10 shrink-0 mt-1"></div>
+<div>
+<p class="text-xs text-white">Coach <span class="text-emerald-400 font-bold">Mustafa Ali</span> verified</p>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-orbitron">1 Hour Ago</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-4 h-4 rounded-full bg-slate-700 z-10 shrink-0 mt-1"></div>
+<div>
+<p class="text-xs text-white">Platform maintenance scheduled for <span class="text-slate-400 font-bold">02:00 AM</span></p>
+<p class="text-[10px] text-slate-500 mt-1 uppercase font-orbitron">2 Hours Ago</p>
+</div>
+</div>
+</div>
+</div>
+<!-- System Health -->
+<div class="glass-panel p-6 rounded-xl">
+<h2 class="rajdhani-head text-lg font-bold text-white mb-6">System Health</h2>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-[10px] font-orbitron text-slate-400 mb-1.5">
+<span>SERVER STATUS</span>
+<span class="text-emerald-400">99.9%</span>
+</div>
+<div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 w-[99.9%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-orbitron text-slate-400 mb-1.5">
+<span>DB RESPONSE</span>
+<span class="text-[#00E5FF]">42ms</span>
+</div>
+<div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-[#00E5FF] w-[75%]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] font-orbitron text-slate-400 mb-1.5">
+<span>ACTIVE SESSIONS</span>
+<span class="text-secondary-container">2.4K</span>
+</div>
+<div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[45%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for quick action (Suppressed on dashboard as per rules but shown if primary intent matches) -->
+<!-- The FAB is suppressed here as per "Shell Visibility & Relevance" section unless primary purpose aligns perfectly. 
+         Dashboards usually have them for "Quick Add", but the rules say MUST suppress on Dashboard. -->
+</body></html>

@@ -1,0 +1,203 @@
+import { useEffect, useState } from 'react';
+import PlayerCard from '../../components/player/PlayerCard';
+import PlayerIcon from '../../components/player/PlayerIcon';
+import { playerProfileInput, playerProfileSaveBtn } from '../../components/player/playerClassNames';
+import { api, getErrorMessage } from '../../services/api';
+
+function labelCls() {
+  return 'mb-2 block font-headline text-xs font-bold uppercase tracking-[0.16em] text-player-on-variant';
+}
+
+export default function PlayerProfile() {
+  const [me, setMe] = useState(null);
+  const [fullName, setFullName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [sportPreference, setSportPreference] = useState('cricket');
+  const [skillLevel, setSkillLevel] = useState('beginner');
+  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+  const [msg, setMsg] = useState('');
+  const [err, setErr] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setErr('');
+      try {
+        const [meRes, profRes] = await Promise.all([api.get('/auth/me'), api.get('/players/me/profile')]);
+        if (cancelled) return;
+        setMe(meRes.data.data);
+        const p = profRes.data.data;
+        setFullName(p.fullName || '');
+        setPhone(p.phone || '');
+        setSportPreference(p.sportPreference || 'cricket');
+        setSkillLevel(p.skillLevel || 'beginner');
+        setCity(p.city || '');
+        setAddress(p.address || '');
+      } catch (e) {
+        if (!cancelled) setErr(getErrorMessage(e));
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setMsg('');
+    setErr('');
+    try {
+      await api.put('/players/me/profile', {
+        fullName,
+        phone: phone || undefined,
+        sportPreference,
+        skillLevel,
+        city: city || undefined,
+        address: address || undefined,
+      });
+      setMsg('Profile saved.');
+    } catch (e) {
+      setErr(getErrorMessage(e));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const email = me?.email || '—';
+
+  return (
+    <div className="space-y-10">
+      <section className="relative overflow-hidden bg-gradient-to-r from-[#0a5230] via-[#0a6b45] to-player-green p-8 midnight-asymmetric shadow-2xl md:p-10">
+        <div className="absolute right-0 top-0 h-64 w-64 -translate-y-1/2 translate-x-1/3 rounded-full bg-player-green/10 blur-3xl" />
+        <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-white/90">Account</p>
+            <h1 className="player-display-hero mt-2 font-display text-4xl uppercase tracking-tight text-white md:text-5xl lg:text-6xl">
+              My profile
+            </h1>
+            <p className="mt-3 max-w-xl text-base font-medium leading-relaxed text-white/85">
+              Keep your details current so coaches and bookings match your sport and location.
+            </p>
+          </div>
+          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-2 border-white/40 bg-player-bg/30 font-orbitron text-2xl font-black text-white backdrop-blur-sm">
+            {(fullName || email).slice(0, 2).toUpperCase()}
+          </div>
+        </div>
+      </section>
+
+      {err ? (
+        <div className="midnight-asymmetric border border-red-500/35 bg-red-950/35 px-4 py-3 text-sm text-red-300 shadow-lg">
+          {err}
+        </div>
+      ) : null}
+      {msg ? (
+        <div className="midnight-asymmetric border border-player-green/35 bg-player-green/10 px-4 py-3 text-sm font-medium text-player-green shadow-lg">
+          {msg}
+        </div>
+      ) : null}
+
+      <form onSubmit={onSubmit} className="grid gap-8 lg:grid-cols-2">
+        <PlayerCard>
+          <h2 className="player-headline-section font-headline text-lg font-bold uppercase tracking-tight text-white">
+            Personal
+          </h2>
+          <p className="mt-1 text-xs text-player-on-variant">Name and sport preferences.</p>
+          <div className="mt-6 space-y-4">
+            <div>
+              <label className={labelCls()} htmlFor="pf-email">
+                Email
+              </label>
+              <input id="pf-email" type="email" readOnly value={email} className={`${playerProfileInput} opacity-80`} />
+            </div>
+            <div>
+              <label className={labelCls()} htmlFor="pf-name">
+                Full name
+              </label>
+              <input
+                id="pf-name"
+                required
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className={playerProfileInput}
+              />
+            </div>
+            <div>
+              <label className={labelCls()} htmlFor="pf-sport">
+                Sport
+              </label>
+              <select
+                id="pf-sport"
+                value={sportPreference}
+                onChange={(e) => setSportPreference(e.target.value)}
+                className={playerProfileInput}
+              >
+                <option value="cricket">Cricket</option>
+                <option value="badminton">Badminton</option>
+              </select>
+            </div>
+            <div>
+              <label className={labelCls()} htmlFor="pf-level">
+                Skill level
+              </label>
+              <select
+                id="pf-level"
+                value={skillLevel}
+                onChange={(e) => setSkillLevel(e.target.value)}
+                className={playerProfileInput}
+              >
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+        </PlayerCard>
+
+        <PlayerCard>
+          <h2 className="player-headline-section font-headline text-lg font-bold uppercase tracking-tight text-white">
+            Contact
+          </h2>
+          <p className="mt-1 text-xs text-player-on-variant">Phone and location for sessions.</p>
+          <div className="mt-6 space-y-4">
+            <div>
+              <label className={labelCls()} htmlFor="pf-phone">
+                Phone
+              </label>
+              <input id="pf-phone" value={phone} onChange={(e) => setPhone(e.target.value)} className={playerProfileInput} />
+            </div>
+            <div>
+              <label className={labelCls()} htmlFor="pf-city">
+                City
+              </label>
+              <input id="pf-city" value={city} onChange={(e) => setCity(e.target.value)} className={playerProfileInput} />
+            </div>
+            <div>
+              <label className={labelCls()} htmlFor="pf-address">
+                Address
+              </label>
+              <textarea
+                id="pf-address"
+                rows={3}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                className={playerProfileInput}
+              />
+            </div>
+          </div>
+        </PlayerCard>
+
+        <div className="lg:col-span-2">
+          <button type="submit" disabled={saving} className={playerProfileSaveBtn}>
+            <span className="inline-flex items-center justify-center gap-2">
+              <PlayerIcon name="save" className="text-lg" />
+              {saving ? 'Saving…' : 'Save changes'}
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}

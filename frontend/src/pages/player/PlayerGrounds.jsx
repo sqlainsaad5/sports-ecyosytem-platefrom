@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import PlayerCard from '../../components/player/PlayerCard';
+import PlayerPageHeader from '../../components/player/PlayerPageHeader';
+import { playerBtnPrimary, playerField, playerLabel, playerSelect } from '../../components/player/playerClassNames';
 import { api, getErrorMessage } from '../../services/api';
 
 export default function PlayerGrounds() {
@@ -46,17 +49,15 @@ export default function PlayerGrounds() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Indoor ground booking</h1>
-      <p className="text-slate-600 mt-1">Hold a slot for a few minutes, then confirm payment.</p>
-      {err && <p className="mt-4 text-sm text-red-600">{err}</p>}
-      <div className="mt-6 max-w-md space-y-3 rounded-xl border border-slate-200 bg-white p-4">
+      <PlayerPageHeader
+        title="Book ground"
+        subtitle="Hold a slot for a few minutes, then confirm payment."
+      />
+      {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
+      <PlayerCard className="max-w-md space-y-4">
         <div>
-          <label className="text-sm font-medium">Ground</label>
-          <select
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-            value={selected}
-            onChange={(e) => setSelected(e.target.value)}
-          >
+          <label className={playerLabel}>Ground</label>
+          <select className={`${playerSelect} mt-2`} value={selected} onChange={(e) => setSelected(e.target.value)}>
             <option value="">Select…</option>
             {grounds.map((g) => (
               <option key={g._id} value={g._id}>
@@ -66,44 +67,29 @@ export default function PlayerGrounds() {
           </select>
         </div>
         <div>
-          <label className="text-sm font-medium">Start</label>
-          <input
-            type="datetime-local"
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-            value={start}
-            onChange={(e) => setStart(e.target.value)}
-          />
+          <label className={playerLabel}>Start</label>
+          <input type="datetime-local" className={`${playerField} mt-2`} value={start} onChange={(e) => setStart(e.target.value)} />
         </div>
         <div>
-          <label className="text-sm font-medium">End</label>
-          <input
-            type="datetime-local"
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-            value={end}
-            onChange={(e) => setEnd(e.target.value)}
-          />
+          <label className={playerLabel}>End</label>
+          <input type="datetime-local" className={`${playerField} mt-2`} value={end} onChange={(e) => setEnd(e.target.value)} />
         </div>
         <div>
-          <label className="text-sm font-medium">Amount</label>
-          <input
-            type="number"
-            className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
+          <label className={playerLabel}>Amount</label>
+          <input type="number" className={`${playerField} mt-2`} value={amount} onChange={(e) => setAmount(e.target.value)} />
         </div>
-        <button type="button" onClick={createHold} className="w-full rounded-lg bg-slate-800 text-white py-2 text-sm">
+        <button type="button" onClick={createHold} className={`${playerBtnPrimary} w-full`}>
           Hold slot
         </button>
-        {hold && (
-          <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-sm">
+        {hold ? (
+          <div className="rounded-2xl bg-player-green/10 px-4 py-3 text-sm text-player-on-surface outline outline-1 outline-player-green/25">
             <p>Hold active until {new Date(hold.holdExpiresAt).toLocaleTimeString()}</p>
-            <button type="button" onClick={confirm} className="mt-2 w-full rounded-lg bg-brand-600 text-white py-2">
+            <button type="button" onClick={confirm} className={`${playerBtnPrimary} mt-3 w-full`}>
               Confirm payment (mock)
             </button>
           </div>
-        )}
-      </div>
+        ) : null}
+      </PlayerCard>
     </div>
   );
 }

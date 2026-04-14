@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import PlayerCard from '../../components/player/PlayerCard';
+import PlayerPageHeader from '../../components/player/PlayerPageHeader';
+import { playerBtnSm, playerField, playerLabel } from '../../components/player/playerClassNames';
 import { api, getErrorMessage } from '../../services/api';
 
 export default function PlayerCoaches() {
@@ -32,40 +35,42 @@ export default function PlayerCoaches() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Coach recommendations</h1>
-      <p className="text-slate-600 mt-1">Based on your sport, skill, and city (verified coaches only).</p>
-      {err && <p className="mt-4 text-sm text-red-600">{err}</p>}
-      <div className="mt-4 max-w-xl">
-        <label className="text-sm font-medium text-slate-700">Optional message (all requests)</label>
+      <PlayerPageHeader
+        title="Coach match"
+        subtitle="Verified coaches matched to your sport, skill, and city."
+      />
+      {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
+      <PlayerCard className="mb-6 max-w-xl">
+        <label className={playerLabel}>Optional message (all requests)</label>
         <input
-          className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+          className={`${playerField} mt-2`}
           placeholder="I would like to train with you."
           value={msg}
           onChange={(e) => setMsg(e.target.value)}
         />
-      </div>
-      <ul className="mt-6 space-y-3">
+      </PlayerCard>
+      <ul className="space-y-4">
         {list.map((row) => (
-          <li key={row.userId} className="rounded-xl border border-slate-200 bg-white p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <PlayerCard key={row.userId} className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="font-medium">{row.profile?.fullName}</p>
-              <p className="text-sm text-slate-500">
+              <p className="text-lg font-bold text-white">{row.profile?.fullName}</p>
+              <p className="mt-1 text-sm text-player-on-variant">
                 {row.profile?.specialties?.join(', ')} · {row.profile?.city || '—'}
               </p>
-              <p className="text-xs text-slate-400 mt-1">Match score: {row.matchScore?.toFixed?.(1) ?? row.matchScore}</p>
+              <p className="mt-2 text-xs text-player-on-variant/70">
+                Match score: {row.matchScore?.toFixed?.(1) ?? row.matchScore}
+              </p>
             </div>
-            <div className="flex flex-col gap-2 sm:w-48">
-              <button
-                type="button"
-                onClick={() => requestTraining(row.userId)}
-                className="rounded-lg bg-brand-600 text-white text-sm py-2 hover:bg-brand-700"
-              >
+            <div className="flex flex-col gap-2 sm:w-52">
+              <button type="button" onClick={() => requestTraining(row.userId)} className={playerBtnSm}>
                 Request training
               </button>
             </div>
-          </li>
+          </PlayerCard>
         ))}
-        {!list.length && !err && <p className="text-slate-500">No coaches yet — complete your profile or wait for verifications.</p>}
+        {!list.length && !err ? (
+          <p className="text-sm text-player-on-variant">No coaches yet — complete your profile or wait for verifications.</p>
+        ) : null}
       </ul>
     </div>
   );

@@ -6,8 +6,33 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': { target: 'http://127.0.0.1:5000', changeOrigin: true },
-      '/uploads': { target: 'http://127.0.0.1:5000', changeOrigin: true },
+      '/api': {
+        target: 'http://127.0.0.1:5000',
+        changeOrigin: true,
+        timeout: 120000,
+        proxyTimeout: 120000,
+        configure(proxy) {
+          proxy.on('error', (err, _req, res) => {
+            if (res && !res.headersSent) {
+              res.writeHead(502, { 'Content-Type': 'application/json' });
+              res.end(
+                JSON.stringify({
+                  success: false,
+                  message:
+                    'API unreachable (start backend: npm run backend from repo root, or npm run dev in backend/).',
+                })
+              );
+            }
+            console.error('[vite proxy]', err.code || err.message);
+          });
+        },
+      },
+      '/uploads': {
+        target: 'http://127.0.0.1:5000',
+        changeOrigin: true,
+        timeout: 120000,
+        proxyTimeout: 120000,
+      },
     },
   },
 });

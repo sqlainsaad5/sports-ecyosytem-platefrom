@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Midnight Stadium - My Students</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Rajdhani:wght@500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Orbitron:wght@600;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-container": "#fff6f3",
+                        "error-container": "#9f0519",
+                        "secondary-dim": "#ff7524",
+                        "on-error-container": "#ffa8a3",
+                        "surface-variant": "#1e2538",
+                        "on-surface-variant": "#a6aabd",
+                        "inverse-surface": "#faf8ff",
+                        "surface-bright": "#242c40",
+                        "surface-tint": "#a4ffb9",
+                        "surface": "#090e1b",
+                        "on-tertiary-container": "#000000",
+                        "surface-container-high": "#191f31",
+                        "primary-container": "#00fd86",
+                        "on-error": "#490006",
+                        "inverse-primary": "#006e37",
+                        "primary-fixed": "#00fd86",
+                        "secondary": "#ff7524",
+                        "surface-container-lowest": "#000000",
+                        "secondary-fixed-dim": "#ffb28d",
+                        "on-tertiary-fixed-variant": "#560094",
+                        "tertiary": "#c180ff",
+                        "tertiary-container": "#af5cfe",
+                        "on-primary-fixed": "#004620",
+                        "primary-dim": "#00ed7d",
+                        "inverse-on-surface": "#505564",
+                        "primary": "#a4ffb9",
+                        "on-secondary-fixed-variant": "#8a3700",
+                        "surface-dim": "#090e1b",
+                        "on-primary": "#006531",
+                        "primary-fixed-dim": "#00ed7d",
+                        "on-background": "#e3e7fb",
+                        "on-secondary-fixed": "#5c2200",
+                        "tertiary-fixed": "#ce9bff",
+                        "tertiary-dim": "#9c48ea",
+                        "error-dim": "#d7383b",
+                        "on-primary-container": "#005b2c",
+                        "error": "#ff716c",
+                        "secondary-container": "#a04100",
+                        "surface-container-low": "#0d1322",
+                        "on-tertiary": "#33005b",
+                        "outline": "#707586",
+                        "on-primary-fixed-variant": "#006632",
+                        "on-secondary": "#3c1300",
+                        "secondary-fixed": "#ffc5ab",
+                        "background": "#090e1b",
+                        "on-tertiary-fixed": "#270048",
+                        "tertiary-fixed-dim": "#c488ff",
+                        "surface-container-highest": "#1e2538",
+                        "surface-container": "#131929",
+                        "outline-variant": "#434857",
+                        "on-surface": "#e3e7fb"
+                    },
+                    fontFamily: {
+                        "bebas": ["Bebas Neue", "sans-serif"],
+                        "rajdhani": ["Rajdhani", "sans-serif"],
+                        "inter": ["Inter", "sans-serif"],
+                        "orbitron": ["Orbitron", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>body {
+    background-color: #080D1A;
+    color: #e3e7fb;
+    font-family: "Inter", sans-serif;
+    background-image: radial-gradient(circle at top right, rgba(255, 107, 0, 0.05), transparent 400px), url(https://lh3.googleusercontent.com/aida-public/AB6AXuD_MEpRM1QGVqxOIoqWWXZTfjrO1zIEOv9AxoQ0zR25pAmw7iRA5NbxWlSPWenbnXTjPZNq8fugjMQag4cxZAf78MOc7fPbtwIviUhOTLpDqb4lQNH__ywRbmI2vFj2ZJqypjcW1InnJRiJeVN6ho2VdwO_-TXi9JRwKRyYNA74O9JOq8gbzbwFXkltoNZeq61woiX3TBuzgWv2lklEiy_72if2I1EJ312EAJrbg-pPjP4DMY9ljnKqsH6fSIYUNVvAWcDKwVY1Y0mS)
+    }
+.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.asymmetric-card {
+    border-top-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-top-right-radius: 0.125rem;
+    border-bottom-left-radius: 0.125rem
+    }</style>
+</head>
+<body class="overflow-x-hidden">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-20 md:w-64 bg-[#080D1A] shadow-[0_0_20px_rgba(255,107,0,0.1)] flex flex-col py-8 z-50">
+<div class="px-6 mb-12">
+<span class="text-2xl font-black tracking-widest text-[#FF6B00] font-bebas">COACH PORTAL</span>
+<p class="text-[10px] font-rajdhani uppercase tracking-[0.2em] text-slate-500">Elite Performance</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Dashboard Tab -->
+<a class="flex items-center gap-4 text-slate-500 hover:text-slate-200 px-6 py-4 transition-all hover:bg-[#162035] group" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="hidden md:block font-bebas text-lg tracking-wider">Dashboard</span>
+</a>
+<!-- Schedule Tab -->
+<a class="flex items-center gap-4 text-slate-500 hover:text-slate-200 px-6 py-4 transition-all hover:bg-[#162035] group" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="hidden md:block font-bebas text-lg tracking-wider">Schedule</span>
+</a>
+<!-- Requests Tab -->
+<a class="flex items-center gap-4 text-slate-500 hover:text-slate-200 px-6 py-4 transition-all hover:bg-[#162035] group" href="#">
+<span class="material-symbols-outlined">pending_actions</span>
+<span class="hidden md:block font-bebas text-lg tracking-wider">Requests</span>
+</a>
+<!-- Students Tab (ACTIVE) -->
+<a class="flex items-center gap-4 bg-[#FF6B00]/10 text-[#FF6B00] border-r-4 border-[#FF6B00] px-6 py-4 transition-all" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="hidden md:block font-bebas text-lg tracking-wider">Students</span>
+</a>
+<!-- Plans Tab -->
+<a class="flex items-center gap-4 text-slate-500 hover:text-slate-200 px-6 py-4 transition-all hover:bg-[#162035] group" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="hidden md:block font-bebas text-lg tracking-wider">Plans</span>
+</a>
+</nav>
+<div class="px-6 pt-8 mt-auto border-t border-slate-800/50 space-y-4">
+<a class="flex items-center gap-4 text-slate-500 hover:text-slate-200 transition-all" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="hidden md:block font-bebas text-sm tracking-widest">Settings</span>
+</a>
+<a class="flex items-center gap-4 text-slate-500 hover:text-slate-200 transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="hidden md:block font-bebas text-sm tracking-widest">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-20 md:ml-64 min-h-screen">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-[#080D1A]/80 backdrop-blur-xl z-40 flex justify-between items-center px-8 border-b border-[#162035]">
+<div class="flex items-center gap-4">
+<h1 class="text-3xl font-bold tracking-tighter text-[#FF6B00] uppercase font-bebas">MIDNIGHT STADIUM</h1>
+</div>
+<div class="flex items-center gap-8">
+<div class="hidden lg:flex items-center bg-[#162035] rounded-full px-4 py-2 w-96">
+<span class="material-symbols-outlined text-slate-400 mr-2">search</span>
+<input class="bg-transparent border-none text-xs font-bebas tracking-widest text-on-surface focus:ring-0 w-full placeholder:text-slate-500" placeholder="SEARCH STUDENT ROSTER..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-400 hover:text-[#FF6B00] relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-[#FF6B00] rounded-full border-2 border-[#080D1A]"></span>
+</button>
+<button class="text-slate-400 hover:text-[#FF6B00]">
+<span class="material-symbols-outlined">bolt</span>
+</button>
+<div class="h-10 w-10 rounded-full bg-secondary-container overflow-hidden border-2 border-[#FF6B00]/20">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a professional athletic coach with a confident expression and gritty stadium background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ5P6OehCteQdnLChaiAN2-_py4On5wgcBsFZUkhkJkclX5M-vq8SUfORbL8g6fA2OcoxVDfE0mYxmX-0MIv7ulPXjUmrDzFkk7JCbb7Xd-xOwuYXyyprnDfMuJl5Uuykb7ldl9SzITY0kpaYZ29B992SBYbUedm-cwixKl_mK3AhuuxUAr27-XBkZiSk-FN8T97exVoVfO5i-schGKaT4gYWgHBlghPFdc-DUwv_LnN6Ak0r3wWJuwHpl9GbP8fn1OHZgp94xaq-D"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="pt-28 px-8 pb-12">
+<!-- Filters & Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+<div>
+<h2 class="font-rajdhani text-4xl font-bold tracking-tight text-white uppercase">Active Roster <span class="text-[#FF6B00] ml-2">/ 12 Students</span></h2>
+<p class="text-slate-500 font-inter mt-1">Manage performance tracking and tactical training schedules.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-[#162035] p-3 text-slate-300 hover:bg-[#FF6B00] hover:text-white transition-all asymmetric-card flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+<span class="font-bebas tracking-widest text-sm">Filter</span>
+</button>
+<button class="bg-[#162035] p-3 text-slate-300 hover:bg-[#FF6B00] hover:text-white transition-all asymmetric-card flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">sort</span>
+<span class="font-bebas tracking-widest text-sm">Sort</span>
+</button>
+<button class="bg-[#FF6B00] text-white px-6 py-3 font-bebas tracking-widest text-lg asymmetric-card shadow-[0_0_15px_rgba(255,107,0,0.3)] hover:scale-105 transition-transform">
+                        Add New Student
+                    </button>
+</div>
+</div>
+<!-- Student Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8">
+<!-- Card 1 -->
+<div class="bg-[#0F1729] asymmetric-card overflow-hidden group border-t-2 border-transparent hover:border-[#FF6B00] transition-all duration-300">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="relative">
+<div class="w-20 h-20 bg-surface-variant overflow-hidden asymmetric-card border-2 border-[#162035]">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a young male athlete in sports gear with moody dark lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlv3hdBI7UfrC07EfuD_3-1RMShpCQDdw5Kl8mOl4wq_x3D_0VxkPKzIq2mk1cJIx7c5IgAJ7O7dzTCgZFHSxQRGN4YmhyLPdtPD6rG1PllSe6ICpK6M_OQrVdRbcosdqhfsft_AxpP5lWOc4O3Wte0epTHEskGu_H38CG3Bt6UIww24stXtlcQnD1j4CL5bEASzm25dJGQDbF0xdm8eQ0izUSY1curY6OzXHCIBCtROGa_WLj9bHzlbLJuLnceuMclKUi6pNj4lzx"/>
+</div>
+<span class="absolute -bottom-1 -right-1 bg-[#00FF87] w-4 h-4 rounded-full border-4 border-[#0F1729]"></span>
+</div>
+<div>
+<h3 class="font-rajdhani text-2xl font-bold text-white leading-none mb-1">Usman Tariq</h3>
+<div class="flex gap-2 mb-2">
+<span class="bg-[#162035] text-[10px] font-bebas tracking-widest text-[#FF6B00] px-2 py-0.5 rounded">CRICKET</span>
+<span class="bg-[#162035] text-[10px] font-bebas tracking-widest text-slate-400 px-2 py-0.5 rounded uppercase">Professional</span>
+</div>
+<p class="text-slate-500 text-xs font-inter flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event_repeat</span>
+                                        42 Total Sessions
+                                    </p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest">Perf. Score</p>
+<span class="font-orbitron text-4xl font-extrabold text-[#FF6B00] block">94</span>
+</div>
+</div>
+<!-- Metrics Grid -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-[#162035]/50 p-4 asymmetric-card flex items-center justify-between">
+<div>
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest mb-1">Attendance</p>
+<span class="font-orbitron text-xl text-white">98%</span>
+</div>
+<div class="relative w-12 h-12">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-[#080D1A]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+<path class="text-[#FF6B00]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="98, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+<div class="bg-[#162035]/50 p-4 asymmetric-card">
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest mb-1">Stamina Level</p>
+<div class="w-full bg-[#080D1A] h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-[#00FF87] h-full" style="width: 85%"></div>
+</div>
+<span class="font-orbitron text-xs text-slate-400 mt-2 block">ELITE</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex gap-2">
+<button class="flex-1 bg-transparent border border-outline-variant hover:border-[#FF6B00] hover:bg-[#FF6B00]/5 text-white font-bebas py-2 tracking-widest text-sm transition-all">VIEW PROGRESS</button>
+<button class="flex-1 bg-transparent border border-outline-variant hover:border-[#FF6B00] hover:bg-[#FF6B00]/5 text-white font-bebas py-2 tracking-widest text-sm transition-all">CREATE PLAN</button>
+<button class="w-12 bg-[#162035] hover:bg-[#FF6B00] text-slate-400 hover:text-white flex items-center justify-center transition-all">
+<span class="material-symbols-outlined text-sm">message</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-[#0F1729] asymmetric-card overflow-hidden group border-t-2 border-transparent hover:border-[#FF6B00] transition-all duration-300">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="relative">
+<div class="w-20 h-20 bg-surface-variant overflow-hidden asymmetric-card border-2 border-[#162035]">
+<img class="w-full h-full object-cover" data-alt="close-up portrait of a female athlete with intense focus, dark moody cinematic lighting and soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAXPLWhKoHxpFvbNV3SAdBqdBDA2WLH3jeIadfxwK2iTtB3hNnjJclpRLjYnQ2pF2GXmVQwruB0HrKF7NOfQgFi1chsO5tnY0jGEmsVkpkaF2tg_jZfqjppBh-R1_8fRlZd8Wqto0UriMEsh6IbGF0FkI1Bx07wz5vsqCP7IjHoT1Py08kq0QVX6AQsya_YVMAJRUfAfbdFnUcPNDFuOuhZf4w4nNNPm1vrbVE9bBQcFa-o1CJM6x5yLBtKhOzVkNNh0Vl-XDPxytj"/>
+</div>
+<span class="absolute -bottom-1 -right-1 bg-[#FF6B00] w-4 h-4 rounded-full border-4 border-[#0F1729]"></span>
+</div>
+<div>
+<h3 class="font-rajdhani text-2xl font-bold text-white leading-none mb-1">Sarah Jenkins</h3>
+<div class="flex gap-2 mb-2">
+<span class="bg-[#162035] text-[10px] font-bebas tracking-widest text-[#FF6B00] px-2 py-0.5 rounded">BADMINTON</span>
+<span class="bg-[#162035] text-[10px] font-bebas tracking-widest text-slate-400 px-2 py-0.5 rounded uppercase">Amateur</span>
+</div>
+<p class="text-slate-500 text-xs font-inter flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event_repeat</span>
+                                        15 Total Sessions
+                                    </p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest">Perf. Score</p>
+<span class="font-orbitron text-4xl font-extrabold text-[#FF6B00] block">78</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-[#162035]/50 p-4 asymmetric-card flex items-center justify-between">
+<div>
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest mb-1">Attendance</p>
+<span class="font-orbitron text-xl text-white">82%</span>
+</div>
+<div class="relative w-12 h-12">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-[#080D1A]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+<path class="text-[#FF6B00]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="82, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+<div class="bg-[#162035]/50 p-4 asymmetric-card">
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest mb-1">Stamina Level</p>
+<div class="w-full bg-[#080D1A] h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-[#00FF87] h-full" style="width: 45%"></div>
+</div>
+<span class="font-orbitron text-xs text-slate-400 mt-2 block">RESERVE</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-transparent border border-outline-variant hover:border-[#FF6B00] hover:bg-[#FF6B00]/5 text-white font-bebas py-2 tracking-widest text-sm transition-all">VIEW PROGRESS</button>
+<button class="flex-1 bg-transparent border border-outline-variant hover:border-[#FF6B00] hover:bg-[#FF6B00]/5 text-white font-bebas py-2 tracking-widest text-sm transition-all">CREATE PLAN</button>
+<button class="w-12 bg-[#162035] hover:bg-[#FF6B00] text-slate-400 hover:text-white flex items-center justify-center transition-all">
+<span class="material-symbols-outlined text-sm">message</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-[#0F1729] asymmetric-card overflow-hidden group border-t-2 border-transparent hover:border-[#FF6B00] transition-all duration-300">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="relative">
+<div class="w-20 h-20 bg-surface-variant overflow-hidden asymmetric-card border-2 border-[#162035]">
+<img class="w-full h-full object-cover" data-alt="mid-shot of a male athlete in training wear with sharp lighting and shadows on a dark concrete background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzABt_LAHlegI4Kgek6nHgemT-4dJlz8djJg3FFwapob3V2x-uN0OR1Zjm2CmJTiWsHWrIpfO-6DbmEYcGheOpnoit0Xs4nvR_jsc-rRboCXirhYAvPevVqE0kY-_mdyuUSal1pYKGePnDJIFI3zSnyS5ujekpYH9rp0qdZdDKMizJ4yL3o-VnF34NTa5MbtEJtV9GuREuOE_l1DfHv-AAP0-iR8D86KWd4hjWxCpQJ4Z-YSegPGVzPJWeDlqTyrv4Bb6zktoCEER-"/>
+</div>
+<span class="absolute -bottom-1 -right-1 bg-[#00FF87] w-4 h-4 rounded-full border-4 border-[#0F1729]"></span>
+</div>
+<div>
+<h3 class="font-rajdhani text-2xl font-bold text-white leading-none mb-1">Marco Rossi</h3>
+<div class="flex gap-2 mb-2">
+<span class="bg-[#162035] text-[10px] font-bebas tracking-widest text-[#FF6B00] px-2 py-0.5 rounded">CRICKET</span>
+<span class="bg-[#162035] text-[10px] font-bebas tracking-widest text-slate-400 px-2 py-0.5 rounded uppercase">Professional</span>
+</div>
+<p class="text-slate-500 text-xs font-inter flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event_repeat</span>
+                                        68 Total Sessions
+                                    </p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest">Perf. Score</p>
+<span class="font-orbitron text-4xl font-extrabold text-[#FF6B00] block">89</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-[#162035]/50 p-4 asymmetric-card flex items-center justify-between">
+<div>
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest mb-1">Attendance</p>
+<span class="font-orbitron text-xl text-white">94%</span>
+</div>
+<div class="relative w-12 h-12">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-[#080D1A]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+<path class="text-[#FF6B00]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="94, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+<div class="bg-[#162035]/50 p-4 asymmetric-card">
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest mb-1">Stamina Level</p>
+<div class="w-full bg-[#080D1A] h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-[#00FF87] h-full" style="width: 75%"></div>
+</div>
+<span class="font-orbitron text-xs text-slate-400 mt-2 block">HIGH</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-transparent border border-outline-variant hover:border-[#FF6B00] hover:bg-[#FF6B00]/5 text-white font-bebas py-2 tracking-widest text-sm transition-all">VIEW PROGRESS</button>
+<button class="flex-1 bg-transparent border border-outline-variant hover:border-[#FF6B00] hover:bg-[#FF6B00]/5 text-white font-bebas py-2 tracking-widest text-sm transition-all">CREATE PLAN</button>
+<button class="w-12 bg-[#162035] hover:bg-[#FF6B00] text-slate-400 hover:text-white flex items-center justify-center transition-all">
+<span class="material-symbols-outlined text-sm">message</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-[#0F1729] asymmetric-card overflow-hidden group border-t-2 border-transparent hover:border-[#FF6B00] transition-all duration-300">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div class="flex gap-4">
+<div class="relative">
+<div class="w-20 h-20 bg-surface-variant overflow-hidden asymmetric-card border-2 border-[#162035]">
+<img class="w-full h-full object-cover" data-alt="stylized portrait of a young athletic woman with glowing orange rim light and dark moody atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA60X8MxRWjEWesf6uSzeWgkC4qANc1L-oUCz-RyCZZ6U7OTuzhAPuduPH-mS5OnN_GW1LzAHmfrwU_jUmZfL6O8jtKRoK4ud3V1yu-P3JZkarOo62Voyxe0utqn-KpY6vZfRRbMfosyadypo5OkaiPuZv1MrwDrKB6-KxJEq_uX4M1a7heLuXHzLDGdHU8QMO0vcBm298XH7uTK-3otqZfwoSP-d7525QqmjrtF4Pt0iujzSF2LkbLDWbgkLSRmuKPW6gvOBgOFS4P"/>
+</div>
+<span class="absolute -bottom-1 -right-1 bg-error-dim w-4 h-4 rounded-full border-4 border-[#0F1729]"></span>
+</div>
+<div>
+<h3 class="font-rajdhani text-2xl font-bold text-white leading-none mb-1">Elena Wu</h3>
+<div class="flex gap-2 mb-2">
+<span class="bg-[#162035] text-[10px] font-bebas tracking-widest text-[#FF6B00] px-2 py-0.5 rounded">BADMINTON</span>
+<span class="bg-[#162035] text-[10px] font-bebas tracking-widest text-slate-400 px-2 py-0.5 rounded uppercase">Professional</span>
+</div>
+<p class="text-slate-500 text-xs font-inter flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">event_repeat</span>
+                                        112 Total Sessions
+                                    </p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest">Perf. Score</p>
+<span class="font-orbitron text-4xl font-extrabold text-[#FF6B00] block">97</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="bg-[#162035]/50 p-4 asymmetric-card flex items-center justify-between">
+<div>
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest mb-1">Attendance</p>
+<span class="font-orbitron text-xl text-white">100%</span>
+</div>
+<div class="relative w-12 h-12">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<path class="text-[#080D1A]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-width="3"></path>
+<path class="text-[#FF6B00]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="100, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+<div class="bg-[#162035]/50 p-4 asymmetric-card">
+<p class="text-[10px] font-rajdhani text-slate-500 uppercase tracking-widest mb-1">Stamina Level</p>
+<div class="w-full bg-[#080D1A] h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-[#00FF87] h-full" style="width: 95%"></div>
+</div>
+<span class="font-orbitron text-xs text-slate-400 mt-2 block">WORLD CLASS</span>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 bg-transparent border border-outline-variant hover:border-[#FF6B00] hover:bg-[#FF6B00]/5 text-white font-bebas py-2 tracking-widest text-sm transition-all">VIEW PROGRESS</button>
+<button class="flex-1 bg-transparent border border-outline-variant hover:border-[#FF6B00] hover:bg-[#FF6B00]/5 text-white font-bebas py-2 tracking-widest text-sm transition-all">CREATE PLAN</button>
+<button class="w-12 bg-[#162035] hover:bg-[#FF6B00] text-slate-400 hover:text-white flex items-center justify-center transition-all">
+<span class="material-symbols-outlined text-sm">message</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Empty State / Add Card -->
+<div class="border-2 border-dashed border-[#162035] asymmetric-card flex flex-col items-center justify-center p-12 group hover:border-[#FF6B00]/30 transition-all cursor-pointer bg-white/5">
+<div class="w-16 h-16 rounded-full bg-[#162035] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[#FF6B00] text-3xl">add</span>
+</div>
+<span class="font-bebas text-xl tracking-widest text-slate-400 group-hover:text-white transition-colors">Add Student to Roster</span>
+<p class="text-xs text-slate-600 font-inter text-center mt-2 max-w-[200px]">Send an invite or manually register a new athlete for tracking.</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button - Supressed per rules on Detail/List focused views, but contextually relevant for Coaching Portal -->
+<!-- Not rendering FAB here as per instructions for focus on Roster Canvas -->
+</body></html>

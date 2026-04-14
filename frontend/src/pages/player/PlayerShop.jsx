@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import PlayerCard from '../../components/player/PlayerCard';
+import PlayerPageHeader from '../../components/player/PlayerPageHeader';
+import { playerBtnOutlineSm, playerBtnPrimary } from '../../components/player/playerClassNames';
 import { api, getErrorMessage } from '../../services/api';
 
 export default function PlayerShop() {
@@ -32,30 +35,23 @@ export default function PlayerShop() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Equipment shop</h1>
-      <p className="text-slate-600 mt-1">Purchase from verified business listings.</p>
-      {err && <p className="mt-4 text-sm text-red-600">{err}</p>}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+      <PlayerPageHeader title="Equipment" subtitle="Purchase from verified business listings." />
+      {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
+      <div className="grid gap-4 sm:grid-cols-2">
         {products.map((p) => (
-          <div key={p._id} className="rounded-xl border border-slate-200 bg-white p-4">
-            <p className="font-medium">{p.name}</p>
-            <p className="text-sm text-slate-500">{p.sportType}</p>
-            <p className="text-lg font-semibold mt-2">{p.price} · Stock {p.stock}</p>
-            <button
-              type="button"
-              onClick={() => add(p._id)}
-              className="mt-3 w-full rounded-lg border border-slate-200 py-2 text-sm hover:bg-slate-50"
-            >
+          <PlayerCard key={p._id}>
+            <p className="text-lg font-bold text-white">{p.name}</p>
+            <p className="text-sm text-player-on-variant">{p.sportType}</p>
+            <p className="mt-2 font-orbitron text-lg font-bold text-player-green">
+              {p.price} · Stock {p.stock}
+            </p>
+            <button type="button" onClick={() => add(p._id)} className={`${playerBtnOutlineSm} mt-4 w-full`}>
               Add to cart ({cart[p._id] || 0})
             </button>
-          </div>
+          </PlayerCard>
         ))}
       </div>
-      <button
-        type="button"
-        onClick={checkout}
-        className="mt-6 rounded-lg bg-brand-600 text-white px-6 py-2 text-sm font-medium"
-      >
+      <button type="button" onClick={checkout} className={`${playerBtnPrimary} mt-8`}>
         Checkout
       </button>
     </div>

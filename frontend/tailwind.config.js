@@ -11,6 +11,21 @@ export default {
           900: '#14532d',
         },
         /* Stadium at Night — admin pannel/stadium_apex/DESIGN.md + HTML mocks */
+        /* Stadium at Midnight — player pannel/stadium_at_midnight/DESIGN.md */
+        player: {
+          bg: '#080D1A',
+          surface: '#0F1729',
+          inner: '#162035',
+          container: '#131929',
+          highest: '#1e2538',
+          green: '#00FF87',
+          cyan: '#00B4D8',
+          'on-accent': '#004620',
+          'on-surface': '#e3e7fb',
+          'on-variant': '#a6aabd',
+          orange: '#ff7524',
+          violet: '#A855F7',
+        },
         admin: {
           canvas: '#0A0F1E',
           surface: '#1A1F2F',
@@ -28,6 +43,7 @@ export default {
         },
       },
       fontFamily: {
+        display: ['"Bebas Neue"', 'Impact', 'sans-serif'],
         headline: ['Rajdhani', 'system-ui', 'sans-serif'],
         orbitron: ['Orbitron', 'system-ui', 'sans-serif'],
         label: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
@@ -35,8 +51,24 @@ export default {
       borderRadius: {
         admin: '0.5rem',
         'admin-lg': '0.75rem',
+        /* stadium_at_midnight DESIGN.md — cards roundedness.md ≈ 1.5rem; nested 1rem */
+        'player-card': '1.5rem',
+        'player-nested': '1rem',
       },
       boxShadow: {
+        'player-sidebar': '4px 0 24px rgba(0,0,0,0.5)',
+        'player-stadium': '0 0 40px -10px rgba(0, 255, 135, 0.15)',
+        'player-neon': '0 0 25px -5px rgba(0, 255, 135, 0.2)',
+        'player-cta': '0 0 20px rgba(0, 255, 135, 0.3)',
+        /* Luminance stack + green ambient — not flat grey */
+        'player-card':
+          '0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.07), 0 0 48px -18px rgba(0,255,135,0.11)',
+        'player-card-hover':
+          '0 14px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,255,135,0.2), 0 0 32px rgba(0,255,135,0.14)',
+        'player-hero':
+          '0 12px 48px rgba(0,0,0,0.52), 0 0 0 1px rgba(255,255,255,0.09), 0 0 64px -14px rgba(0,255,135,0.16)',
+        'player-inset':
+          '0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
         'admin-sidebar': '20px 0 40px rgba(0, 229, 255, 0.03)',
         'admin-glow': '0 0 20px rgba(0, 229, 255, 0.4)',
         'admin-float': '0 20px 40px rgba(0, 229, 255, 0.08)',

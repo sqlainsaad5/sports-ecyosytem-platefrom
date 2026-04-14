@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import AppLayout from './components/AppLayout';
 import AdminLayout from './layouts/AdminLayout';
+import PlayerLayout from './layouts/PlayerLayout';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -14,6 +15,7 @@ import PlayerOrders from './pages/player/PlayerOrders';
 import PlayerPerformance from './pages/player/PlayerPerformance';
 import PlayerNotifications from './pages/player/PlayerNotifications';
 import PlayerComplaint from './pages/player/PlayerComplaint';
+import PlayerProfile from './pages/player/PlayerProfile';
 import CoachDashboard from './pages/coach/CoachDashboard';
 import CoachRequests from './pages/coach/CoachRequests';
 import CoachSessions from './pages/coach/CoachSessions';
@@ -51,8 +53,9 @@ export default function App() {
       <Route path="/register" element={<Register />} />
 
       <Route element={<ProtectedRoute roles={['player']} />}>
-        <Route path="/player" element={<AppLayout />}>
+        <Route path="/player" element={<PlayerLayout />}>
           <Route index element={<PlayerDashboard />} />
+          <Route path="profile" element={<PlayerProfile />} />
           <Route path="coaches" element={<PlayerCoaches />} />
           <Route path="training" element={<PlayerTraining />} />
           <Route path="grounds" element={<PlayerGrounds />} />

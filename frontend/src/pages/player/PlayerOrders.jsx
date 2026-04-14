@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import PlayerCard from '../../components/player/PlayerCard';
+import PlayerPageHeader from '../../components/player/PlayerPageHeader';
 import { api, getErrorMessage } from '../../services/api';
 
 export default function PlayerOrders() {
@@ -14,22 +16,23 @@ export default function PlayerOrders() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">My orders</h1>
-      {err && <p className="mt-4 text-sm text-red-600">{err}</p>}
-      <ul className="mt-6 space-y-3">
+      <PlayerPageHeader title="Orders" subtitle="Your equipment order history." />
+      {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
+      <ul className="space-y-4">
         {orders.map((o) => (
-          <li key={o._id} className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
-            <span className="font-medium">{o.status}</span> — total {o.totalAmount}
-            <ul className="mt-2 text-slate-600">
+          <PlayerCard key={o._id} className="text-sm">
+            <span className="font-bold text-player-green">{o.status}</span>
+            <span className="text-player-on-variant"> — total {o.totalAmount}</span>
+            <ul className="mt-3 space-y-1 text-player-on-variant">
               {o.items?.map((i, idx) => (
                 <li key={idx}>
                   {i.name} × {i.quantity}
                 </li>
               ))}
             </ul>
-          </li>
+          </PlayerCard>
         ))}
-        {!orders.length && !err && <p className="text-slate-500">No orders yet.</p>}
+        {!orders.length && !err ? <p className="text-sm text-player-on-variant">No orders yet.</p> : null}
       </ul>
     </div>
   );

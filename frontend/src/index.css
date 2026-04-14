@@ -48,3 +48,92 @@ body {
 .admin-app .admin-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #00e5ff;
 }
+
+/* Player panel — stadium_at_midnight / player_dashboard mocks */
+.player-app {
+  @apply min-h-screen antialiased;
+  font-family: Inter, system-ui, sans-serif;
+  background-color: #080d1a;
+  color: #e3e7fb;
+  font-feature-settings: 'liga' 1, 'kern' 1;
+}
+
+.player-app ::selection {
+  background-color: rgba(0, 255, 135, 0.25);
+  color: #004620;
+}
+
+.player-app .material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.player-app .player-glass {
+  background: rgba(19, 25, 41, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  outline: 1px solid rgba(67, 72, 87, 0.15);
+  outline-offset: -1px;
+}
+
+/* Legacy hook — PlayerCard now owns elevation; keep for any stray .player-neon-card */
+.player-app .player-neon-card {
+  transition: box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.player-app .player-neon-card:hover {
+  box-shadow: 0 0 28px rgba(0, 255, 135, 0.12);
+}
+
+/* Display / data typography — stadium broadcast feel */
+.player-app .player-display-hero {
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 48px rgba(0, 255, 135, 0.12), 0 4px 24px rgba(0, 0, 0, 0.65);
+}
+
+.player-app .player-section-kicker {
+  @apply font-headline text-xs font-bold uppercase tracking-[0.2em] text-player-green;
+}
+
+.player-app .player-stat-figure {
+  @apply font-orbitron font-black tabular-nums tracking-tight text-white;
+  text-shadow: 0 0 24px rgba(0, 255, 135, 0.08);
+}
+
+.player-app .player-headline-section {
+  letter-spacing: 0.06em;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
+}
+
+.player-app .player-quote {
+  text-shadow: 0 0 20px rgba(0, 255, 135, 0.12);
+}
+
+/* coach pannel/midnight_stadium + coach_dashboard — asymmetric “slice” cards */
+.player-app .midnight-asymmetric {
+  border-top-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  border-top-right-radius: 0.125rem;
+  border-bottom-left-radius: 0.125rem;
+}
+
+.player-app .player-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.player-app .player-scrollbar::-webkit-scrollbar-track {
+  background: #080d1a;
+}
+.player-app .player-scrollbar::-webkit-scrollbar-thumb {
+  background: #1e2538;
+  border-radius: 10px;
+}
+.player-app .player-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #00ff87;
+}
+
+.player-app .player-gradient {
+  background: linear-gradient(135deg, #00ff87, #00b4d8);
+}
+
+.player-app .player-header-glow {
+  box-shadow: 0 4px 20px rgba(0, 255, 135, 0.05);
+}

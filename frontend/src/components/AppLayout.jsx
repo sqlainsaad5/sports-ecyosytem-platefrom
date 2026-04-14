@@ -5,17 +5,6 @@ const linkCls = ({ isActive }) =>
   `block rounded-lg px-3 py-2 text-sm font-medium ${isActive ? 'bg-brand-600 text-white' : 'text-slate-700 hover:bg-slate-100'}`;
 
 const nav = {
-  player: [
-    { to: '/player', end: true, label: 'Dashboard' },
-    { to: '/player/coaches', label: 'Coach match' },
-    { to: '/player/training', label: 'Training' },
-    { to: '/player/grounds', label: 'Ground booking' },
-    { to: '/player/shop', label: 'Equipment' },
-    { to: '/player/orders', label: 'Orders' },
-    { to: '/player/performance', label: 'Performance' },
-    { to: '/player/notifications', label: 'Notifications' },
-    { to: '/player/complaint', label: 'Complaints' },
-  ],
   coach: [
     { to: '/coach', end: true, label: 'Dashboard' },
     { to: '/coach/requests', label: 'Requests' },
@@ -43,7 +32,6 @@ export default function AppLayout() {
   const items = nav[user?.role] || [];
 
   const home = () => {
-    if (user?.role === 'player') return '/player';
     if (user?.role === 'coach') return '/coach';
     if (user?.role === 'business_owner') return '/business';
     return '/';

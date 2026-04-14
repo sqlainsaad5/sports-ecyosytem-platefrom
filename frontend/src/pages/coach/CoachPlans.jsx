@@ -39,13 +39,14 @@ export default function CoachPlans() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-semibold">Weekly training plans</h1>
-        {err && <p className="text-sm text-red-600 mt-2">{err}</p>}
+        <h1 className="font-display text-5xl tracking-[0.08em] text-white">TRAINING ARSENALS</h1>
+        <p className="font-headline text-xs uppercase tracking-[0.3em] text-slate-500">Weekly tactical plans</p>
+        {err && <p className="text-sm text-red-400 mt-2">{err}</p>}
       </div>
-      <form onSubmit={create} className="max-w-md space-y-3 rounded-xl border border-slate-200 bg-white p-4">
-        <p className="text-sm font-medium">Create plan</p>
+      <form onSubmit={create} className="midnight-asymmetric max-w-xl space-y-3 border border-player-inner/40 bg-player-container p-5 shadow-player-card">
+        <p className="font-display text-2xl tracking-[0.12em] text-white">FORGE NEW PLAN</p>
         <input
-          className="w-full rounded-lg border px-3 py-2 text-sm"
+          className="w-full border-b-2 border-player-inner bg-player-bg px-3 py-2 text-sm text-white outline-none focus:border-[#ff7524]"
           placeholder="Player user ID"
           value={player}
           onChange={(e) => setPlayer(e.target.value)}
@@ -53,22 +54,26 @@ export default function CoachPlans() {
         />
         <input
           type="date"
-          className="w-full rounded-lg border px-3 py-2 text-sm"
+          className="w-full border-b-2 border-player-inner bg-player-bg px-3 py-2 text-sm text-white outline-none focus:border-[#ff7524]"
           value={weekStart}
           onChange={(e) => setWeekStart(e.target.value)}
           required
         />
-        <input className="w-full rounded-lg border px-3 py-2 text-sm" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <textarea className="w-full rounded-lg border px-3 py-2 text-sm" placeholder="Goals / exercises" value={goals} onChange={(e) => setGoals(e.target.value)} />
-        <button type="submit" className="w-full rounded-lg bg-brand-600 text-white py-2 text-sm">
-          Publish plan
+        <input className="w-full border-b-2 border-player-inner bg-player-bg px-3 py-2 text-sm text-white outline-none focus:border-[#ff7524]" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <textarea className="w-full border-b-2 border-player-inner bg-player-bg px-3 py-2 text-sm text-white outline-none focus:border-[#ff7524]" placeholder="Goals / exercises" value={goals} onChange={(e) => setGoals(e.target.value)} />
+        <button type="submit" className="w-full bg-[#ff7524] py-3 font-display text-xl tracking-[0.14em] text-black">
+          GENERATE PLAN
         </button>
       </form>
-      <ul className="space-y-2">
+      <ul className="grid gap-6 lg:grid-cols-2">
         {list.map((p) => (
-          <li key={p._id} className="rounded-lg border border-slate-200 bg-white p-3 text-sm">
-            <span className="font-medium">{p.title}</span> — player {p.player}
-            <pre className="mt-1 text-xs text-slate-600 whitespace-pre-wrap">{p.goals}</pre>
+          <li key={p._id} className="midnight-asymmetric border border-player-inner/40 bg-player-container p-5 text-sm shadow-player-card">
+            <div className="mb-2 flex items-start justify-between">
+              <span className="font-display text-3xl text-white">{p.title}</span>
+              <span className="rounded-full bg-player-green/10 px-2 py-1 font-orbitron text-[10px] uppercase tracking-widest text-player-green">LIVE</span>
+            </div>
+            <p className="font-headline text-xs uppercase tracking-[0.2em] text-slate-500">Player {p.player}</p>
+            <pre className="mt-3 whitespace-pre-wrap text-xs text-slate-300">{p.goals}</pre>
           </li>
         ))}
       </ul>

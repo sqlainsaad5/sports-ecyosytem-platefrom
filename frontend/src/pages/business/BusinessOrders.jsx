@@ -23,17 +23,18 @@ export default function BusinessOrders() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Orders</h1>
-      {err && <p className="text-sm text-red-600 mt-2">{err}</p>}
-      <ul className="mt-4 space-y-3">
+      <h1 className="font-rajdhani text-5xl font-bold uppercase tracking-tight text-white">My Orders</h1>
+      {err && <p className="text-sm text-red-400 mt-2">{err}</p>}
+      <ul className="mt-6 space-y-3">
         {list.map((o) => (
-          <li key={o._id} className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
-            <p className="font-medium">
-              {o.status} — total {o.totalAmount}
+          <li key={o._id} className="rounded-xl bg-[#11192c] p-4 text-sm">
+            <p className="font-orbitron text-[#cc97ff]">Order #{o._id.slice(-6).toUpperCase()}</p>
+            <p className="mt-1 font-medium text-white">
+              {o.status} - total {o.totalAmount}
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
               {['processing', 'shipped', 'completed'].map((s) => (
-                <button key={s} type="button" className="rounded border px-2 py-1 text-xs" onClick={() => update(o._id, s)}>
+                <button key={s} type="button" className="rounded-lg bg-black/40 px-3 py-1 text-xs uppercase tracking-wider text-slate-300 hover:bg-[#1c253b]" onClick={() => update(o._id, s)}>
                   Mark {s}
                 </button>
               ))}

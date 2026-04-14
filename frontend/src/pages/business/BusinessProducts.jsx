@@ -44,30 +44,33 @@ export default function BusinessProducts() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-semibold">Products</h1>
-      {err && <p className="text-sm text-red-600">{err}</p>}
-      <form onSubmit={create} className="max-w-md space-y-2 rounded-xl border bg-white p-4">
-        <input className="w-full border rounded px-2 py-1 text-sm" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-        <div className="flex gap-2">
-          <input className="w-24 border rounded px-2 py-1 text-sm" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
-          <input className="w-24 border rounded px-2 py-1 text-sm" type="number" value={stock} onChange={(e) => setStock(e.target.value)} />
-          <select className="border rounded px-2 py-1 text-sm" value={sportType} onChange={(e) => setSportType(e.target.value)}>
+      <h1 className="font-rajdhani text-5xl font-bold uppercase tracking-tight text-white">My Products</h1>
+      {err && <p className="text-sm text-red-400">{err}</p>}
+      <form onSubmit={create} className="max-w-2xl space-y-3 rounded-xl bg-[#11192c] p-5">
+        <input className="w-full rounded-lg border-none bg-black/40 px-3 py-2 text-sm text-white focus:ring-1 focus:ring-[#cc97ff]" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
+        <div className="flex flex-wrap gap-2">
+          <input className="w-24 rounded-lg border-none bg-black/40 px-2 py-2 text-sm text-white focus:ring-1 focus:ring-[#cc97ff]" type="number" value={price} onChange={(e) => setPrice(e.target.value)} />
+          <input className="w-24 rounded-lg border-none bg-black/40 px-2 py-2 text-sm text-white focus:ring-1 focus:ring-[#cc97ff]" type="number" value={stock} onChange={(e) => setStock(e.target.value)} />
+          <select className="rounded-lg border-none bg-black/40 px-2 py-2 text-sm text-white focus:ring-1 focus:ring-[#cc97ff]" value={sportType} onChange={(e) => setSportType(e.target.value)}>
             <option value="general">General</option>
             <option value="cricket">Cricket</option>
             <option value="badminton">Badminton</option>
           </select>
         </div>
-        <button type="submit" className="rounded-lg bg-brand-600 text-white px-4 py-2 text-sm">
+        <button type="submit" className="rounded-lg bg-gradient-to-r from-[#cc97ff] to-[#9c48ea] px-4 py-2 text-sm font-bold uppercase tracking-wider text-[#360061]">
           Add (requires verification + quota)
         </button>
       </form>
-      <ul className="space-y-2">
+      <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {items.map((p) => (
-          <li key={p._id} className="flex justify-between items-center border rounded-lg p-3 bg-white text-sm">
-            <span>
-              {p.name} — {p.price} (stock {p.stock})
-            </span>
-            <button type="button" className="text-red-600 text-xs" onClick={() => remove(p._id)}>
+          <li key={p._id} className="rounded-xl bg-[#11192c] p-4 text-sm">
+            <p className="font-rajdhani text-2xl font-bold text-white">{p.name}</p>
+            <p className="mt-1 text-xs uppercase tracking-widest text-slate-500">{p.sportType}</p>
+            <div className="mt-4 flex items-center justify-between">
+              <span className="font-orbitron text-[#9bffce]">${p.price}</span>
+              <span className="text-xs text-slate-400">Stock {p.stock}</span>
+            </div>
+            <button type="button" className="mt-4 rounded-lg bg-[#a70138]/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#ff6e84]" onClick={() => remove(p._id)}>
               Delete
             </button>
           </li>

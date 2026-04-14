@@ -22,21 +22,24 @@ export default function CoachSessions() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Training sessions</h1>
-      {err && <p className="text-sm text-red-600 mt-2">{err}</p>}
-      <ul className="mt-4 space-y-2">
+      <div className="mb-8">
+        <h1 className="font-display text-5xl tracking-[0.08em] text-white">WEEKLY SCHEDULE</h1>
+        <p className="font-headline text-xs uppercase tracking-[0.3em] text-slate-500">Training Timeline</p>
+      </div>
+      {err && <p className="text-sm text-red-400 mt-2">{err}</p>}
+      <ul className="mt-4 grid gap-4">
         {list.map((s) => (
-          <li key={s._id} className="rounded-xl border border-slate-200 bg-white p-4 text-sm flex flex-wrap gap-2 justify-between">
-            <span>
-              {new Date(s.scheduledAt).toLocaleString()} —{' '}
-              {s.player?.playerProfile?.fullName || s.player?.email || `player ${s.player?._id || s.player}`}
-            </span>
+          <li key={s._id} className="midnight-asymmetric grid gap-4 border border-player-inner/40 bg-player-container p-4 shadow-player-card md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p className="font-display text-3xl text-white">{s.player?.playerProfile?.fullName || s.player?.email || `player ${s.player?._id || s.player}`}</p>
+              <p className="font-orbitron text-xs uppercase tracking-[0.15em] text-[#ff7524]">{new Date(s.scheduledAt).toLocaleString()}</p>
+            </div>
             <div className="flex gap-2">
-              <button type="button" className="rounded bg-emerald-600 text-white px-2 py-1 text-xs" onClick={() => mark(s._id, true)}>
-                Present
+              <button type="button" className="bg-[#ff7524] px-3 py-2 font-display text-lg tracking-widest text-black" onClick={() => mark(s._id, true)}>
+                PRESENT
               </button>
-              <button type="button" className="rounded bg-slate-200 px-2 py-1 text-xs" onClick={() => mark(s._id, false)}>
-                Absent
+              <button type="button" className="border border-player-inner px-3 py-2 font-display text-lg tracking-widest text-slate-300" onClick={() => mark(s._id, false)}>
+                ABSENT
               </button>
             </div>
           </li>

@@ -29,20 +29,26 @@ export default function CoachDocuments() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Certification documents</h1>
-      <p className="text-sm text-slate-600 mt-1">Upload PDFs or images for admin verification.</p>
-      {err && <p className="text-sm text-red-600 mt-2">{err}</p>}
-      <form onSubmit={upload} className="mt-4 max-w-md space-y-2 rounded-xl border border-slate-200 bg-white p-4">
-        <input type="file" name="file" required className="text-sm" />
-        <input name="docType" placeholder="Document type" className="w-full rounded border px-2 py-1 text-sm" />
-        <button type="submit" className="rounded-lg bg-brand-600 text-white px-4 py-2 text-sm">
-          Upload
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-display text-5xl tracking-[0.08em] text-white">CERTIFICATIONS</h1>
+          <p className="font-headline text-xs uppercase tracking-[0.3em] text-slate-500">Credentials and compliance registry</p>
+        </div>
+      </div>
+      {err && <p className="text-sm text-red-400 mt-2">{err}</p>}
+      <form onSubmit={upload} className="midnight-asymmetric mt-4 max-w-2xl space-y-3 border border-player-inner/40 bg-player-container p-6 shadow-player-card">
+        <p className="font-display text-2xl tracking-[0.12em] text-white">UPLOAD NEW DOCUMENT</p>
+        <input type="file" name="file" required className="text-sm text-slate-300" />
+        <input name="docType" placeholder="Document type" className="w-full border-b-2 border-player-inner bg-player-bg px-2 py-2 text-sm text-white outline-none focus:border-[#ff7524]" />
+        <button type="submit" className="bg-[#ff7524] px-6 py-3 font-display text-xl tracking-[0.14em] text-black">
+          SUBMIT FOR VERIFICATION
         </button>
       </form>
-      <ul className="mt-6 space-y-2">
+      <ul className="mt-8 grid gap-4 lg:grid-cols-2">
         {list.map((d) => (
-          <li key={d._id} className="text-sm border rounded-lg p-2 bg-white">
-            {d.originalName} — {d.status}
+          <li key={d._id} className="midnight-asymmetric border border-player-inner/40 bg-player-container p-4">
+            <p className="font-headline text-sm uppercase tracking-[0.15em] text-white">{d.originalName}</p>
+            <p className="mt-1 font-orbitron text-xs uppercase tracking-widest text-[#ff7524]">{d.status}</p>
           </li>
         ))}
       </ul>

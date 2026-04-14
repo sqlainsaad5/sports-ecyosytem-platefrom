@@ -27,19 +27,20 @@ export default function BusinessDocuments() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Verification documents</h1>
-      {err && <p className="text-sm text-red-600 mt-2">{err}</p>}
-      <form onSubmit={upload} className="mt-4 max-w-md space-y-2 rounded-xl border bg-white p-4">
-        <input type="file" name="file" required className="text-sm" />
-        <input name="docType" placeholder="Document type" className="w-full border rounded px-2 py-1 text-sm" />
-        <button type="submit" className="rounded-lg bg-brand-600 text-white px-4 py-2 text-sm">
+      <h1 className="font-rajdhani text-5xl font-bold uppercase tracking-tight text-white">Business Profile Documents</h1>
+      {err && <p className="text-sm text-red-400 mt-2">{err}</p>}
+      <form onSubmit={upload} className="mt-6 max-w-2xl space-y-3 rounded-xl bg-[#11192c] p-5">
+        <input type="file" name="file" required className="text-sm text-slate-300" />
+        <input name="docType" placeholder="Document type" className="w-full rounded-lg border-none bg-black/40 px-3 py-2 text-sm text-white focus:ring-1 focus:ring-[#cc97ff]" />
+        <button type="submit" className="rounded-lg bg-gradient-to-r from-[#cc97ff] to-[#9c48ea] px-4 py-2 text-sm font-bold uppercase tracking-wider text-[#360061]">
           Upload
         </button>
       </form>
-      <ul className="mt-4 space-y-2">
+      <ul className="mt-6 grid gap-3 md:grid-cols-2">
         {list.map((d) => (
-          <li key={d._id} className="text-sm border rounded p-2 bg-white">
-            {d.originalName} — {d.status}
+          <li key={d._id} className="rounded-xl bg-[#11192c] p-3 text-sm">
+            <p className="font-medium text-white">{d.originalName}</p>
+            <p className="mt-1 text-xs uppercase tracking-wider text-[#9bffce]">{d.status}</p>
           </li>
         ))}
       </ul>

@@ -25,17 +25,20 @@ export default function CoachFeedback() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold">Player feedback</h1>
-      {err && <p className="text-sm text-red-600 mt-2">{err}</p>}
-      <ul className="mt-4 space-y-3">
+      <h1 className="font-display text-5xl tracking-[0.08em] text-white">RECOMMENDED PLAYERS</h1>
+      <p className="font-headline text-xs uppercase tracking-[0.3em] text-[#ff7524]">Tactical recruitment zone</p>
+      {err && <p className="text-sm text-red-400 mt-2">{err}</p>}
+      <ul className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {list.map((f) => (
-          <li key={f._id} className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
-            <p className="font-medium">Rating {f.rating}/5</p>
-            <p className="text-xs text-slate-500">{f.playerDisplay || f.player?.email || 'Player'}</p>
-            <p className="text-slate-600">{f.comment}</p>
-            {f.coachReply && <p className="mt-2 text-xs text-slate-500">Reply: {f.coachReply}</p>}
-            <button type="button" className="mt-2 text-xs text-brand-700" onClick={() => reply(f._id)}>
-              Reply
+          <li key={f._id} className="midnight-asymmetric border-l-4 border-transparent bg-player-container p-5 transition hover:border-[#ff7524] hover:bg-player-surface">
+            <p className="font-display text-3xl text-white">{f.playerDisplay || f.player?.email || 'Player'}</p>
+            <p className="mt-1 inline-flex rounded-sm bg-player-green/10 px-2 py-0.5 text-[10px] font-orbitron uppercase tracking-wider text-player-green">
+              Rating {f.rating}/5
+            </p>
+            <p className="mt-4 text-sm italic text-slate-300">"{f.comment}"</p>
+            {f.coachReply && <p className="mt-3 text-xs uppercase tracking-widest text-slate-500">Reply: {f.coachReply}</p>}
+            <button type="button" className="mt-4 bg-[#ff7524] px-4 py-2 font-display text-lg tracking-[0.12em] text-black" onClick={() => reply(f._id)}>
+              SEND REPLY
             </button>
           </li>
         ))}

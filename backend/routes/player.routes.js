@@ -26,14 +26,21 @@ r.post(
   [body('groundId').notEmpty(), body('startTime').notEmpty(), body('endTime').notEmpty()],
   p.holdGroundBooking
 );
+r.post('/ground-bookings/:id/payment-intent', p.createGroundBookingPaymentIntent);
 r.post('/ground-bookings/:id/confirm-payment', p.confirmGroundPayment);
 r.get('/ground-bookings', p.listMyGroundBookings);
 r.delete('/ground-bookings/:id', p.cancelGroundBooking);
 r.get('/performance', p.getPerformance);
 r.get('/products', p.browseProducts);
+r.post('/orders/payment-intent', p.createOrderPaymentIntent);
 r.post('/orders', p.createOrder);
 r.get('/orders', p.listMyOrders);
 r.post('/coaches/:coachId/feedback', [body('rating').isInt({ min: 1, max: 5 })], p.submitCoachFeedback);
+r.post(
+  '/payments/coach/payment-intent',
+  [body('coachId').notEmpty(), body('amount').isFloat({ min: 0.01 })],
+  p.createCoachPaymentIntent
+);
 r.post(
   '/payments/coach',
   [body('coachId').notEmpty(), body('amount').isFloat({ min: 0.01 })],

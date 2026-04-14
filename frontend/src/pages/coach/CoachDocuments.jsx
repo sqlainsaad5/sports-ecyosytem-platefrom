@@ -13,6 +13,11 @@ export default function CoachDocuments() {
 
   useEffect(() => {
     load();
+    const onVis = () => {
+      if (document.visibilityState === 'visible') load();
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
   const upload = async (e) => {

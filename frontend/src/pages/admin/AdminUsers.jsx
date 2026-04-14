@@ -8,6 +8,10 @@ import { api, getErrorMessage } from '../../services/api';
 export default function AdminUsers() {
   const [list, setList] = useState([]);
   const [err, setErr] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [newPass, setNewPass] = useState('');
+  const [newRole, setNewRole] = useState('player');
+  const [fullName, setFullName] = useState('Test Player');
   const load = () =>
     api
       .get('/admin/users')
@@ -16,6 +20,24 @@ export default function AdminUsers() {
   useEffect(() => {
     load();
   }, []);
+
+  const createUser = async (e) => {
+    e.preventDefault();
+    try {
+      const profile =
+        newRole === 'player'
+          ? { fullName, sportPreference: 'cricket', skillLevel: 'beginner', city: 'Lahore' }
+          : newRole === 'coach'
+            ? { fullName, specialties: ['cricket'], city: 'Lahore' }
+            : { businessName: fullName || 'New Shop', storeName: fullName || 'New Shop' };
+      await api.post('/admin/users', { email: newEmail, password: newPass, role: newRole, profile });
+      setNewEmail('');
+      setNewPass('');
+      load();
+    } catch (err2) {
+      alert(getErrorMessage(err2));
+    }
+  };
 
   const suspend = async (id, flag) => {
     try {
@@ -44,6 +66,46 @@ export default function AdminUsers() {
           <p className="text-sm text-admin-orange">{err}</p>
         </AdminCard>
       ) : null}
+
+      <AdminCard accent="gold" className="mb-6 p-6">
+        <p className="font-headline text-xs font-bold uppercase tracking-widest text-slate-400">UC-A5 — create user</p>
+        <form onSubmit={createUser} className="mt-4 flex flex-wrap items-end gap-3">
+          <input
+            className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white"
+            placeholder="email"
+            type="email"
+            value={newEmail}
+            onChange={(e) => setNewEmail(e.target.value)}
+            required
+          />
+          <input
+            className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white"
+            placeholder="password (min 6)"
+            type="password"
+            value={newPass}
+            onChange={(e) => setNewPass(e.target.value)}
+            required
+          />
+          <select
+            className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white"
+            value={newRole}
+            onChange={(e) => setNewRole(e.target.value)}
+          >
+            <option value="player">player</option>
+            <option value="coach">coach</option>
+            <option value="business_owner">business_owner</option>
+          </select>
+          <input
+            className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white"
+            placeholder="Display / business name"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+          />
+          <button type="submit" className={adminBtnSecondary}>
+            Create
+          </button>
+        </form>
+      </AdminCard>
 
       <AdminCard accent="cyan" className="overflow-hidden">
         <div className="flex flex-col gap-2 border-b border-white/5 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">

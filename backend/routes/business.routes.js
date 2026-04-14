@@ -3,14 +3,28 @@ const { body } = require('express-validator');
 const b = require('../controllers/businessController');
 const { authenticate, requireRole, loadUser } = require('../middleware/auth');
 const { upload } = require('../middleware/upload');
+const { validateRequest } = require('../middleware/validate');
 
 const r = Router();
 r.use(authenticate, loadUser, requireRole('business_owner'));
 
 r.get('/me/profile', b.getProfile);
 r.put('/me/profile', b.updateProfile);
+r.post(
+  '/subscription/payment-intent',
+  [body('action').isIn(['subscribe', 'renew', 'change'])],
+  validateRequest,
+  b.createSubscriptionPaymentIntent
+);
 r.post('/subscription', [body('package').isIn(['basic', 'pro', 'premium'])], b.subscribe);
 r.post('/subscription/renew', b.renewSubscription);
+/** SRS UC-B4 — change listing package */
+r.put(
+  '/subscription/plan',
+  [body('package').isIn(['basic', 'pro', 'premium'])],
+  validateRequest,
+  b.changeSubscription
+);
 r.put('/store', b.updateStore);
 r.get('/products', b.listMyProducts);
 r.post('/products', b.addProduct);
@@ -20,7 +34,17 @@ r.patch('/products/:id/pricing', [body('price').isFloat({ min: 0 })], b.patchPri
 r.patch('/products/:id/stock', [body('stock').isInt({ min: 0 })], b.patchStock);
 r.post('/products/:id/images', upload.single('image'), b.addProductImage);
 r.get('/orders', b.listOrders);
-r.patch('/orders/:id', [body('status').notEmpty()], b.updateOrderStatus);
+r.patch(
+  '/orders/:id',
+  [
+    body('status')
+      .optional()
+      .isIn(['pending', 'paid', 'processing', 'shipped', 'completed', 'cancelled']),
+    body('trackingNumber').optional().isString(),
+  ],
+  validateRequest,
+  b.updateOrderStatus
+);
 r.get('/reports/sales', b.salesReport);
 r.get('/coaches', b.listCoachesDirectory);
 r.post('/coaches/:coachId/partnership', [body('message').notEmpty()], b.sendPartnership);

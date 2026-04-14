@@ -52,9 +52,24 @@ r.post(
 );
 r.get('/players/:playerId/progress', c.getPlayerProgress);
 r.get('/ground-bookings', c.listCoachGroundBookings);
+/** SRS UC-C4 — coach-side matching players (inverse of player recommendations) */
+r.get('/recommended-players', c.getRecommendedPlayers);
+r.post(
+  '/recommended-players/:playerId/notify',
+  [param('playerId').isMongoId()],
+  validateRequest,
+  c.notifyRecommendedPlayer
+);
 r.get('/feedback', c.listFeedback);
 r.post('/feedback/:id/reply', [body('reply').notEmpty()], c.replyFeedback);
 r.get('/payments', c.listPayments);
+/** SRS UC-C12 — withdrawal request (prototype settlement) */
+r.post(
+  '/payments/withdrawal',
+  [body('amount').isFloat({ min: 0.01 })],
+  validateRequest,
+  c.requestWithdrawal
+);
 r.get('/notifications', c.listNotifications);
 r.post('/documents', upload.single('file'), c.uploadDocumentMeta);
 r.get('/documents', c.listDocuments);

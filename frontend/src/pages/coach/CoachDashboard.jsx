@@ -4,15 +4,22 @@ import { api, getErrorMessage } from '../../services/api';
 
 export default function CoachDashboard() {
   const [s, setS] = useState(null);
+  const [verificationNotes, setVerificationNotes] = useState([]);
   const [err, setErr] = useState('');
   useEffect(() => {
-    Promise.all([api.get('/coaches/training-requests'), api.get('/coaches/payments')])
-      .then(([a, b]) =>
+    Promise.all([
+      api.get('/coaches/training-requests'),
+      api.get('/coaches/payments'),
+      api.get('/coaches/notifications'),
+    ])
+      .then(([a, b, c]) => {
+        const ver = (c.data.data || []).filter((n) => n.category === 'verification').slice(0, 5);
+        setVerificationNotes(ver);
         setS({
           pending: (a.data.data || []).filter((x) => x.status === 'pending').length,
           earned: b.data.data?.totalReceived ?? 0,
-        })
-      )
+        });
+      })
       .catch((e) => setErr(getErrorMessage(e)));
   }, []);
   return (
@@ -31,11 +38,38 @@ export default function CoachDashboard() {
             <Link to="/coach/sessions" className="border-2 border-white px-6 py-3 font-display text-xl tracking-[0.14em] text-white transition hover:bg-white/10">
               OPEN SCHEDULE
             </Link>
+            <Link to="/coach/notifications" className="border-2 border-white/60 px-6 py-3 font-display text-xl tracking-[0.14em] text-white/90 transition hover:bg-white/10">
+              NOTIFICATIONS
+            </Link>
           </div>
         </div>
       </section>
 
       {err && <p className="text-sm text-red-400">{err}</p>}
+
+      {verificationNotes.length > 0 ? (
+        <section className="midnight-asymmetric border border-[#ff7524]/40 bg-player-container p-5 shadow-player-card">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-headline text-sm font-bold uppercase tracking-[0.12em] text-[#ff7524]">
+              Verification updates
+            </h2>
+            <Link
+              to="/coach/notifications"
+              className="font-headline text-xs uppercase tracking-widest text-white/80 underline-offset-4 hover:underline"
+            >
+              All notifications
+            </Link>
+          </div>
+          <ul className="space-y-3">
+            {verificationNotes.map((n) => (
+              <li key={n._id} className="border-b border-white/10 pb-3 last:border-0 last:pb-0">
+                <p className="text-sm font-medium text-white">{n.title}</p>
+                {n.body ? <p className="mt-1 text-xs text-slate-400">{n.body}</p> : null}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="midnight-asymmetric border-l-4 border-[#ff7524] bg-player-container p-5 shadow-player-card">

@@ -145,6 +145,16 @@ export default function AdminDashboard() {
             <StatCard label="Revenue (completed)" value={fmtMoney(d.revenueTotal)} accent="cyan" icon="payments" />
           </div>
 
+          {d.health ? (
+            <AdminCard accent="none" className="mb-8 border border-white/[0.06] p-5">
+              <p className="font-headline text-xs font-bold uppercase tracking-wider text-slate-400">System health (UC-A2)</p>
+              <p className="mt-2 text-sm text-slate-300">
+                Database: <span className="text-emerald-400">{d.health.database}</span> · Uptime {d.health.uptimeSec}s ·{' '}
+                {d.health.nodeEnv}
+              </p>
+            </AdminCard>
+          ) : null}
+
           <div className="mb-8 grid gap-6 lg:grid-cols-3">
             <AdminCard accent="cyan" className="p-6">
               <p className="font-headline text-xs font-bold uppercase tracking-wider text-slate-400">

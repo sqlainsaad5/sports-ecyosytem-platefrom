@@ -13,14 +13,18 @@ const storage = multer.diskStorage({
   },
 });
 
+/** SDD — verification & product uploads: PDF, JPG, PNG only */
+const ALLOWED = new Set([
+  'application/pdf',
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/pjpeg',
+]);
+
 const fileFilter = (_req, file, cb) => {
-  const ok =
-    file.mimetype.startsWith('image/') ||
-    file.mimetype === 'application/pdf' ||
-    file.mimetype.includes('document') ||
-    file.mimetype === 'application/msword';
-  if (ok) cb(null, true);
-  else cb(new Error('Invalid file type'), false);
+  if (ALLOWED.has(file.mimetype)) cb(null, true);
+  else cb(new Error('Only PDF, JPG, and PNG files are allowed (SDD).'), false);
 };
 
 const upload = multer({

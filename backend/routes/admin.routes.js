@@ -12,13 +12,25 @@ r.get('/verification/coaches', a.verificationCoaches);
 r.patch(
   '/verification/coaches/:userId',
   [body('action').isIn(['approve', 'reject', 'more_info'])],
+  validateRequest,
   a.patchCoachVerification
 );
 r.get('/verification/business', a.verificationBusiness);
 r.patch(
   '/verification/business/:userId',
   [body('action').isIn(['approve', 'reject', 'more_info'])],
+  validateRequest,
   a.patchBusinessVerification
+);
+r.post(
+  '/users',
+  [
+    body('email').isEmail(),
+    body('password').isLength({ min: 6 }),
+    body('role').isIn(['player', 'coach', 'business_owner']),
+  ],
+  validateRequest,
+  a.createUser
 );
 r.get('/users', a.listUsers);
 r.patch('/users/:id', a.patchUser);

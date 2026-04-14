@@ -7,6 +7,7 @@ import { api, getErrorMessage } from '../../services/api';
 export default function AdminVerifyCoaches() {
   const [list, setList] = useState([]);
   const [err, setErr] = useState('');
+  const [banner, setBanner] = useState('');
   const load = () =>
     api
       .get('/admin/verification/coaches')
@@ -17,12 +18,24 @@ export default function AdminVerifyCoaches() {
   }, []);
 
   const act = async (userId, action) => {
-    const reason = prompt('Reason / notes (optional)') || '';
+    setErr('');
+    setBanner('');
+    let reason = '';
+    if (action === 'approve') {
+      reason = '';
+    } else {
+      const entered = window.prompt('Reason / notes (optional)');
+      if (entered === null) return;
+      reason = entered || '';
+    }
     try {
       await api.patch(`/admin/verification/coaches/${userId}`, { action, reason });
+      if (action === 'approve') setBanner('Admin Approved');
+      else if (action === 'reject') setBanner('Rejection recorded. Coach was notified in-app.');
+      else setBanner('Request recorded. Coach was notified in-app.');
       load();
     } catch (e) {
-      alert(getErrorMessage(e));
+      setErr(getErrorMessage(e));
     }
   };
 
@@ -32,6 +45,11 @@ export default function AdminVerifyCoaches() {
         title="Coach verification"
         subtitle="Review pending coach applications. Approve, reject, or request more information."
       />
+      {banner ? (
+        <AdminCard accent="cyan" className="mb-6 p-4">
+          <p className="text-sm font-medium text-white">{banner}</p>
+        </AdminCard>
+      ) : null}
       {err ? (
         <AdminCard accent="orange" className="mb-6 p-4">
           <p className="text-sm text-admin-orange">{err}</p>

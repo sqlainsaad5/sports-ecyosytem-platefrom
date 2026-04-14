@@ -37,6 +37,31 @@ export default function PlayerPerformance() {
         </div>
       </PlayerCard>
 
+      {rows.length > 1 ? (
+        <PlayerCard className="p-6">
+          <h3 className="player-headline-section mb-4 font-headline text-xl font-bold uppercase tracking-tight text-white">
+            Trend (technique)
+          </h3>
+          <div className="flex h-32 items-end gap-1">
+            {[...rows]
+              .sort((a, b) => new Date(a.weekStartDate) - new Date(b.weekStartDate))
+              .slice(-8)
+              .map((r) => (
+                <div key={r._id} className="flex flex-1 flex-col items-center justify-end">
+                  <div
+                    className="w-full rounded-t bg-gradient-to-t from-player-green/40 to-player-green"
+                    style={{ height: `${Math.min(100, Number(r.technique) || 0)}%` }}
+                    title={`${r.technique}`}
+                  />
+                  <span className="mt-1 text-[9px] text-player-on-variant">
+                    {new Date(r.weekStartDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                  </span>
+                </div>
+              ))}
+          </div>
+        </PlayerCard>
+      ) : null}
+
       <PlayerCard elevate={false} className="overflow-x-auto p-0">
         <table className="min-w-full text-sm">
           <thead className={playerTableHead}>

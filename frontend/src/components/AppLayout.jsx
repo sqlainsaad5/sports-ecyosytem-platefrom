@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import HeaderNotificationBell from './HeaderNotificationBell';
 
 const linkCls = ({ isActive }) =>
   `block rounded-lg px-3 py-2 text-sm font-medium ${isActive ? 'bg-brand-600 text-white' : 'text-slate-700 hover:bg-slate-100'}`;
@@ -11,8 +12,10 @@ const nav = {
     { to: '/coach/sessions', label: 'Sessions' },
     { to: '/coach/plans', label: 'Weekly plans' },
     { to: '/coach/performance', label: 'Evaluations' },
+    { to: '/coach/matches', label: 'Matches' },
     { to: '/coach/feedback', label: 'Feedback' },
     { to: '/coach/payments', label: 'Payments' },
+    { to: '/coach/notifications', label: 'Notifications' },
     { to: '/coach/documents', label: 'Documents' },
   ],
   business_owner: [
@@ -105,7 +108,7 @@ export default function AppLayout() {
           <div className="flex h-full items-center justify-between">
             <p className="font-display text-3xl tracking-[0.1em] text-[#FF6B00]">MIDNIGHT STADIUM</p>
             <div className="flex items-center gap-4">
-              <span className="material-symbols-outlined text-slate-400">notifications</span>
+              <HeaderNotificationBell to="/coach/notifications" listPath="/coaches/notifications" />
               <div className="hidden text-right md:block">
                 <p className="text-xs font-headline uppercase tracking-[0.15em] text-slate-300">{user?.email}</p>
                 <p className="text-[10px] font-orbitron uppercase tracking-[0.2em] text-[#FF6B00]">Coach Access</p>
@@ -186,7 +189,11 @@ export default function AppLayout() {
               <input className="w-full rounded-xl border-none bg-black/40 py-2 pl-10 pr-4 text-sm text-white focus:ring-1 focus:ring-[#cc97ff]" placeholder="Search Ecosystem..." />
             </div>
             <div className="ml-auto flex items-center gap-4 text-slate-400">
-              <span className="material-symbols-outlined">notifications</span>
+              <HeaderNotificationBell
+                to="/business/notifications"
+                listPath="/business/notifications"
+                badgeClassName="bg-[#A855F7] text-white"
+              />
               <span className="material-symbols-outlined">help</span>
             </div>
           </div>

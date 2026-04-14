@@ -1,4 +1,10 @@
+const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+const PDFDocument = require('pdfkit');
 const User = require('../models/User');
+const PlayerProfile = require('../models/PlayerProfile');
+const CoachProfile = require('../models/CoachProfile');
+const BusinessProfile = require('../models/BusinessProfile');
 const SportCategory = require('../models/SportCategory');
 const IndoorGround = require('../models/IndoorGround');
 const GroundBooking = require('../models/GroundBooking');
@@ -11,6 +17,21 @@ const SystemSettings = require('../models/SystemSettings');
 const VerificationDocument = require('../models/VerificationDocument');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { notifyUser } = require('../utils/notify');
+
+/** Mongoose 8 requires update operators; plain `{ status }` may not persist. */
+function verificationDocStatusForAction(action) {
+  if (action === 'approve') return 'approved';
+  if (action === 'reject') return 'rejected';
+  return 'pending';
+}
+
+async function setVerificationDocumentsStatus(userId, roleContext, action) {
+  const status = verificationDocStatusForAction(action);
+  await VerificationDocument.updateMany(
+    { user: userId, roleContext },
+    { $set: { status } }
+  );
+}
 
 const dashboard = asyncHandler(async (req, res) => {
   const [players, coaches, businesses, admins] = await Promise.all([
@@ -25,6 +46,7 @@ const dashboard = asyncHandler(async (req, res) => {
     { $match: { status: 'completed' } },
     { $group: { _id: null, total: { $sum: '$amount' } } },
   ]);
+  /** SRS UC-A2 — basic health indicators */
   res.json({
     success: true,
     data: {
@@ -32,6 +54,11 @@ const dashboard = asyncHandler(async (req, res) => {
       bookingsConfirmed: bookings,
       trainingSessions: sessions,
       revenueTotal: revenue[0]?.total || 0,
+      health: {
+        database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+        uptimeSec: Math.floor(process.uptime()),
+        nodeEnv: process.env.NODE_ENV || 'development',
+      },
     },
   });
 });
@@ -54,13 +81,21 @@ const patchCoachVerification = asyncHandler(async (req, res) => {
   else if (action === 'more_info') user.verificationStatus = 'more_info';
   user.verificationNotes = reason;
   await user.save();
-  await VerificationDocument.updateMany({ user: user._id, roleContext: 'coach' }, { status: action === 'approve' ? 'approved' : 'pending' });
-  await notifyUser(user._id, {
-    title: 'Verification update',
-    body: `Your coach application was ${action}d.`,
-    category: 'verification',
-  });
-  res.json({ success: true, data: user });
+  await setVerificationDocumentsStatus(user._id, 'coach', action);
+  let title = 'Verification update';
+  let body = '';
+  if (action === 'approve') {
+    body = 'Your coach application was approved. You are now verified.';
+  } else if (action === 'reject') {
+    body = reason ? `Your coach application was rejected. Reason: ${reason}` : 'Your coach application was rejected.';
+  } else if (action === 'more_info') {
+    title = 'Additional documents requested';
+    body = reason
+      ? `Please upload the requested documents in Documents. Admin notes: ${reason}`
+      : 'Please upload additional verification documents in the Documents section.';
+  }
+  await notifyUser(user._id, { title, body, category: 'verification' });
+  res.json({ success: true, data: user, message: 'User notified in-app.' });
 });
 
 const verificationBusiness = asyncHandler(async (req, res) => {
@@ -83,12 +118,21 @@ const patchBusinessVerification = asyncHandler(async (req, res) => {
   else if (action === 'more_info') user.verificationStatus = 'more_info';
   user.verificationNotes = reason;
   await user.save();
-  await notifyUser(user._id, {
-    title: 'Verification update',
-    body: `Your business application was ${action}d.`,
-    category: 'verification',
-  });
-  res.json({ success: true, data: user });
+  await setVerificationDocumentsStatus(user._id, 'business_owner', action);
+  let title = 'Verification update';
+  let body = '';
+  if (action === 'approve') {
+    body = 'Your business application was approved. You can manage your store.';
+  } else if (action === 'reject') {
+    body = reason ? `Your business application was rejected. Reason: ${reason}` : 'Your business application was rejected.';
+  } else if (action === 'more_info') {
+    title = 'Additional documents requested';
+    body = reason
+      ? `Please upload the requested documents in Documents. Admin notes: ${reason}`
+      : 'Please upload additional verification documents in the Documents section.';
+  }
+  await notifyUser(user._id, { title, body, category: 'verification' });
+  res.json({ success: true, data: user, message: 'User notified in-app.' });
 });
 
 const listUsers = asyncHandler(async (req, res) => {
@@ -211,7 +255,78 @@ const reportsSummary = asyncHandler(async (req, res) => {
     { $match: { status: 'completed' } },
     { $group: { _id: '$type', total: { $sum: '$amount' }, count: { $sum: 1 } } },
   ]);
+  /** SRS UC-A13 / SDD — PDF export */
+  if (req.query.format === 'pdf') {
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename="platform-revenue-report.pdf"');
+    const doc = new PDFDocument({ margin: 50 });
+    doc.pipe(res);
+    doc.fontSize(18).text('Sports Ecosystem — Payment summary (UC-A13)', { align: 'center' });
+    doc.moveDown();
+    doc.fontSize(10).text(`Generated: ${new Date().toISOString()}`, { align: 'center' });
+    doc.moveDown();
+    byType.forEach((row) => {
+      doc.fontSize(12).text(`${row._id}: ${row.count} transactions, total ${row.total}`);
+      doc.moveDown(0.4);
+    });
+    doc.end();
+    return;
+  }
   res.json({ success: true, data: { paymentsByType: byType } });
+});
+
+/** SRS UC-A5 — admin-provisioned accounts (same roles as public register) */
+const createUser = asyncHandler(async (req, res) => {
+  const { email, password, role, profile } = req.body;
+  if (!email || !password || !role || !profile) {
+    return res.status(400).json({ success: false, message: 'email, password, role, profile required' });
+  }
+  if (!['player', 'coach', 'business_owner'].includes(role)) {
+    return res.status(400).json({ success: false, message: 'Cannot create admin via this endpoint' });
+  }
+  const existing = await User.findOne({ email: String(email).toLowerCase() });
+  if (existing) return res.status(409).json({ success: false, message: 'Email already registered' });
+  const passwordHash = await bcrypt.hash(String(password), 12);
+  const verificationStatus = role === 'player' ? 'verified' : 'pending_review';
+  const user = await User.create({
+    email: String(email).toLowerCase(),
+    passwordHash,
+    role,
+    verificationStatus,
+  });
+  if (role === 'player') {
+    const pp = await PlayerProfile.create({
+      user: user._id,
+      fullName: profile.fullName || 'Player',
+      sportPreference: profile.sportPreference || 'cricket',
+      skillLevel: profile.skillLevel || 'beginner',
+      city: profile.city,
+    });
+    user.playerProfile = pp._id;
+  } else if (role === 'coach') {
+    const specs = profile.specialties || ['cricket'];
+    const cp = await CoachProfile.create({
+      user: user._id,
+      fullName: profile.fullName || 'Coach',
+      specialties: specs,
+      city: profile.city,
+      academyLocation: profile.academyLocation,
+      locationMapUrl: profile.locationMapUrl,
+    });
+    user.coachProfile = cp._id;
+  } else {
+    const bp = await BusinessProfile.create({
+      user: user._id,
+      businessName: profile.businessName || 'Business',
+      storeName: profile.storeName || profile.businessName || 'Store',
+    });
+    user.businessProfile = bp._id;
+  }
+  await user.save();
+  res.status(201).json({
+    success: true,
+    data: { id: user._id, email: user.email, role: user.role, verificationStatus: user.verificationStatus },
+  });
 });
 
 const listSubscriptions = asyncHandler(async (req, res) => {
@@ -246,6 +361,7 @@ const putSettings = asyncHandler(async (req, res) => {
 
 module.exports = {
   dashboard,
+  createUser,
   verificationCoaches,
   patchCoachVerification,
   verificationBusiness,

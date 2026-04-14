@@ -1,6 +1,7 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const app = require('./app');
+const { isStripeEnabled } = require('./utils/stripePayments');
 const { connectDatabase } = require('./config/database');
 const SportCategory = require('./models/SportCategory');
 const IndoorGround = require('./models/IndoorGround');
@@ -43,6 +44,13 @@ connectDatabase()
     await seedMinimal();
     app.listen(PORT, () => {
       console.log(`API listening on port ${PORT}`);
+      if (!isStripeEnabled()) {
+        console.warn(
+          '[stripe] STRIPE_SECRET_KEY missing or invalid — set sk_test_... / sk_live_... in backend/.env and restart'
+        );
+      } else {
+        console.log('[stripe] Payments enabled');
+      }
     });
   })
   .catch((err) => {

@@ -10,6 +10,17 @@ const orderItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const addressSchema = new mongoose.Schema(
+  {
+    fullName: String,
+    line1: String,
+    city: String,
+    phone: String,
+    postalCode: String,
+  },
+  { _id: false }
+);
+
 const orderSchema = new mongoose.Schema(
   {
     player: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
@@ -22,6 +33,10 @@ const orderSchema = new mongoose.Schema(
       default: 'pending',
     },
     payment: { type: mongoose.Schema.Types.ObjectId, ref: 'Payment' },
+    /** SRS UC-P8 / UC-B12 — checkout & fulfillment */
+    shippingAddress: addressSchema,
+    trackingNumber: String,
+    customerNote: String,
   },
   { timestamps: true }
 );

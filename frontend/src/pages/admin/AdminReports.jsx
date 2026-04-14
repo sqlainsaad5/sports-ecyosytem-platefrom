@@ -13,11 +13,30 @@ export default function AdminReports() {
       .catch((e) => setErr(getErrorMessage(e)));
   }, []);
 
+  const exportPdf = async () => {
+    try {
+      const res = await api.get('/admin/reports/summary', { params: { format: 'pdf' }, responseType: 'blob' });
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'platform-revenue-report.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(getErrorMessage(e));
+    }
+  };
+
   return (
     <div>
       <AdminPageHeader
         title="Reports & analytics"
         subtitle="Payment aggregates by type (UC-A13)."
+        actions={
+          <button type="button" onClick={exportPdf} className="rounded-lg border border-admin-cyan/40 px-4 py-2 text-xs font-bold uppercase tracking-wider text-admin-cyan">
+            Export PDF
+          </button>
+        }
       />
       {err ? (
         <AdminCard accent="orange" className="mb-6 p-4">

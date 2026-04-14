@@ -18,6 +18,15 @@ const { asyncHandler } = require('../utils/asyncHandler');
 const { hasOverlap } = require('../utils/groundBookings');
 const { notifyUser } = require('../utils/notify');
 const { verifiedBusinessOwnerIds } = require('../utils/verifiedSellers');
+const { effectiveProductPrice, inSaleWindow } = require('../utils/pricing');
+const { buildProductOrderContext } = require('../utils/productOrder');
+const {
+  getStripe,
+  isStripeEnabled,
+  dollarsToCents,
+  retrieveSucceededPaymentIntent,
+  assertAmountMatches,
+} = require('../utils/stripePayments');
 
 const populateCoachBrief = {
   path: 'coach',
@@ -124,7 +133,10 @@ const listTrainingSessions = asyncHandler(async (req, res) => {
 });
 
 const listTrainingPlans = asyncHandler(async (req, res) => {
-  const list = await TrainingPlan.find({ player: req.user.id }).sort({ weekStartDate: -1 }).lean();
+  /** SRS UC-P5 — players only see published weekly plans */
+  const list = await TrainingPlan.find({ player: req.user.id, status: 'published' })
+    .sort({ weekStartDate: -1 })
+    .lean();
   res.json({ success: true, data: list });
 });
 
@@ -157,6 +169,46 @@ const holdGroundBooking = asyncHandler(async (req, res) => {
   res.status(201).json({ success: true, data: booking });
 });
 
+const createGroundBookingPaymentIntent = asyncHandler(async (req, res) => {
+  if (!isStripeEnabled()) {
+    return res.status(503).json({ success: false, message: 'Stripe is not configured on the server.' });
+  }
+  const booking = await GroundBooking.findOne({
+    _id: req.params.id,
+    player: req.user.id,
+    status: 'held',
+  });
+  if (!booking) return res.status(404).json({ success: false, message: 'Hold not found' });
+  if (booking.holdExpiresAt < new Date()) {
+    booking.status = 'cancelled';
+    await booking.save();
+    return res.status(410).json({ success: false, message: 'Hold expired' });
+  }
+  const amountCents = dollarsToCents(booking.amount);
+  if (amountCents < 50) {
+    return res.status(400).json({
+      success: false,
+      message: 'Set booking amount to at least 0.50 USD for card payment.',
+    });
+  }
+  const stripe = getStripe();
+  const pi = await stripe.paymentIntents.create({
+    amount: amountCents,
+    currency: 'usd',
+    automatic_payment_methods: { enabled: true },
+    metadata: {
+      purpose: 'ground_booking',
+      playerId: String(req.user.id),
+      bookingId: String(booking._id),
+      amountCents: String(amountCents),
+    },
+  });
+  res.json({
+    success: true,
+    data: { clientSecret: pi.client_secret, amount: booking.amount, currency: 'usd' },
+  });
+});
+
 const confirmGroundPayment = asyncHandler(async (req, res) => {
   const booking = await GroundBooking.findOne({
     _id: req.params.id,
@@ -176,12 +228,30 @@ const confirmGroundPayment = asyncHandler(async (req, res) => {
     return res.status(409).json({ success: false, message: 'Slot no longer available' });
   }
 
+  let externalRef = 'mock-gateway';
+  if (isStripeEnabled()) {
+    const { paymentIntentId } = req.body;
+    if (!paymentIntentId) {
+      return res.status(400).json({ success: false, message: 'paymentIntentId is required after card payment.' });
+    }
+    const pi = await retrieveSucceededPaymentIntent(paymentIntentId);
+    if (
+      pi.metadata.purpose !== 'ground_booking' ||
+      pi.metadata.playerId !== String(req.user.id) ||
+      pi.metadata.bookingId !== String(booking._id)
+    ) {
+      return res.status(400).json({ success: false, message: 'Invalid payment for this booking.' });
+    }
+    assertAmountMatches(pi, dollarsToCents(booking.amount));
+    externalRef = paymentIntentId;
+  }
+
   const payment = await Payment.create({
     payer: req.user.id,
     type: 'ground_booking',
     amount: booking.amount,
     status: 'completed',
-    externalRef: 'mock-gateway',
+    externalRef,
   });
   booking.payment = payment._id;
   booking.status = 'confirmed';
@@ -214,80 +284,192 @@ const getPerformance = asyncHandler(async (req, res) => {
 
 const browseProducts = asyncHandler(async (req, res) => {
   const ownerIds = await verifiedBusinessOwnerIds();
-  const list = await Product.find({
+  const filter = {
     isActive: true,
     businessOwner: { $in: ownerIds },
-  })
-    .sort({ createdAt: -1 })
-    .lean();
-  res.json({ success: true, data: list });
+  };
+  if (req.query.sport) filter.sportType = req.query.sport;
+  if (req.query.q) filter.name = new RegExp(String(req.query.q).trim(), 'i');
+  if (req.query.category) filter.category = new RegExp(String(req.query.category).trim(), 'i');
+  const list = await Product.find(filter).sort({ createdAt: -1 }).lean();
+  const data = list.map((p) => ({
+    ...p,
+    effectivePrice: effectiveProductPrice(p),
+    onSale: inSaleWindow(p) && (p.salePrice != null || (p.discountPercent != null && p.discountPercent > 0)),
+  }));
+  res.json({ success: true, data });
+});
+
+const createOrderPaymentIntent = asyncHandler(async (req, res) => {
+  if (!isStripeEnabled()) {
+    return res.status(503).json({ success: false, message: 'Stripe is not configured on the server.' });
+  }
+  const { items } = req.body;
+  let ctx;
+  try {
+    ctx = await buildProductOrderContext(items);
+  } catch (e) {
+    const code = e.statusCode || 400;
+    return res.status(code).json({ success: false, message: e.message });
+  }
+  const totalCents = dollarsToCents(ctx.total);
+  if (totalCents < 50) {
+    return res.status(400).json({
+      success: false,
+      message: 'Order total is below the minimum card charge (0.50 USD).',
+    });
+  }
+  const stripe = getStripe();
+  const pi = await stripe.paymentIntents.create({
+    amount: totalCents,
+    currency: 'usd',
+    automatic_payment_methods: { enabled: true },
+    metadata: {
+      purpose: 'product_order',
+      playerId: String(req.user.id),
+      itemHash: ctx.itemHash,
+      payee: String(ctx.ownerId),
+      totalCents: String(totalCents),
+    },
+  });
+  res.json({
+    success: true,
+    data: { clientSecret: pi.client_secret, amount: ctx.total, currency: 'usd' },
+  });
 });
 
 const createOrder = asyncHandler(async (req, res) => {
-  const { items } = req.body;
-  if (!Array.isArray(items) || !items.length) {
-    return res.status(400).json({ success: false, message: 'items required' });
+  const { items, shippingAddress, customerNote, cardLast4, paymentIntentId } = req.body;
+  let ctx;
+  try {
+    ctx = await buildProductOrderContext(items);
+  } catch (e) {
+    const code = e.statusCode || 400;
+    return res.status(code).json({ success: false, message: e.message });
   }
-  let total = 0;
-  const lineDocs = [];
-  let ownerId;
-  for (const line of items) {
-    const prod = await Product.findById(line.productId);
-    if (!prod || !prod.isActive) return res.status(400).json({ success: false, message: `Invalid product ${line.productId}` });
-    const qty = line.quantity || 1;
-    if (prod.stock < qty) return res.status(400).json({ success: false, message: `Insufficient stock for ${prod.name}` });
-    if (ownerId && ownerId.toString() !== prod.businessOwner.toString()) {
-      return res.status(400).json({ success: false, message: 'All items must be from the same store' });
-    }
-    const seller = await User.findById(prod.businessOwner);
-    if (
-      !seller ||
-      seller.role !== 'business_owner' ||
-      seller.verificationStatus !== 'verified' ||
-      seller.isSuspended
-    ) {
+
+  let externalRef = 'mock-gateway';
+  let meta = {
+    cardLast4: cardLast4 || 'mock',
+    invoiceRef: `INV-${Date.now()}`,
+  };
+
+  if (isStripeEnabled()) {
+    if (!paymentIntentId) {
       return res.status(400).json({
         success: false,
-        message: `Product "${prod.name}" is not from a verified store.`,
+        message: 'paymentIntentId is required. Complete Stripe payment first.',
       });
     }
-    ownerId = prod.businessOwner;
-    const sub = prod.price * qty;
-    total += sub;
-    lineDocs.push({ product: prod._id, name: prod.name, unitPrice: prod.price, quantity: qty });
+    const pi = await retrieveSucceededPaymentIntent(paymentIntentId);
+    if (pi.metadata.purpose !== 'product_order' || pi.metadata.playerId !== String(req.user.id)) {
+      return res.status(400).json({ success: false, message: 'Invalid payment for this order.' });
+    }
+    if (pi.metadata.itemHash !== ctx.itemHash) {
+      return res.status(400).json({ success: false, message: 'Cart does not match completed payment.' });
+    }
+    if (pi.metadata.payee !== String(ctx.ownerId)) {
+      return res.status(400).json({ success: false, message: 'Invalid payment recipient.' });
+    }
+    assertAmountMatches(pi, dollarsToCents(ctx.total));
+    externalRef = paymentIntentId;
+    meta = {
+      ...meta,
+      stripePaymentIntentId: paymentIntentId,
+      invoiceRef: `INV-${Date.now()}`,
+    };
   }
 
   const payment = await Payment.create({
     payer: req.user.id,
-    payee: ownerId,
+    payee: ctx.ownerId,
     type: 'product',
-    amount: total,
+    amount: ctx.total,
     status: 'completed',
-    externalRef: 'mock-gateway',
+    externalRef,
+    meta,
   });
 
   for (let i = 0; i < items.length; i++) {
     const line = items[i];
     const qty = line.quantity || 1;
-    await Product.findByIdAndUpdate(line.productId, { $inc: { stock: -qty } });
+    const updated = await Product.findByIdAndUpdate(
+      line.productId,
+      { $inc: { stock: -qty } },
+      { new: true }
+    );
+    const th = updated.lowStockThreshold ?? 5;
+    if (updated.stock <= th) {
+      await notifyUser(ctx.ownerId, {
+        title: 'Low stock alert',
+        body: `${updated.name} is at or below threshold (${th} left).`,
+        category: 'inventory',
+      });
+    }
   }
 
   const order = await Order.create({
     player: req.user.id,
-    businessOwner: ownerId,
-    items: lineDocs,
-    totalAmount: total,
+    businessOwner: ctx.ownerId,
+    items: ctx.lineDocs,
+    totalAmount: ctx.total,
     status: 'paid',
     payment: payment._id,
+    shippingAddress: shippingAddress || undefined,
+    customerNote: customerNote || undefined,
   });
 
-  await notifyUser(ownerId, {
+  await notifyUser(ctx.ownerId, {
     title: 'New order',
-    body: `Order received — total ${total}`,
+    body: `Order received — total ${ctx.total}`,
     category: 'order',
   });
 
   res.status(201).json({ success: true, data: order });
+});
+
+const createCoachPaymentIntent = asyncHandler(async (req, res) => {
+  if (!isStripeEnabled()) {
+    return res.status(503).json({ success: false, message: 'Stripe is not configured on the server.' });
+  }
+  const { coachId, amount } = req.body;
+  if (!coachId || !(amount > 0)) {
+    return res.status(400).json({ success: false, message: 'coachId and amount are required' });
+  }
+  const coach = await User.findOne({
+    _id: coachId,
+    role: 'coach',
+    verificationStatus: 'verified',
+    isSuspended: false,
+  });
+  if (!coach) return res.status(404).json({ success: false, message: 'Coach not available for payment' });
+  const rel = await TrainingSession.findOne({ coach: coachId, player: req.user.id });
+  if (!rel) {
+    return res.status(400).json({
+      success: false,
+      message: 'Payments are only allowed to coaches you have a training session with.',
+    });
+  }
+  const amountCents = dollarsToCents(amount);
+  if (amountCents < 50) {
+    return res.status(400).json({ success: false, message: 'Amount must be at least 0.50 USD for card payment.' });
+  }
+  const stripe = getStripe();
+  const pi = await stripe.paymentIntents.create({
+    amount: amountCents,
+    currency: 'usd',
+    automatic_payment_methods: { enabled: true },
+    metadata: {
+      purpose: 'coach_fee',
+      playerId: String(req.user.id),
+      coachId: String(coachId),
+      amountCents: String(amountCents),
+    },
+  });
+  res.json({
+    success: true,
+    data: { clientSecret: pi.client_secret, amount: Number(amount), currency: 'usd' },
+  });
 });
 
 const listMyOrders = asyncHandler(async (req, res) => {
@@ -333,7 +515,7 @@ const submitCoachFeedback = asyncHandler(async (req, res) => {
 });
 
 const payCoach = asyncHandler(async (req, res) => {
-  const { coachId, amount } = req.body;
+  const { coachId, amount, paymentIntentId } = req.body;
   if (amount <= 0) {
     return res.status(400).json({ success: false, message: 'Amount must be greater than zero.' });
   }
@@ -351,13 +533,41 @@ const payCoach = asyncHandler(async (req, res) => {
       message: 'Payments are only allowed to coaches you have a training session with.',
     });
   }
+
+  let externalRef = 'mock-gateway';
+  let meta = {
+    cardLast4: req.body.cardLast4 || 'mock',
+    invoiceRef: `COACH-${Date.now()}`,
+  };
+
+  if (isStripeEnabled()) {
+    if (!paymentIntentId) {
+      return res.status(400).json({
+        success: false,
+        message: 'paymentIntentId is required. Complete Stripe payment first.',
+      });
+    }
+    const pi = await retrieveSucceededPaymentIntent(paymentIntentId);
+    if (
+      pi.metadata.purpose !== 'coach_fee' ||
+      pi.metadata.playerId !== String(req.user.id) ||
+      pi.metadata.coachId !== String(coachId)
+    ) {
+      return res.status(400).json({ success: false, message: 'Invalid payment for this coach.' });
+    }
+    assertAmountMatches(pi, dollarsToCents(amount));
+    externalRef = paymentIntentId;
+    meta = { ...meta, stripePaymentIntentId: paymentIntentId };
+  }
+
   const payment = await Payment.create({
     payer: req.user.id,
     payee: coachId,
     type: 'coach_fee',
     amount,
     status: 'completed',
-    externalRef: 'mock-gateway',
+    externalRef,
+    meta,
   });
   await notifyUser(coachId, {
     title: 'Payment received',
@@ -402,14 +612,17 @@ module.exports = {
   listTrainingSessions,
   listTrainingPlans,
   holdGroundBooking,
+  createGroundBookingPaymentIntent,
   confirmGroundPayment,
   listMyGroundBookings,
   cancelGroundBooking,
   getPerformance,
   browseProducts,
+  createOrderPaymentIntent,
   createOrder,
   listMyOrders,
   submitCoachFeedback,
+  createCoachPaymentIntent,
   payCoach,
   listNotifications,
   markNotificationRead,

@@ -23,6 +23,14 @@ export default function PlayerOrders() {
           <PlayerCard key={o._id} className="text-sm">
             <span className="font-bold text-player-green">{o.status}</span>
             <span className="text-player-on-variant"> — total {o.totalAmount}</span>
+            {o.trackingNumber ? (
+              <p className="mt-2 font-orbitron text-xs text-player-green">Tracking: {o.trackingNumber}</p>
+            ) : null}
+            {o.shippingAddress?.line1 ? (
+              <p className="mt-1 text-xs text-player-on-variant">
+                Ship: {o.shippingAddress.fullName} · {o.shippingAddress.line1}, {o.shippingAddress.city}
+              </p>
+            ) : null}
             <ul className="mt-3 space-y-1 text-player-on-variant">
               {o.items?.map((i, idx) => (
                 <li key={idx}>

@@ -22,8 +22,10 @@ import CoachSessions from './pages/coach/CoachSessions';
 import CoachPlans from './pages/coach/CoachPlans';
 import CoachPerformance from './pages/coach/CoachPerformance';
 import CoachFeedback from './pages/coach/CoachFeedback';
+import CoachRecommended from './pages/coach/CoachRecommended';
 import CoachPayments from './pages/coach/CoachPayments';
 import CoachDocuments from './pages/coach/CoachDocuments';
+import CoachNotifications from './pages/coach/CoachNotifications';
 import BusinessDashboard from './pages/business/BusinessDashboard';
 import BusinessProducts from './pages/business/BusinessProducts';
 import BusinessOrders from './pages/business/BusinessOrders';
@@ -74,9 +76,11 @@ export default function App() {
           <Route path="sessions" element={<CoachSessions />} />
           <Route path="plans" element={<CoachPlans />} />
           <Route path="performance" element={<CoachPerformance />} />
+          <Route path="matches" element={<CoachRecommended />} />
           <Route path="feedback" element={<CoachFeedback />} />
           <Route path="payments" element={<CoachPayments />} />
           <Route path="documents" element={<CoachDocuments />} />
+          <Route path="notifications" element={<CoachNotifications />} />
         </Route>
       </Route>
 

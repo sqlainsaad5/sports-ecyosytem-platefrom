@@ -47,7 +47,7 @@ Indexes: unique `users.email`; compound indexes on bookings and notifications as
 
 ## Operational notes
 
-- **Payments** are recorded with a mock gateway reference; swap `Payment` creation in controllers for Stripe (or similar) in production.
+- **Payments**: With `STRIPE_SECRET_KEY` and `VITE_STRIPE_PUBLISHABLE_KEY` set, player shop, coach fees, ground holds, and business subscriptions use **Stripe PaymentIntents** (see `utils/stripePayments.js`). Without keys, the API keeps the previous mock card / last-4 flows for local development.
 - **Email** notifications are stubbed; SDD describes SMTP — extend `utils/notify.js` and trigger from services.
 - **Uploads** are stored under `backend/uploads/` and served statically at `/uploads/`.
 - **CORS**: `CLIENT_URL` should match the frontend origin in production.

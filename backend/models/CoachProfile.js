@@ -23,6 +23,10 @@ const coachProfileSchema = new mongoose.Schema(
     averageRating: { type: Number, default: 0 },
     ratingCount: { type: Number, default: 0 },
     bankAccountLabel: String,
+    /** SRS UC-A3 / UC-C1 — map link for academy location verification */
+    locationMapUrl: String,
+    /** SRS UC-C5 — max concurrent students (soft cap) */
+    maxStudents: { type: Number, default: 40, min: 1 },
   },
   { timestamps: true }
 );

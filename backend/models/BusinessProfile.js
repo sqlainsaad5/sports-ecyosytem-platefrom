@@ -13,6 +13,11 @@ const businessProfileSchema = new mongoose.Schema(
     listingSlotsRemaining: { type: Number, default: 0 },
     subscriptionRenewsAt: Date,
     legalDocumentNote: String,
+    /** SRS UC-B5 — storefront branding & policies */
+    storeLogoUrl: String,
+    storeBannerUrl: String,
+    shippingPolicyText: String,
+    returnPolicyText: String,
   },
   { timestamps: true }
 );

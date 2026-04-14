@@ -2,12 +2,20 @@ import { useEffect, useState } from 'react';
 import PlayerCard from '../../components/player/PlayerCard';
 import PlayerPageHeader from '../../components/player/PlayerPageHeader';
 import { playerBtnSm, playerField, playerLabel } from '../../components/player/playerClassNames';
+import StripePaySection, { stripePublishableConfigured } from '../../components/payment/StripePaySection';
 import { api, getErrorMessage } from '../../services/api';
 
 export default function PlayerCoaches() {
   const [list, setList] = useState([]);
-  const [msg, setMsg] = useState('');
+  const [requestNote, setRequestNote] = useState('');
+  const [statusMsg, setStatusMsg] = useState('');
   const [err, setErr] = useState('');
+  const [payAmt, setPayAmt] = useState({});
+  const [payCard, setPayCard] = useState('4242');
+  const [stripeCheckout, setStripeCheckout] = useState(null);
+  const [intentLoading, setIntentLoading] = useState(false);
+
+  const useStripeFlow = stripePublishableConfigured();
 
   const load = async () => {
     try {
@@ -22,12 +30,73 @@ export default function PlayerCoaches() {
     load();
   }, []);
 
+  const startStripePay = async (coachId) => {
+    const amount = parseFloat(payAmt[coachId] || '0', 10);
+    if (!amount || amount <= 0) {
+      setErr('Enter amount');
+      return;
+    }
+    setErr('');
+    setIntentLoading(true);
+    setStripeCheckout(null);
+    try {
+      const { data } = await api.post('/players/payments/coach/payment-intent', { coachId, amount });
+      setStripeCheckout({
+        clientSecret: data.data.clientSecret,
+        coachId,
+        amount,
+      });
+    } catch (e) {
+      setErr(getErrorMessage(e));
+    } finally {
+      setIntentLoading(false);
+    }
+  };
+
+  const confirmCoachPayment = async (paymentIntentId) => {
+    if (!stripeCheckout) return;
+    const { coachId, amount } = stripeCheckout;
+    setErr('');
+    try {
+      await api.post('/players/payments/coach', {
+        coachId,
+        amount,
+        paymentIntentId,
+      });
+      setStripeCheckout(null);
+      setStatusMsg('Payment completed.');
+    } catch (e) {
+      setErr(getErrorMessage(e));
+    }
+  };
+
+  const payCoachMock = async (coachId) => {
+    const amount = parseFloat(payAmt[coachId] || '0', 10);
+    if (!amount || amount <= 0) {
+      setErr('Enter amount');
+      return;
+    }
+    setErr('');
+    try {
+      await api.post('/players/payments/coach', {
+        coachId,
+        amount,
+        cardLast4: payCard.replace(/\D/g, '').slice(0, 4) || 'mock',
+      });
+      setStatusMsg('Payment recorded (mock gateway).');
+    } catch (e) {
+      setErr(getErrorMessage(e));
+    }
+  };
+
   const requestTraining = async (id) => {
     setErr('');
     try {
-      await api.post('/players/training-requests', { coachId: id, message: msg || 'I would like to train with you.' });
-      setMsg('');
-      alert('Request sent.');
+      await api.post('/players/training-requests', {
+        coachId: id,
+        message: requestNote || 'I would like to train with you.',
+      });
+      setStatusMsg('Request sent.');
     } catch (e) {
       setErr(getErrorMessage(e));
     }
@@ -40,13 +109,14 @@ export default function PlayerCoaches() {
         subtitle="Verified coaches matched to your sport, skill, and city."
       />
       {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
+      {statusMsg ? <p className="mb-4 text-sm text-player-green">{statusMsg}</p> : null}
       <PlayerCard className="mb-6 max-w-xl">
         <label className={playerLabel}>Optional message (all requests)</label>
         <input
           className={`${playerField} mt-2`}
           placeholder="I would like to train with you."
-          value={msg}
-          onChange={(e) => setMsg(e.target.value)}
+          value={requestNote}
+          onChange={(e) => setRequestNote(e.target.value)}
         />
       </PlayerCard>
       <ul className="space-y-4">
@@ -61,10 +131,55 @@ export default function PlayerCoaches() {
                 Match score: {row.matchScore?.toFixed?.(1) ?? row.matchScore}
               </p>
             </div>
-            <div className="flex flex-col gap-2 sm:w-52">
+            <div className="flex flex-col gap-2 sm:w-56">
               <button type="button" onClick={() => requestTraining(row.userId)} className={playerBtnSm}>
                 Request training
               </button>
+              <p className="text-[10px] uppercase tracking-wider text-slate-500">UC-P10 — pay fee</p>
+              <input
+                type="number"
+                min="0.01"
+                step="0.01"
+                placeholder="Amount"
+                className={`${playerField} text-xs`}
+                value={payAmt[row.userId] ?? ''}
+                onChange={(e) => setPayAmt((p) => ({ ...p, [row.userId]: e.target.value }))}
+              />
+              {useStripeFlow ? (
+                <>
+                  {stripeCheckout?.coachId === row.userId ? (
+                    <StripePaySection
+                      clientSecret={stripeCheckout.clientSecret}
+                      onSucceeded={confirmCoachPayment}
+                      onError={(m) => setErr(m)}
+                      submitLabel="Pay coach"
+                      buttonClassName={playerBtnSm}
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={intentLoading}
+                      onClick={() => startStripePay(row.userId)}
+                      className={playerBtnSm}
+                    >
+                      {intentLoading ? '…' : 'Pay with card (Stripe)'}
+                    </button>
+                  )}
+                </>
+              ) : (
+                <>
+                  <input
+                    className={`${playerField} text-xs`}
+                    placeholder="Card last 4"
+                    maxLength={4}
+                    value={payCard}
+                    onChange={(e) => setPayCard(e.target.value)}
+                  />
+                  <button type="button" onClick={() => payCoachMock(row.userId)} className={playerBtnSm}>
+                    Pay coach (mock)
+                  </button>
+                </>
+              )}
             </div>
           </PlayerCard>
         ))}

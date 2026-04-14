@@ -24,6 +24,7 @@ export default function Register() {
   const [city, setCity] = useState('');
   const [specialties, setSpecialties] = useState('cricket');
   const [academyLocation, setAcademyLocation] = useState('');
+  const [locationMapUrl, setLocationMapUrl] = useState('');
   const [businessName, setBusinessName] = useState('');
 
   const buildProfile = () => {
@@ -37,6 +38,7 @@ export default function Register() {
         specialties: specialties.split(',').map((s) => s.trim()).filter(Boolean),
         academyLocation,
         city,
+        locationMapUrl: locationMapUrl.trim() || undefined,
       };
     }
     return { businessName, phone, storeName: businessName };
@@ -182,6 +184,15 @@ export default function Register() {
                     className={inputClass}
                     value={academyLocation}
                     onChange={(e) => setAcademyLocation(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className={labelClass}>Google Maps link (optional, SRS UC-C1)</label>
+                  <input
+                    className={inputClass}
+                    placeholder="https://maps.google.com/..."
+                    value={locationMapUrl}
+                    onChange={(e) => setLocationMapUrl(e.target.value)}
                   />
                 </div>
                 <div>

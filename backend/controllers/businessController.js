@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const BusinessProfile = require('../models/BusinessProfile');
 const Product = require('../models/Product');
@@ -8,6 +9,40 @@ const VerificationDocument = require('../models/VerificationDocument');
 const CoachPartnershipRequest = require('../models/CoachPartnershipRequest');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { notifyUser } = require('../utils/notify');
+const {
+  getStripe,
+  isStripeEnabled,
+  dollarsToCents,
+  retrieveSucceededPaymentIntent,
+  assertAmountMatches,
+} = require('../utils/stripePayments');
+
+/** Monthly USD price per SRS / UC-B3 */
+function subscriptionPriceUsd(pkg) {
+  if (pkg === 'premium') return 99;
+  if (pkg === 'pro') return 49;
+  return 19;
+}
+
+async function verifyBusinessSubscriptionPI(paymentIntentId, userId, action, pkg, amountUsd) {
+  const pi = await retrieveSucceededPaymentIntent(paymentIntentId);
+  if (pi.metadata.purpose !== 'business_subscription' || pi.metadata.userId !== String(userId)) {
+    const err = new Error('Invalid payment');
+    err.statusCode = 400;
+    throw err;
+  }
+  if (pi.metadata.action !== action) {
+    const err = new Error('Invalid payment action');
+    err.statusCode = 400;
+    throw err;
+  }
+  if (pi.metadata.package !== pkg) {
+    const err = new Error('Invalid package for this payment');
+    err.statusCode = 400;
+    throw err;
+  }
+  assertAmountMatches(pi, dollarsToCents(amountUsd));
+}
 
 const getProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id).populate('businessProfile');
@@ -20,16 +55,96 @@ const updateProfile = asyncHandler(async (req, res) => {
   res.json({ success: true, data: bp });
 });
 
+const createSubscriptionPaymentIntent = asyncHandler(async (req, res) => {
+  if (!isStripeEnabled()) {
+    return res.status(503).json({ success: false, message: 'Stripe is not configured on the server.' });
+  }
+  const { action, package: pkg } = req.body;
+  const userId = req.user.id;
+  let amountUsd;
+  let metaPkg;
+  if (action === 'subscribe') {
+    if (!pkg || !['basic', 'pro', 'premium'].includes(pkg)) {
+      return res.status(400).json({ success: false, message: 'package is required for subscribe' });
+    }
+    amountUsd = subscriptionPriceUsd(pkg);
+    metaPkg = pkg;
+  } else if (action === 'renew') {
+    const bp = await BusinessProfile.findOne({ user: userId });
+    if (!bp) return res.status(404).json({ success: false, message: 'Profile not found' });
+    metaPkg = bp.subscriptionPackage;
+    amountUsd = subscriptionPriceUsd(bp.subscriptionPackage);
+  } else if (action === 'change') {
+    if (!pkg || !['basic', 'pro', 'premium'].includes(pkg)) {
+      return res.status(400).json({ success: false, message: 'package is required for change' });
+    }
+    const count = await Product.countDocuments({ businessOwner: userId, isActive: true });
+    const limit = BusinessProfile.packageLimit(pkg);
+    if (count > limit) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot switch to ${pkg}: you have ${count} active listings but this plan allows ${limit}.`,
+      });
+    }
+    amountUsd = subscriptionPriceUsd(pkg);
+    metaPkg = pkg;
+  } else {
+    return res.status(400).json({ success: false, message: 'action must be subscribe, renew, or change' });
+  }
+  const amountCents = dollarsToCents(amountUsd);
+  if (amountCents < 50) {
+    return res.status(400).json({ success: false, message: 'Amount below minimum charge' });
+  }
+  const stripe = getStripe();
+  const pi = await stripe.paymentIntents.create({
+    amount: amountCents,
+    currency: 'usd',
+    automatic_payment_methods: { enabled: true },
+    metadata: {
+      purpose: 'business_subscription',
+      action,
+      userId: String(userId),
+      package: metaPkg,
+      amountCents: String(amountCents),
+    },
+  });
+  res.json({
+    success: true,
+    data: {
+      clientSecret: pi.client_secret,
+      amount: amountUsd,
+      action,
+      package: metaPkg,
+      currency: 'usd',
+    },
+  });
+});
+
 const subscribe = asyncHandler(async (req, res) => {
-  const { package: pkg } = req.body;
+  const { package: pkg, paymentIntentId } = req.body;
+  const amountUsd = subscriptionPriceUsd(pkg);
   const limit = BusinessProfile.packageLimit(pkg);
+  if (isStripeEnabled()) {
+    if (!paymentIntentId) {
+      return res.status(400).json({ success: false, message: 'paymentIntentId is required. Pay with Stripe first.' });
+    }
+    try {
+      await verifyBusinessSubscriptionPI(paymentIntentId, req.user.id, 'subscribe', pkg, amountUsd);
+    } catch (e) {
+      return res.status(e.statusCode || 400).json({ success: false, message: e.message });
+    }
+  }
   const payment = await Payment.create({
     payer: req.user.id,
     type: 'subscription',
-    amount: pkg === 'premium' ? 99 : pkg === 'pro' ? 49 : 19,
+    amount: amountUsd,
     status: 'completed',
-    externalRef: 'mock-gateway',
-    meta: { package: pkg },
+    externalRef: isStripeEnabled() ? paymentIntentId : 'mock-gateway',
+    meta: {
+      package: pkg,
+      cardLast4: req.body.cardLast4 || 'mock',
+      invoiceRef: `SUB-${Date.now()}`,
+    },
   });
   const renew = new Date();
   renew.setMonth(renew.getMonth() + 1);
@@ -51,15 +166,28 @@ const subscribe = asyncHandler(async (req, res) => {
 });
 
 const renewSubscription = asyncHandler(async (req, res) => {
+  const { paymentIntentId } = req.body;
   const bp = await BusinessProfile.findOne({ user: req.user.id });
   if (!bp) return res.status(404).json({ success: false, message: 'Profile not found' });
+  const pkg = bp.subscriptionPackage;
+  const amountUsd = subscriptionPriceUsd(pkg);
   const limit = BusinessProfile.packageLimit(bp.subscriptionPackage);
+  if (isStripeEnabled()) {
+    if (!paymentIntentId) {
+      return res.status(400).json({ success: false, message: 'paymentIntentId is required. Pay with Stripe first.' });
+    }
+    try {
+      await verifyBusinessSubscriptionPI(paymentIntentId, req.user.id, 'renew', pkg, amountUsd);
+    } catch (e) {
+      return res.status(e.statusCode || 400).json({ success: false, message: e.message });
+    }
+  }
   const payment = await Payment.create({
     payer: req.user.id,
     type: 'subscription',
-    amount: 19,
+    amount: amountUsd,
     status: 'completed',
-    externalRef: 'mock-gateway-renewal',
+    externalRef: isStripeEnabled() ? paymentIntentId : 'mock-gateway-renewal',
   });
   const renew = new Date();
   renew.setMonth(renew.getMonth() + 1);
@@ -70,13 +198,68 @@ const renewSubscription = asyncHandler(async (req, res) => {
 });
 
 const updateStore = asyncHandler(async (req, res) => {
-  const { storeName, storeDescription } = req.body;
+  /** SRS UC-B5 — store branding & policies */
+  const allowed = [
+    'storeName',
+    'storeDescription',
+    'storeLogoUrl',
+    'storeBannerUrl',
+    'shippingPolicyText',
+    'returnPolicyText',
+  ];
+  const patch = {};
+  for (const k of allowed) if (req.body[k] !== undefined) patch[k] = req.body[k];
+  const bp = await BusinessProfile.findOneAndUpdate({ user: req.user.id }, patch, { new: true });
+  res.json({ success: true, data: bp });
+});
+
+/** SRS UC-B3 / UC-B4 — change tier with downgrade guard */
+const changeSubscription = asyncHandler(async (req, res) => {
+  const { package: pkg, paymentIntentId } = req.body;
+  const amountUsd = subscriptionPriceUsd(pkg);
+  const count = await Product.countDocuments({ businessOwner: req.user.id, isActive: true });
+  const limit = BusinessProfile.packageLimit(pkg);
+  if (count > limit) {
+    return res.status(400).json({
+      success: false,
+      message: `Cannot switch to ${pkg}: you have ${count} active listings but this plan allows ${limit}. Remove products first.`,
+    });
+  }
+  if (isStripeEnabled()) {
+    if (!paymentIntentId) {
+      return res.status(400).json({ success: false, message: 'paymentIntentId is required. Pay with Stripe first.' });
+    }
+    try {
+      await verifyBusinessSubscriptionPI(paymentIntentId, req.user.id, 'change', pkg, amountUsd);
+    } catch (e) {
+      return res.status(e.statusCode || 400).json({ success: false, message: e.message });
+    }
+  }
+  const payment = await Payment.create({
+    payer: req.user.id,
+    type: 'subscription',
+    amount: amountUsd,
+    status: 'completed',
+    externalRef: isStripeEnabled() ? paymentIntentId : 'mock-gateway-plan-change',
+    meta: { package: pkg, cardLast4: req.body.cardLast4 || 'mock', invoiceRef: `SUB-CHG-${Date.now()}` },
+  });
+  const renew = new Date();
+  renew.setMonth(renew.getMonth() + 1);
   const bp = await BusinessProfile.findOneAndUpdate(
     { user: req.user.id },
-    { storeName, storeDescription },
+    {
+      subscriptionPackage: pkg,
+      listingSlotsRemaining: limit - count,
+      subscriptionRenewsAt: renew,
+    },
     { new: true }
   );
-  res.json({ success: true, data: bp });
+  await notifyUser(req.user.id, {
+    title: 'Subscription updated',
+    body: `Your plan is now ${pkg}.`,
+    category: 'subscription',
+  });
+  res.json({ success: true, data: { profile: bp, payment } });
 });
 
 const assertVerifiedAndQuota = async (userId) => {
@@ -110,9 +293,16 @@ const addProduct = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
+  const body = { ...req.body };
+  delete body.businessOwner;
+  delete body.changeLog;
+  Object.keys(body).forEach((k) => body[k] === undefined && delete body[k]);
   const p = await Product.findOneAndUpdate(
     { _id: req.params.id, businessOwner: req.user.id },
-    req.body,
+    {
+      $set: body,
+      $push: { changeLog: { note: 'Product updated', at: new Date() } },
+    },
     { new: true }
   );
   if (!p) return res.status(404).json({ success: false, message: 'Not found' });
@@ -122,6 +312,18 @@ const updateProduct = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {
   const p = await Product.findOne({ _id: req.params.id, businessOwner: req.user.id });
   if (!p) return res.status(404).json({ success: false, message: 'Not found' });
+  /** SRS UC-B8 — block delete when open orders reference product */
+  const openOrder = await Order.findOne({
+    businessOwner: req.user.id,
+    status: { $in: ['pending', 'paid', 'processing', 'shipped'] },
+    'items.product': p._id,
+  }).lean();
+  if (openOrder) {
+    return res.status(409).json({
+      success: false,
+      message: 'Product has active orders — fulfill or cancel them first, or mark out of stock.',
+    });
+  }
   await p.deleteOne();
   const bp = await BusinessProfile.findOne({ user: req.user.id });
   bp.listingSlotsRemaining += 1;
@@ -140,16 +342,18 @@ const patchPricing = asyncHandler(async (req, res) => {
 });
 
 const patchStock = asyncHandler(async (req, res) => {
-  const p = await Product.findOneAndUpdate(
-    { _id: req.params.id, businessOwner: req.user.id },
-    { stock: req.body.stock },
-    { new: true }
-  );
+  const update = { stock: req.body.stock };
+  if (req.body.lowStockThreshold != null) update.lowStockThreshold = req.body.lowStockThreshold;
+  const p = await Product.findOneAndUpdate({ _id: req.params.id, businessOwner: req.user.id }, update, {
+    new: true,
+  });
   if (!p) return res.status(404).json({ success: false, message: 'Not found' });
-  if (p.stock <= (req.body.lowStockThreshold ?? 3)) {
+  /** SRS UC-B10 */
+  const th = p.lowStockThreshold ?? 5;
+  if (p.stock <= th) {
     await notifyUser(req.user.id, {
       title: 'Low stock alert',
-      body: `${p.name} is running low`,
+      body: `${p.name} is at or below threshold (${th}).`,
       category: 'inventory',
     });
   }
@@ -174,28 +378,75 @@ const listOrders = asyncHandler(async (req, res) => {
 });
 
 const updateOrderStatus = asyncHandler(async (req, res) => {
-  const o = await Order.findOneAndUpdate(
-    { _id: req.params.id, businessOwner: req.user.id },
-    { status: req.body.status },
-    { new: true }
-  );
+  if (req.body.status == null && req.body.trackingNumber === undefined) {
+    return res.status(400).json({ success: false, message: 'Provide status and/or trackingNumber' });
+  }
+  const patch = {};
+  if (req.body.status) patch.status = req.body.status;
+  if (req.body.trackingNumber !== undefined) patch.trackingNumber = req.body.trackingNumber;
+  const o = await Order.findOneAndUpdate({ _id: req.params.id, businessOwner: req.user.id }, patch, {
+    new: true,
+  });
   if (!o) return res.status(404).json({ success: false, message: 'Not found' });
+  const msg =
+    patch.trackingNumber != null
+      ? `Order ${o.status}. Tracking: ${patch.trackingNumber}`
+      : `Your order is now: ${o.status}`;
   await notifyUser(o.player, {
     title: 'Order update',
-    body: `Your order is now: ${o.status}`,
+    body: msg,
     category: 'order',
   });
   res.json({ success: true, data: o });
 });
 
+function escapeCsvCell(v) {
+  const s = String(v ?? '');
+  if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+  return s;
+}
+
+/** SRS UC-B13 — sales analytics; optional CSV export (PDF/Excel via CSV interchange) */
 const salesReport = asyncHandler(async (req, res) => {
-  const orders = await Order.find({ businessOwner: req.user.id, status: { $ne: 'cancelled' } }).lean();
+  const filter = { businessOwner: req.user.id, status: { $ne: 'cancelled' } };
+  if (req.query.from) filter.createdAt = { ...filter.createdAt, $gte: new Date(req.query.from) };
+  if (req.query.to) filter.createdAt = { ...filter.createdAt, $lte: new Date(req.query.to) };
+  const orders = await Order.find(filter).sort({ createdAt: -1 }).lean();
   const total = orders.reduce((s, o) => s + o.totalAmount, 0);
+  const popularMatch = {
+    businessOwner: new mongoose.Types.ObjectId(req.user.id),
+    status: { $ne: 'cancelled' },
+  };
+  if (req.query.from) popularMatch.createdAt = { ...popularMatch.createdAt, $gte: new Date(req.query.from) };
+  if (req.query.to) popularMatch.createdAt = { ...popularMatch.createdAt, $lte: new Date(req.query.to) };
+  const popular = await Order.aggregate([
+    { $match: popularMatch },
+    { $unwind: '$items' },
+    {
+      $group: {
+        _id: '$items.name',
+        qty: { $sum: '$items.quantity' },
+        revenue: { $sum: { $multiply: ['$items.unitPrice', '$items.quantity'] } },
+      },
+    },
+    { $sort: { qty: -1 } },
+    { $limit: 10 },
+  ]);
+  if (req.query.format === 'csv') {
+    const header = ['orderId', 'status', 'totalAmount', 'createdAt'].map(escapeCsvCell).join(',');
+    const lines = orders.map((o) =>
+      [o._id, o.status, o.totalAmount, new Date(o.createdAt).toISOString()].map(escapeCsvCell).join(',')
+    );
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="sales-report.csv"');
+    return res.send(`${header}\n${lines.join('\n')}`);
+  }
   res.json({
     success: true,
     data: {
       orderCount: orders.length,
       revenue: total,
+      popularProducts: popular,
       orders,
     },
   });
@@ -257,8 +508,10 @@ const listBusinessDocs = asyncHandler(async (req, res) => {
 module.exports = {
   getProfile,
   updateProfile,
+  createSubscriptionPaymentIntent,
   subscribe,
   renewSubscription,
+  changeSubscription,
   updateStore,
   listMyProducts,
   addProduct,

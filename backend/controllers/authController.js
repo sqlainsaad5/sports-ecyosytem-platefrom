@@ -88,6 +88,7 @@ const register = asyncHandler(async (req, res) => {
       bio: profile.bio,
       yearsExperience: profile.yearsExperience || 0,
       availability: profile.availability || [],
+      locationMapUrl: profile.locationMapUrl,
     });
     user.coachProfile = cp._id;
     await user.save();

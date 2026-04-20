@@ -26,7 +26,7 @@ skipNoDb('Sports Ecosystem API (integration)', () => {
       .post('/api/auth/register')
       .send({
         email: `t-coach-${Date.now()}@test.local`,
-        password: 'password12',
+        password: 'Password@12',
         role: 'coach',
         profile: { fullName: 'T', specialties: [], city: 'Lahore' },
       });
@@ -34,12 +34,12 @@ skipNoDb('Sports Ecosystem API (integration)', () => {
     expect(res.body.message || res.body.errors).toBeTruthy();
   });
 
-  it('POST /api/auth/register player returns 201 and JWT', async () => {
+  it('POST /api/auth/register player returns 201 and requires email verification', async () => {
     const res = await request(app)
       .post('/api/auth/register')
       .send({
         email: `t-player-${Date.now()}@test.local`,
-        password: 'password12',
+        password: 'Password@12',
         role: 'player',
         profile: {
           fullName: 'Test Player',
@@ -49,15 +49,16 @@ skipNoDb('Sports Ecosystem API (integration)', () => {
         },
       });
     expect(res.status).toBe(201);
-    expect(res.body.data?.token).toBeTruthy();
+    expect(res.body.data?.token).toBeFalsy();
     expect(res.body.data?.user?.role).toBe('player');
+    expect(res.body.data?.user?.emailVerified).toBe(false);
   });
 
   it('POST /api/auth/login rejects wrong password', async () => {
     const email = `t-login-${Date.now()}@test.local`;
     await request(app).post('/api/auth/register').send({
       email,
-      password: 'password12',
+      password: 'Password@12',
       role: 'player',
       profile: {
         fullName: 'L',

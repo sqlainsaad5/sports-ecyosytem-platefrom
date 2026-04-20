@@ -11,6 +11,7 @@ const nav = {
     { to: '/coach/requests', label: 'Requests' },
     { to: '/coach/sessions', label: 'Sessions' },
     { to: '/coach/plans', label: 'Weekly plans' },
+    { to: '/coach/grounds', label: 'Grounds' },
     { to: '/coach/performance', label: 'Evaluations' },
     { to: '/coach/matches', label: 'Matches' },
     { to: '/coach/feedback', label: 'Feedback' },
@@ -77,6 +78,8 @@ export default function AppLayout() {
                         ? 'calendar_month'
                         : item.label === 'Weekly plans'
                           ? 'fitness_center'
+                          : item.label === 'Grounds'
+                            ? 'location_city'
                           : item.label === 'Evaluations'
                             ? 'analytics'
                             : item.label === 'Feedback'

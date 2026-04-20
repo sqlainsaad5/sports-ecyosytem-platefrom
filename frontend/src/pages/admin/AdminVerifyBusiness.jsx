@@ -62,6 +62,21 @@ export default function AdminVerifyBusiness() {
               <div>
                 <p className="text-base font-bold text-white">{u.businessProfile?.businessName || '—'}</p>
                 <p className="mt-1 font-label text-sm text-slate-400">{u.email}</p>
+                <p className="mt-1 font-label text-xs text-slate-400">
+                  Map:{' '}
+                  {u.businessProfile?.locationMapUrl ? (
+                    <a
+                      href={u.businessProfile.locationMapUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-admin-cyan underline-offset-2 hover:underline"
+                    >
+                      Open location
+                    </a>
+                  ) : (
+                    '—'
+                  )}
+                </p>
                 <p className="mt-2 font-label text-xs text-slate-500">Status: {u.verificationStatus}</p>
               </div>
               <div className="flex flex-wrap gap-2">

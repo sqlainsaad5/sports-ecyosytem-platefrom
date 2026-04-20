@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 const p = require('../controllers/playerController');
 const { authenticate, requireRole, loadUser } = require('../middleware/auth');
 
@@ -16,7 +16,7 @@ r.put(
   ],
   p.updateProfile
 );
-r.get('/recommendations', p.getRecommendations);
+r.get('/recommendations', [query('limit').optional().isInt({ min: 3, max: 5 })], p.getRecommendations);
 r.post('/training-requests', [body('coachId').notEmpty()], p.createTrainingRequest);
 r.get('/training-requests', p.listMyTrainingRequests);
 r.get('/training-sessions', p.listTrainingSessions);

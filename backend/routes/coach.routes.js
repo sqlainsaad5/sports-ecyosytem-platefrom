@@ -51,7 +51,16 @@ r.post(
   c.addPerformance
 );
 r.get('/players/:playerId/progress', c.getPlayerProgress);
+r.post(
+  '/ground-bookings/hold',
+  [body('groundId').notEmpty(), body('startTime').notEmpty(), body('endTime').notEmpty()],
+  validateRequest,
+  c.holdGroundBooking
+);
+r.post('/ground-bookings/:id/payment-intent', c.createGroundBookingPaymentIntent);
+r.post('/ground-bookings/:id/confirm-payment', c.confirmGroundPayment);
 r.get('/ground-bookings', c.listCoachGroundBookings);
+r.delete('/ground-bookings/:id', c.cancelGroundBooking);
 /** SRS UC-C4 — coach-side matching players (inverse of player recommendations) */
 r.get('/recommended-players', c.getRecommendedPlayers);
 r.post(

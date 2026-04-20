@@ -55,10 +55,19 @@ function assertAmountMatches(pi, expectedCents) {
   }
 }
 
+/**
+ * Card-only checkout: matches existing “card payment” flows and avoids Payment Element
+ * trying Apple Pay / Link / etc. (dashboard activation + domain verification noise in dev).
+ */
+function paymentIntentMethodSpec() {
+  return { payment_method_types: ['card'] };
+}
+
 module.exports = {
   getStripe,
   isStripeEnabled,
   dollarsToCents,
   retrieveSucceededPaymentIntent,
   assertAmountMatches,
+  paymentIntentMethodSpec,
 };

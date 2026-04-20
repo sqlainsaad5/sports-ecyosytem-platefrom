@@ -4,6 +4,7 @@ import { api, getErrorMessage } from '../../services/api';
 export default function CoachRequests() {
   const [list, setList] = useState([]);
   const [err, setErr] = useState('');
+  const [scheduledAtById, setScheduledAtById] = useState({});
 
   const load = () =>
     api
@@ -16,17 +17,18 @@ export default function CoachRequests() {
   }, []);
 
   const act = async (id, status) => {
-    let scheduledAt;
-    if (status === 'accepted') {
-      const t = prompt('Scheduled at (ISO datetime), or leave empty for default');
-      if (t) scheduledAt = t;
-    }
-    const body = scheduledAt ? { status, scheduledAt } : { status };
+    const selected = scheduledAtById[id];
+    const body =
+      status === 'accepted' && selected
+        ? { status, scheduledAt: new Date(selected).toISOString() }
+        : { status };
     try {
       await api.patch(`/coaches/training-requests/${id}`, body);
+      setErr('');
+      setScheduledAtById((prev) => ({ ...prev, [id]: '' }));
       load();
     } catch (e) {
-      alert(getErrorMessage(e));
+      setErr(getErrorMessage(e));
     }
   };
 
@@ -49,9 +51,35 @@ export default function CoachRequests() {
                 </p>
                 <p className="font-headline text-[11px] uppercase tracking-[0.2em] text-slate-500">{r.status}</p>
               </div>
-              <span className="rounded-full bg-[#ff7524]/10 px-3 py-1 font-orbitron text-[10px] uppercase tracking-widest text-[#ff7524]">Pending</span>
+              <span
+                className={`rounded-full px-3 py-1 font-orbitron text-[10px] uppercase tracking-widest ${
+                  r.status === 'accepted'
+                    ? 'bg-player-green/15 text-player-green'
+                    : r.status === 'rejected'
+                      ? 'bg-red-500/15 text-red-300'
+                      : 'bg-[#ff7524]/10 text-[#ff7524]'
+                }`}
+              >
+                {r.status}
+              </span>
             </div>
             {r.message && <p className="mb-6 border-b border-[#ff7524]/20 bg-player-bg/60 p-3 text-sm italic text-slate-300">"{r.message}"</p>}
+            {r.status === 'pending' ? (
+              <div className="mb-5 space-y-2">
+                <label className="block text-[10px] uppercase tracking-[0.2em] text-slate-500">
+                  Optional schedule time
+                </label>
+                <input
+                  type="datetime-local"
+                  className="w-full border-b-2 border-player-inner bg-player-bg px-3 py-2 text-sm text-white outline-none focus:border-[#ff7524]"
+                  value={scheduledAtById[r._id] || ''}
+                  onChange={(e) => setScheduledAtById((prev) => ({ ...prev, [r._id]: e.target.value }))}
+                />
+                <p className="text-xs text-slate-500">
+                  Leave empty to use default time. Pick another slot if you get a 90-minute conflict.
+                </p>
+              </div>
+            ) : null}
             <div className="flex items-center justify-between border-t border-white/5 pt-5">
               <span className="text-[10px] font-headline uppercase tracking-[0.22em] text-slate-500">Live request</span>
               {r.status === 'pending' && (

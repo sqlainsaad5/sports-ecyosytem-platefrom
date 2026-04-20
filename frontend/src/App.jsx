@@ -6,6 +6,9 @@ import PlayerLayout from './layouts/PlayerLayout';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import VerifyEmail from './pages/VerifyEmail';
 import PlayerDashboard from './pages/player/PlayerDashboard';
 import PlayerCoaches from './pages/player/PlayerCoaches';
 import PlayerTraining from './pages/player/PlayerTraining';
@@ -20,6 +23,7 @@ import CoachDashboard from './pages/coach/CoachDashboard';
 import CoachRequests from './pages/coach/CoachRequests';
 import CoachSessions from './pages/coach/CoachSessions';
 import CoachPlans from './pages/coach/CoachPlans';
+import CoachGrounds from './pages/coach/CoachGrounds';
 import CoachPerformance from './pages/coach/CoachPerformance';
 import CoachFeedback from './pages/coach/CoachFeedback';
 import CoachRecommended from './pages/coach/CoachRecommended';
@@ -53,6 +57,9 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
 
       <Route element={<ProtectedRoute roles={['player']} />}>
         <Route path="/player" element={<PlayerLayout />}>
@@ -75,6 +82,7 @@ export default function App() {
           <Route path="requests" element={<CoachRequests />} />
           <Route path="sessions" element={<CoachSessions />} />
           <Route path="plans" element={<CoachPlans />} />
+          <Route path="grounds" element={<CoachGrounds />} />
           <Route path="performance" element={<CoachPerformance />} />
           <Route path="matches" element={<CoachRecommended />} />
           <Route path="feedback" element={<CoachFeedback />} />

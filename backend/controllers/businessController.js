@@ -15,6 +15,7 @@ const {
   dollarsToCents,
   retrieveSucceededPaymentIntent,
   assertAmountMatches,
+  paymentIntentMethodSpec,
 } = require('../utils/stripePayments');
 
 /** Monthly USD price per SRS / UC-B3 */
@@ -99,7 +100,7 @@ const createSubscriptionPaymentIntent = asyncHandler(async (req, res) => {
   const pi = await stripe.paymentIntents.create({
     amount: amountCents,
     currency: 'usd',
-    automatic_payment_methods: { enabled: true },
+    ...paymentIntentMethodSpec(),
     metadata: {
       purpose: 'business_subscription',
       action,
@@ -265,13 +266,19 @@ const changeSubscription = asyncHandler(async (req, res) => {
 const assertVerifiedAndQuota = async (userId) => {
   const u = await User.findById(userId);
   if (u.verificationStatus !== 'verified') {
-    const err = new Error('Business account must be verified to list products');
+    const err = new Error('Verify your business first: upload documents and wait for admin approval before adding products.');
+    err.statusCode = 403;
+    throw err;
+  }
+  const docsCount = await VerificationDocument.countDocuments({ user: userId, roleContext: 'business_owner' });
+  if (docsCount < 1) {
+    const err = new Error('Upload business verification documents first before adding products.');
     err.statusCode = 403;
     throw err;
   }
   const bp = await BusinessProfile.findOne({ user: userId });
   if (bp.listingSlotsRemaining <= 0) {
-    const err = new Error('Listing quota exceeded — upgrade subscription');
+    const err = new Error('No listing slots available. Purchase or renew a subscription package first.');
     err.statusCode = 403;
     throw err;
   }

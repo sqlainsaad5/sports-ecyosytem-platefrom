@@ -29,15 +29,6 @@ const portals = [
     border: 'border-[#cc97ff]/30',
     text: 'text-[#cc97ff]',
   },
-  {
-    title: 'Admin',
-    tag: 'Stadium Apex',
-    desc: 'Verify users, monitor bookings, sports catalog, and platform health from a single cockpit.',
-    icon: 'admin_panel_settings',
-    accent: 'from-[#00E5FF]/15 to-[#0066FF]/10',
-    border: 'border-admin-cyan/40',
-    text: 'text-admin-cyan',
-  },
 ];
 
 export default function Landing() {
@@ -84,7 +75,7 @@ export default function Landing() {
       <main>
         <section className="relative px-4 pb-20 pt-28 sm:px-6 lg:px-8 lg:pb-28 lg:pt-32">
           <div className="mx-auto max-w-5xl text-center">
-            <p className="font-orbitron text-xs uppercase tracking-[0.35em] text-[#9bffce] sm:text-sm">FYP26 · One platform · Four experiences</p>
+            <p className="font-orbitron text-xs uppercase tracking-[0.35em] text-[#9bffce] sm:text-sm">FYP26 · One platform · Three experiences</p>
             <h1 className="mt-6 font-headline text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl">
               The kinetic arena for{' '}
               <span className="bg-gradient-to-r from-[#cc97ff] via-[#A855F7] to-[#00FF87] bg-clip-text text-transparent">
@@ -113,7 +104,7 @@ export default function Landing() {
 
           <div className="mx-auto mt-20 grid max-w-6xl gap-4 sm:grid-cols-3">
             {[
-              { n: '4', l: 'Portals' },
+              { n: '3', l: 'Portals' },
               { n: '2', l: 'Sports focus' },
               { n: '1', l: 'Ecosystem' },
             ].map((s) => (
@@ -132,7 +123,7 @@ export default function Landing() {
           <div className="mx-auto max-w-7xl">
             <div className="mb-14 text-center">
               <h2 className="font-headline text-3xl font-bold uppercase tracking-tight text-white sm:text-4xl">
-                Four portals. One ecosystem.
+                Three portals. One ecosystem.
               </h2>
               <p className="mt-3 text-slate-400">Each experience follows a dedicated design system — unified by purpose.</p>
             </div>

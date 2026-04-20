@@ -11,9 +11,10 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname;
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(location.state?.emailPrefill || '');
   const [password, setPassword] = useState('');
   const [err, setErr] = useState('');
+  const [notice, setNotice] = useState(location.state?.message || '');
   const [busy, setBusy] = useState(false);
 
   const goHome = (role) => {
@@ -61,6 +62,11 @@ export default function Login() {
             {err && (
               <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">{err}</p>
             )}
+            {notice && (
+              <p className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+                {notice}
+              </p>
+            )}
             <div>
               <label className={labelClass}>Email</label>
               <input
@@ -84,6 +90,11 @@ export default function Login() {
                 autoComplete="current-password"
                 placeholder="••••••••"
               />
+            </div>
+            <div className="text-right">
+              <Link to="/forgot-password" className="text-xs font-medium text-[#cc97ff] hover:text-[#e9d5ff]">
+                Forgot password?
+              </Link>
             </div>
             <button
               type="submit"

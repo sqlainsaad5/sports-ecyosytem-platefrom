@@ -33,6 +33,25 @@ async function setVerificationDocumentsStatus(userId, roleContext, action) {
   );
 }
 
+function sanitizeGroundPayload(body = {}) {
+  const payload = {
+    name: body.name,
+    sportType: body.sportType,
+    ownerName: body.ownerName,
+    ownerPhone: body.ownerPhone,
+    ownerAddress: body.ownerAddress,
+    ownerLocation: body.ownerLocation,
+    address: body.address,
+    city: body.city,
+    description: body.description,
+    isActive: body.isActive,
+    slotDurationMinutes: body.slotDurationMinutes,
+    openTime: body.openTime,
+    closeTime: body.closeTime,
+  };
+  return Object.fromEntries(Object.entries(payload).filter(([, value]) => value !== undefined));
+}
+
 const dashboard = asyncHandler(async (req, res) => {
   const [players, coaches, businesses, admins] = await Promise.all([
     User.countDocuments({ role: 'player' }),
@@ -200,12 +219,17 @@ const listGrounds = asyncHandler(async (req, res) => {
 });
 
 const createGround = asyncHandler(async (req, res) => {
-  const g = await IndoorGround.create(req.body);
+  const required = ['name', 'sportType', 'ownerName', 'ownerPhone', 'ownerAddress', 'ownerLocation'];
+  const missing = required.find((key) => !String(req.body?.[key] ?? '').trim());
+  if (missing) {
+    return res.status(400).json({ success: false, message: `${missing} is required` });
+  }
+  const g = await IndoorGround.create(sanitizeGroundPayload(req.body));
   res.status(201).json({ success: true, data: g });
 });
 
 const updateGround = asyncHandler(async (req, res) => {
-  const g = await IndoorGround.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  const g = await IndoorGround.findByIdAndUpdate(req.params.id, sanitizeGroundPayload(req.body), { new: true });
   res.json({ success: true, data: g });
 });
 
@@ -215,7 +239,12 @@ const deleteGround = asyncHandler(async (req, res) => {
 });
 
 const monitorBookings = asyncHandler(async (req, res) => {
-  const bookings = await GroundBooking.find().populate('ground').populate('player').sort({ startTime: -1 }).limit(200).lean();
+  const bookings = await GroundBooking.find()
+    .populate('ground')
+    .populate('bookedBy', 'email role')
+    .sort({ startTime: -1 })
+    .limit(200)
+    .lean();
   const sessions = await TrainingSession.find().sort({ scheduledAt: -1 }).limit(200).lean();
   res.json({ success: true, data: { bookings, sessions } });
 });
@@ -304,6 +333,13 @@ const createUser = asyncHandler(async (req, res) => {
     });
     user.playerProfile = pp._id;
   } else if (role === 'coach') {
+    const mapLink = String(profile.locationMapUrl || '').trim();
+    if (!mapLink) {
+      return res.status(400).json({
+        success: false,
+        message: 'locationMapUrl is required for coach accounts',
+      });
+    }
     const specs = profile.specialties || ['cricket'];
     const cp = await CoachProfile.create({
       user: user._id,
@@ -311,14 +347,22 @@ const createUser = asyncHandler(async (req, res) => {
       specialties: specs,
       city: profile.city,
       academyLocation: profile.academyLocation,
-      locationMapUrl: profile.locationMapUrl,
+      locationMapUrl: mapLink,
     });
     user.coachProfile = cp._id;
   } else {
+    const businessMapLink = String(profile.locationMapUrl || '').trim();
+    if (!businessMapLink) {
+      return res.status(400).json({
+        success: false,
+        message: 'locationMapUrl is required for business accounts',
+      });
+    }
     const bp = await BusinessProfile.create({
       user: user._id,
       businessName: profile.businessName || 'Business',
       storeName: profile.storeName || profile.businessName || 'Store',
+      locationMapUrl: businessMapLink,
     });
     user.businessProfile = bp._id;
   }

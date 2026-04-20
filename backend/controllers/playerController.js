@@ -26,7 +26,9 @@ const {
   dollarsToCents,
   retrieveSucceededPaymentIntent,
   assertAmountMatches,
+  paymentIntentMethodSpec,
 } = require('../utils/stripePayments');
+const { generateCoachRecommendations } = require('../services/aiCoachEngine');
 
 const populateCoachBrief = {
   path: 'coach',
@@ -38,6 +40,143 @@ const populatePlayerBrief = {
   select: 'email',
   populate: { path: 'playerProfile', select: 'fullName city sportPreference skillLevel' },
 };
+
+const RECOMMENDATION_WEIGHTS = Object.freeze({
+  skill: 0.35,
+  time: 0.25,
+  location: 0.2,
+  performance: 0.2,
+});
+
+function clamp01(v) {
+  if (!Number.isFinite(v)) return 0;
+  return Math.max(0, Math.min(1, v));
+}
+
+function parseOptionalLimit(rawLimit) {
+  if (rawLimit == null || rawLimit === '') return 5;
+  const n = Number.parseInt(rawLimit, 10);
+  if (!Number.isFinite(n)) return 5;
+  return Math.max(3, Math.min(5, n));
+}
+
+function toMinutesOfDay(timeText) {
+  if (!timeText || typeof timeText !== 'string' || !timeText.includes(':')) return null;
+  const [h, m] = timeText.split(':').map((n) => Number.parseInt(n, 10));
+  if (!Number.isInteger(h) || !Number.isInteger(m)) return null;
+  if (h < 0 || h > 23 || m < 0 || m > 59) return null;
+  return h * 60 + m;
+}
+
+function derivePlayerTimePreferences(sessions) {
+  if (!Array.isArray(sessions) || sessions.length === 0) return [];
+  const buckets = new Map();
+  sessions.forEach((s) => {
+    const at = s?.scheduledAt ? new Date(s.scheduledAt) : null;
+    if (!at || Number.isNaN(at.getTime())) return;
+    const day = at.getDay();
+    const slotStart = at.getHours() * 60 + at.getMinutes();
+    const key = `${day}-${slotStart}`;
+    buckets.set(key, (buckets.get(key) || 0) + 1);
+  });
+  return Array.from(buckets.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([key]) => {
+      const [dayStr, startStr] = key.split('-');
+      const start = Number.parseInt(startStr, 10);
+      return { dayOfWeek: Number.parseInt(dayStr, 10), start, end: start + 60 };
+    });
+}
+
+function scoreTimeOverlap(playerSlots, coachAvailability) {
+  if (!Array.isArray(coachAvailability) || coachAvailability.length === 0) {
+    return { score: 0.4, detail: 'Coach availability not set yet.' };
+  }
+  if (!Array.isArray(playerSlots) || playerSlots.length === 0) {
+    return { score: 0.5, detail: 'Using neutral time score (not enough player slot history).' };
+  }
+
+  let overlaps = 0;
+  playerSlots.forEach((slot) => {
+    const found = coachAvailability.some((a) => {
+      if (a?.dayOfWeek !== slot.dayOfWeek) return false;
+      const start = toMinutesOfDay(a.start);
+      const end = toMinutesOfDay(a.end);
+      if (start == null || end == null) return false;
+      return start < slot.end && end > slot.start;
+    });
+    if (found) overlaps += 1;
+  });
+  const ratio = playerSlots.length ? overlaps / playerSlots.length : 0;
+  return { score: clamp01(ratio), detail: overlaps ? `${overlaps} preferred slot(s) overlap.` : 'No strong slot overlap yet.' };
+}
+
+function scoreLocation(playerCity, coachCity) {
+  const p = String(playerCity || '').trim().toLowerCase();
+  const c = String(coachCity || '').trim().toLowerCase();
+  if (!p || !c) return { score: 0.45, detail: 'Location partially available.' };
+  if (p === c) return { score: 1, detail: 'Same city match.' };
+  if (p.includes(c) || c.includes(p)) return { score: 0.75, detail: 'Near city match.' };
+  return { score: 0.25, detail: 'Different city.' };
+}
+
+function levelToIndex(level) {
+  const map = { beginner: 0, intermediate: 1, advanced: 2 };
+  return map[level] ?? 0;
+}
+
+function derivePlayerPerformanceSignal(evals, fallbackLevel) {
+  if (!Array.isArray(evals) || evals.length === 0) {
+    return {
+      normalized: (levelToIndex(fallbackLevel) + 1) / 3,
+      level: fallbackLevel || 'beginner',
+      trend: 0,
+      source: 'profile',
+    };
+  }
+  const latest = evals[0];
+  const latestAvg = ((latest.technique || 0) + (latest.fitness || 0) + (latest.attitude || 0)) / 3;
+  const prev = evals[1];
+  const prevAvg = prev ? ((prev.technique || 0) + (prev.fitness || 0) + (prev.attitude || 0)) / 3 : latestAvg;
+  const trend = clamp01((latestAvg - prevAvg + 100) / 200) * 2 - 1;
+  const normalized = clamp01(latestAvg / 100);
+  const level = normalized > 0.73 ? 'advanced' : normalized > 0.45 ? 'intermediate' : 'beginner';
+  return { normalized, level, trend, source: 'weekly_evaluations' };
+}
+
+function scoreSkill(profile, sportPreference, playerLevel) {
+  const specialties = Array.isArray(profile?.specialties) ? profile.specialties : [];
+  const sportMatch = specialties.includes(sportPreference) ? 1 : 0;
+  const rating = clamp01((profile?.averageRating || 0) / 5);
+  const confidence = clamp01((profile?.ratingCount || 0) / 20);
+  const years = clamp01((profile?.yearsExperience || 0) / 12);
+  const coachLevel = years > 0.66 ? 2 : years > 0.33 ? 1 : 0;
+  const levelGap = Math.abs(coachLevel - levelToIndex(playerLevel));
+  const levelFit = 1 - clamp01(levelGap / 2);
+  const score = clamp01(0.35 * sportMatch + 0.25 * rating + 0.15 * confidence + 0.1 * years + 0.15 * levelFit);
+  return { score, detail: sportMatch ? 'Sport specialty aligned.' : 'Partial specialty alignment.' };
+}
+
+function scorePerformanceFit(playerSignal, profile) {
+  const years = clamp01((profile?.yearsExperience || 0) / 12);
+  const rating = clamp01((profile?.averageRating || 0) / 5);
+  const coachPotential = clamp01(0.55 * years + 0.45 * rating);
+  const distance = Math.abs(playerSignal.normalized - coachPotential);
+  const closeness = 1 - clamp01(distance);
+  const trendBoost = playerSignal.trend > 0.25 ? 0.08 : playerSignal.trend < -0.25 ? -0.08 : 0;
+  return {
+    score: clamp01(closeness + trendBoost),
+    detail:
+      playerSignal.source === 'weekly_evaluations'
+        ? 'Fit adjusted with recent weekly performance trend.'
+        : 'Fit based on current player skill level.',
+  };
+}
+
+function aiRecommendationsEnabled() {
+  return String(process.env.AI_RECOMMENDATIONS_ENABLED || 'true') !== 'false';
+}
 
 const getProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id).populate('playerProfile');
@@ -54,7 +193,10 @@ const updateProfile = asyncHandler(async (req, res) => {
 
 /** UC-P3 — automated coach recommendation (sport, skill, location); verified coaches only */
 const getRecommendations = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ success: false, errors: errors.array() });
   const start = Date.now();
+  const limit = parseOptionalLimit(req.query.limit);
   const user = await User.findById(req.user.id).populate('playerProfile');
   const p = user.playerProfile;
   if (!p) return res.status(400).json({ success: false, message: 'Complete player profile first' });
@@ -67,24 +209,119 @@ const getRecommendations = asyncHandler(async (req, res) => {
     .populate('coachProfile')
     .lean();
 
+  const [recentEvals, recentSessions] = await Promise.all([
+    PerformanceEvaluation.find({ player: req.user.id }).sort({ weekStartDate: -1 }).limit(4).lean(),
+    TrainingSession.find({ player: req.user.id }).sort({ scheduledAt: -1 }).limit(20).lean(),
+  ]);
+
+  const playerTimeSlots = derivePlayerTimePreferences(recentSessions);
+  const playerSignal = derivePlayerPerformanceSignal(recentEvals, p.skillLevel);
+
   const scored = coaches
     .filter((c) => c.coachProfile && (c.coachProfile.specialties || []).includes(p.sportPreference))
     .map((c) => {
-      let score = 50;
-      const city = (p.city || '').toLowerCase();
-      const ccity = (c.coachProfile.city || '').toLowerCase();
-      if (city && ccity && city === ccity) score += 30;
-      else if (city && ccity && ccity.includes(city)) score += 15;
-      const levelOrder = { beginner: 0, intermediate: 1, advanced: 2 };
-      score += (c.coachProfile.averageRating || 0) * 5;
-      score += levelOrder[p.skillLevel] || 0;
-      return { coachUser: c, profile: c.coachProfile, matchScore: score };
+      const skill = scoreSkill(c.coachProfile, p.sportPreference, playerSignal.level);
+      const time = scoreTimeOverlap(playerTimeSlots, c.coachProfile.availability);
+      const location = scoreLocation(p.city, c.coachProfile.city);
+      const performance = scorePerformanceFit(playerSignal, c.coachProfile);
+
+      const finalScore =
+        100 *
+        (RECOMMENDATION_WEIGHTS.skill * skill.score +
+          RECOMMENDATION_WEIGHTS.time * time.score +
+          RECOMMENDATION_WEIGHTS.location * location.score +
+          RECOMMENDATION_WEIGHTS.performance * performance.score);
+
+      return {
+        coachUser: c,
+        profile: c.coachProfile,
+        matchScore: Math.round(finalScore * 10) / 10,
+        breakdown: {
+          skill: Math.round(skill.score * 100),
+          time: Math.round(time.score * 100),
+          location: Math.round(location.score * 100),
+          performance: Math.round(performance.score * 100),
+        },
+        reasons: [skill.detail, time.detail, location.detail, performance.detail],
+      };
     })
-    .sort((a, b) => b.matchScore - a.matchScore);
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, Math.max(limit, 8));
+
+  let generationMethod = 'rules';
+  let generationMeta = null;
+  let finalRows = scored.slice(0, limit).map((s) => ({
+    userId: s.coachUser._id,
+    profile: s.profile,
+    matchScore: s.matchScore,
+    breakdown: s.breakdown,
+    reasons: s.reasons,
+  }));
+
+  if (aiRecommendationsEnabled() && scored.length) {
+    try {
+      const aiInput = {
+        limit,
+        player: {
+          sportPreference: p.sportPreference,
+          skillLevel: p.skillLevel,
+          city: p.city || '',
+          performanceLevel: playerSignal.level,
+          performanceTrend: playerSignal.trend,
+        },
+        candidates: scored.map((s) => ({
+          userId: String(s.coachUser._id),
+          fullName: s.profile?.fullName || '',
+          city: s.profile?.city || '',
+          specialties: s.profile?.specialties || [],
+          yearsExperience: s.profile?.yearsExperience || 0,
+          averageRating: s.profile?.averageRating || 0,
+          ratingCount: s.profile?.ratingCount || 0,
+          availability: s.profile?.availability || [],
+          baselineScore: s.matchScore,
+        })),
+      };
+      const ai = await generateCoachRecommendations(aiInput);
+      const byId = new Map(scored.map((s) => [String(s.coachUser._id), s]));
+      const aiRows = ai.rankedCoaches
+        .map((row) => {
+          const base = byId.get(String(row.userId));
+          if (!base) return null;
+          return {
+            userId: base.coachUser._id,
+            profile: base.profile,
+            matchScore: row.score ?? base.matchScore,
+            breakdown: base.breakdown,
+            reasons: row.reasons?.length ? row.reasons : base.reasons,
+          };
+        })
+        .filter(Boolean);
+      if (aiRows.length) {
+        generationMethod = 'ai';
+        generationMeta = { provider: ai.provider, model: ai.model, latencyMs: ai.latencyMs };
+        finalRows = aiRows.slice(0, limit);
+      }
+    } catch (e) {
+      generationMeta = { fallbackReason: e.message };
+      console.warn('[ai][recommendations] fallback to rules:', e.message);
+    }
+  }
 
   const elapsed = Date.now() - start;
   res.set('X-Recommendation-ms', String(elapsed));
-  res.json({ success: true, data: scored.map((s) => ({ userId: s.coachUser._id, profile: s.profile, matchScore: s.matchScore })) });
+  res.json({
+    success: true,
+    generationMethod,
+    generationMeta,
+    data: finalRows.map((s, idx) => ({
+      rank: idx + 1,
+      userId: s.userId,
+      profile: s.profile,
+      matchScore: s.matchScore,
+      breakdown: s.breakdown,
+      reasons: s.reasons,
+    })),
+  });
 });
 
 const createTrainingRequest = asyncHandler(async (req, res) => {
@@ -159,7 +396,8 @@ const holdGroundBooking = asyncHandler(async (req, res) => {
 
   const booking = await GroundBooking.create({
     ground: groundId,
-    player: req.user.id,
+    bookedBy: req.user.id,
+    bookedByRole: 'player',
     startTime: start,
     endTime: end,
     status: 'held',
@@ -175,7 +413,8 @@ const createGroundBookingPaymentIntent = asyncHandler(async (req, res) => {
   }
   const booking = await GroundBooking.findOne({
     _id: req.params.id,
-    player: req.user.id,
+    bookedBy: req.user.id,
+    bookedByRole: 'player',
     status: 'held',
   });
   if (!booking) return res.status(404).json({ success: false, message: 'Hold not found' });
@@ -195,10 +434,11 @@ const createGroundBookingPaymentIntent = asyncHandler(async (req, res) => {
   const pi = await stripe.paymentIntents.create({
     amount: amountCents,
     currency: 'usd',
-    automatic_payment_methods: { enabled: true },
+    ...paymentIntentMethodSpec(),
     metadata: {
       purpose: 'ground_booking',
-      playerId: String(req.user.id),
+      bookedById: String(req.user.id),
+      bookedByRole: 'player',
       bookingId: String(booking._id),
       amountCents: String(amountCents),
     },
@@ -212,7 +452,8 @@ const createGroundBookingPaymentIntent = asyncHandler(async (req, res) => {
 const confirmGroundPayment = asyncHandler(async (req, res) => {
   const booking = await GroundBooking.findOne({
     _id: req.params.id,
-    player: req.user.id,
+    bookedBy: req.user.id,
+    bookedByRole: 'player',
     status: 'held',
   });
   if (!booking) return res.status(404).json({ success: false, message: 'Hold not found' });
@@ -237,7 +478,8 @@ const confirmGroundPayment = asyncHandler(async (req, res) => {
     const pi = await retrieveSucceededPaymentIntent(paymentIntentId);
     if (
       pi.metadata.purpose !== 'ground_booking' ||
-      pi.metadata.playerId !== String(req.user.id) ||
+      pi.metadata.bookedById !== String(req.user.id) ||
+      pi.metadata.bookedByRole !== 'player' ||
       pi.metadata.bookingId !== String(booking._id)
     ) {
       return res.status(400).json({ success: false, message: 'Invalid payment for this booking.' });
@@ -261,7 +503,7 @@ const confirmGroundPayment = asyncHandler(async (req, res) => {
 });
 
 const listMyGroundBookings = asyncHandler(async (req, res) => {
-  const list = await GroundBooking.find({ player: req.user.id })
+  const list = await GroundBooking.find({ bookedBy: req.user.id, bookedByRole: 'player' })
     .populate('ground')
     .sort({ startTime: -1 })
     .lean();
@@ -269,7 +511,7 @@ const listMyGroundBookings = asyncHandler(async (req, res) => {
 });
 
 const cancelGroundBooking = asyncHandler(async (req, res) => {
-  const b = await GroundBooking.findOne({ _id: req.params.id, player: req.user.id });
+  const b = await GroundBooking.findOne({ _id: req.params.id, bookedBy: req.user.id, bookedByRole: 'player' });
   if (!b) return res.status(404).json({ success: false, message: 'Booking not found' });
   if (b.status === 'cancelled') return res.json({ success: true, data: b });
   b.status = 'cancelled';
@@ -323,7 +565,7 @@ const createOrderPaymentIntent = asyncHandler(async (req, res) => {
   const pi = await stripe.paymentIntents.create({
     amount: totalCents,
     currency: 'usd',
-    automatic_payment_methods: { enabled: true },
+    ...paymentIntentMethodSpec(),
     metadata: {
       purpose: 'product_order',
       playerId: String(req.user.id),
@@ -458,7 +700,7 @@ const createCoachPaymentIntent = asyncHandler(async (req, res) => {
   const pi = await stripe.paymentIntents.create({
     amount: amountCents,
     currency: 'usd',
-    automatic_payment_methods: { enabled: true },
+    ...paymentIntentMethodSpec(),
     metadata: {
       purpose: 'coach_fee',
       playerId: String(req.user.id),

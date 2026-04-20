@@ -1,18 +1,30 @@
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const CoachProfile = require('../models/CoachProfile');
+const PlayerProfile = require('../models/PlayerProfile');
 const TrainingRequest = require('../models/TrainingRequest');
 const TrainingSession = require('../models/TrainingSession');
 const TrainingPlan = require('../models/TrainingPlan');
 const AttendanceRecord = require('../models/AttendanceRecord');
 const PerformanceEvaluation = require('../models/PerformanceEvaluation');
+const IndoorGround = require('../models/IndoorGround');
 const GroundBooking = require('../models/GroundBooking');
 const Payment = require('../models/Payment');
 const Notification = require('../models/Notification');
 const VerificationDocument = require('../models/VerificationDocument');
 const CoachFeedback = require('../models/CoachFeedback');
 const { asyncHandler } = require('../utils/asyncHandler');
+const { hasOverlap } = require('../utils/groundBookings');
 const { notifyUser } = require('../utils/notify');
+const {
+  getStripe,
+  isStripeEnabled,
+  dollarsToCents,
+  retrieveSucceededPaymentIntent,
+  assertAmountMatches,
+  paymentIntentMethodSpec,
+} = require('../utils/stripePayments');
+const { generateTrainingPlanDraft, providerConfig } = require('../services/aiCoachEngine');
 
 /** SRS UC-C5 — avoid overlapping coach sessions */
 const SESSION_GAP_MS = 90 * 60 * 1000;
@@ -36,6 +48,22 @@ function mondayOfDate(d) {
   n.setDate(diff);
   n.setHours(0, 0, 0, 0);
   return n;
+}
+
+function aiTrainingPlanEnabled() {
+  return String(process.env.AI_TRAINING_PLAN_ENABLED || 'true') !== 'false';
+}
+
+function classifyAiFallbackReason(message) {
+  const m = String(message || '').toLowerCase();
+  if (!m) return 'unknown';
+  if (m.includes('(401)') || m.includes('incorrect api key') || m.includes('missing')) return 'auth_failed';
+  if (m.includes('(429)') || m.includes('rate limit') || m.includes('quota')) return 'rate_limited';
+  if (m.includes('abort') || m.includes('timeout')) return 'timeout';
+  if (m.includes('invalid ai training plan payload') || m.includes('json')) return 'invalid_payload';
+  if (m.includes('(400)') || m.includes('model')) return 'bad_request_or_model';
+  if (m.includes('(5')) return 'provider_server_error';
+  return 'provider_error';
 }
 
 const populatePlayerBrief = {
@@ -79,54 +107,124 @@ const updateTrainingRequest = asyncHandler(async (req, res) => {
   const { status, scheduledAt } = req.body;
   const tr = await TrainingRequest.findOne({ _id: req.params.id, coach: req.user.id });
   if (!tr) return res.status(404).json({ success: false, message: 'Request not found' });
-  tr.status = status;
-  await tr.save();
   if (status === 'accepted') {
-    const when = scheduledAt ? new Date(scheduledAt) : tr.preferredStart || new Date(Date.now() + 86400000);
-    if (await sessionConflicts(req.user.id, when)) {
-      return res.status(409).json({
-        success: false,
-        message: 'Schedule conflict: another session is within 90 minutes. Choose a different time.',
-      });
+    if (tr.status === 'accepted') {
+      return res.json({ success: true, data: { request: tr, session: null, schedulingNote: 'Request is already accepted.' } });
     }
-    const cp = await CoachProfile.findOne({ user: req.user.id });
-    const active = await TrainingSession.countDocuments({ coach: req.user.id, status: 'scheduled' });
-    const cap = cp?.maxStudents ?? 40;
-    if (active >= cap) {
-      return res.status(409).json({
-        success: false,
-        message: `Maximum concurrent students (${cap}) reached. Complete or reschedule sessions first.`,
-      });
+    tr.status = 'accepted';
+    await tr.save();
+    let session = null;
+    let schedulingNote = null;
+    let draftDate = tr.preferredStart ? new Date(tr.preferredStart) : new Date(Date.now() + 86400000);
+    if (scheduledAt) {
+      const when = new Date(scheduledAt);
+      draftDate = when;
+      if (await sessionConflicts(req.user.id, when)) {
+        schedulingNote = 'Request approved. Session was not scheduled due to a 90-minute conflict.';
+      } else {
+        const cp = await CoachProfile.findOne({ user: req.user.id });
+        const active = await TrainingSession.countDocuments({ coach: req.user.id, status: 'scheduled' });
+        const cap = cp?.maxStudents ?? 40;
+        if (active >= cap) {
+          schedulingNote = `Request approved. Session was not scheduled because maximum concurrent students (${cap}) was reached.`;
+        } else {
+          session = await TrainingSession.create({
+            coach: req.user.id,
+            player: tr.player,
+            trainingRequest: tr._id,
+            scheduledAt: when,
+            status: 'scheduled',
+          });
+        }
+      }
     }
-    const session = await TrainingSession.create({
+    /** SRS UC-C6 — auto draft weekly plan for coach review (even when approval happens without immediate scheduling). */
+    const weekStart = mondayOfDate(draftDate);
+    const existingDraft = await TrainingPlan.findOne({
       coach: req.user.id,
       player: tr.player,
-      trainingRequest: tr._id,
-      scheduledAt: when,
-      status: 'scheduled',
-    });
-    /** SRS UC-C6 — auto draft weekly plan for coach review */
-    await TrainingPlan.create({
-      coach: req.user.id,
-      player: tr.player,
-      weekStartDate: mondayOfDate(when),
-      title: 'Weekly plan (draft)',
-      goals: 'Edit goals after assessing the player this week.',
-      exercises:
-        'System draft: warm-up, sport-specific drills, strength block, cool-down, recovery notes.',
+      weekStartDate: weekStart,
       status: 'draft',
       isAutoGenerated: true,
-      coachReviewed: false,
-    });
-    await notifyUser(tr.player, {
-      title: 'Training accepted',
-      body: 'Your coach accepted the training request.',
-      category: 'training',
-    });
-    return res.json({ success: true, data: { request: tr, session } });
+    }).lean();
+    if (!existingDraft) {
+      let aiDraft = null;
+      let fallbackReasonCode = 'none';
+      if (aiTrainingPlanEnabled()) {
+        try {
+          const [playerUser, playerProfile, recentPerf, recentAttendance] = await Promise.all([
+            User.findById(tr.player).select('email').lean(),
+            PlayerProfile.findOne({ user: tr.player }).lean(),
+            PerformanceEvaluation.find({ player: tr.player }).sort({ weekStartDate: -1 }).limit(4).lean(),
+            AttendanceRecord.find({ player: tr.player }).sort({ createdAt: -1 }).limit(6).lean(),
+          ]);
+          aiDraft = await generateTrainingPlanDraft({
+            weekStartDate: weekStart.toISOString(),
+            player: {
+              email: playerUser?.email || '',
+              fullName: playerProfile?.fullName || '',
+              sportPreference: playerProfile?.sportPreference || '',
+              skillLevel: playerProfile?.skillLevel || '',
+              city: playerProfile?.city || '',
+            },
+            performance: recentPerf.map((r) => ({
+              weekStartDate: r.weekStartDate,
+              technique: r.technique,
+              fitness: r.fitness,
+              attitude: r.attitude,
+              comments: r.comments || '',
+            })),
+            attendance: recentAttendance.map((r) => ({
+              present: r.present,
+              notes: r.notes || '',
+              at: r.createdAt,
+            })),
+          });
+        } catch (e) {
+          fallbackReasonCode = classifyAiFallbackReason(e.message);
+          const cfg = providerConfig();
+          console.warn(
+            `[ai][training-plan] fallback to static draft: reason=${fallbackReasonCode} provider=${cfg.provider} model=${cfg.planModel} msg=${e.message}`
+          );
+        }
+      }
+      await TrainingPlan.create({
+        coach: req.user.id,
+        player: tr.player,
+        weekStartDate: weekStart,
+        title: aiDraft?.title || 'Weekly plan (draft)',
+        goals: aiDraft?.goals || 'Edit goals after assessing the player this week.',
+        exercises:
+          aiDraft?.exercises ||
+          'System draft: warm-up, sport-specific drills, strength block, cool-down, recovery notes.',
+        status: 'draft',
+        isAutoGenerated: true,
+        coachReviewed: false,
+        generationMethod: aiDraft ? 'ai' : 'rules',
+        generationMeta: aiDraft
+          ? { provider: aiDraft.provider, model: aiDraft.model, generatedAt: new Date(), latencyMs: aiDraft.latencyMs }
+          : { provider: 'none', model: 'fallback', generatedAt: new Date(), reasonCode: fallbackReasonCode },
+      });
+    }
+    try {
+      await notifyUser(tr.player, {
+        title: 'Training accepted',
+        body: 'Your coach accepted the training request.',
+        category: 'training',
+      });
+    } catch (e) {
+      console.warn('[notify][training-accepted] failed:', e.message);
+    }
+    return res.json({ success: true, data: { request: tr, session, schedulingNote } });
   }
+  tr.status = status;
+  await tr.save();
   if (status === 'rejected') {
-    await notifyUser(tr.player, { title: 'Training declined', body: 'Your request was declined.', category: 'training' });
+    try {
+      await notifyUser(tr.player, { title: 'Training declined', body: 'Your request was declined.', category: 'training' });
+    } catch (e) {
+      console.warn('[notify][training-rejected] failed:', e.message);
+    }
   }
   res.json({ success: true, data: tr });
 });
@@ -158,6 +256,8 @@ const createTrainingPlan = asyncHandler(async (req, res) => {
     status: req.body.status || 'published',
     isAutoGenerated: false,
     coachReviewed: true,
+    generationMethod: 'rules',
+    generationMeta: { provider: 'manual', model: 'manual', generatedAt: new Date() },
   });
   await notifyUser(plan.player, {
     title: 'New training plan',
@@ -235,17 +335,153 @@ const getPlayerProgress = asyncHandler(async (req, res) => {
 });
 
 const listCoachGroundBookings = asyncHandler(async (req, res) => {
-  const sessions = await TrainingSession.find({ coach: req.user.id, groundBooking: { $ne: null } })
-    .populate('groundBooking')
-    .lean();
-  const ids = sessions.map((s) => s.groundBooking).filter(Boolean);
-  const direct = await GroundBooking.find({
-    _id: { $in: ids },
+  const list = await GroundBooking.find({
+    bookedBy: req.user.id,
+    bookedByRole: 'coach',
     status: { $in: ['held', 'confirmed'] },
   })
     .populate('ground')
+    .sort({ startTime: -1 })
     .lean();
-  res.json({ success: true, data: direct });
+  res.json({ success: true, data: list });
+});
+
+const holdGroundBooking = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ success: false, errors: errors.array() });
+  const { groundId, startTime, endTime, amount } = req.body;
+  const ground = await IndoorGround.findById(groundId);
+  if (!ground || !ground.isActive) return res.status(404).json({ success: false, message: 'Ground not found' });
+
+  const start = new Date(startTime);
+  const end = new Date(endTime);
+  if (end <= start) return res.status(400).json({ success: false, message: 'Invalid time range' });
+
+  const conflict = await hasOverlap(groundId, start, end);
+  if (conflict) return res.status(409).json({ success: false, message: 'Slot unavailable' });
+
+  const holdMins = parseInt(process.env.HOLD_MINUTES || '5', 10);
+  const holdExpiresAt = new Date(Date.now() + holdMins * 60 * 1000);
+
+  const booking = await GroundBooking.create({
+    ground: groundId,
+    bookedBy: req.user.id,
+    bookedByRole: 'coach',
+    startTime: start,
+    endTime: end,
+    status: 'held',
+    holdExpiresAt,
+    amount: amount ?? 0,
+  });
+  res.status(201).json({ success: true, data: booking });
+});
+
+const createGroundBookingPaymentIntent = asyncHandler(async (req, res) => {
+  if (!isStripeEnabled()) {
+    return res.status(503).json({ success: false, message: 'Stripe is not configured on the server.' });
+  }
+  const booking = await GroundBooking.findOne({
+    _id: req.params.id,
+    bookedBy: req.user.id,
+    bookedByRole: 'coach',
+    status: 'held',
+  });
+  if (!booking) return res.status(404).json({ success: false, message: 'Hold not found' });
+  if (booking.holdExpiresAt < new Date()) {
+    booking.status = 'cancelled';
+    await booking.save();
+    return res.status(410).json({ success: false, message: 'Hold expired' });
+  }
+  const amountCents = dollarsToCents(booking.amount);
+  if (amountCents < 50) {
+    return res.status(400).json({
+      success: false,
+      message: 'Set booking amount to at least 0.50 USD for card payment.',
+    });
+  }
+  const stripe = getStripe();
+  const pi = await stripe.paymentIntents.create({
+    amount: amountCents,
+    currency: 'usd',
+    ...paymentIntentMethodSpec(),
+    metadata: {
+      purpose: 'ground_booking',
+      bookedById: String(req.user.id),
+      bookedByRole: 'coach',
+      bookingId: String(booking._id),
+      amountCents: String(amountCents),
+    },
+  });
+  res.json({
+    success: true,
+    data: { clientSecret: pi.client_secret, amount: booking.amount, currency: 'usd' },
+  });
+});
+
+const confirmGroundPayment = asyncHandler(async (req, res) => {
+  const booking = await GroundBooking.findOne({
+    _id: req.params.id,
+    bookedBy: req.user.id,
+    bookedByRole: 'coach',
+    status: 'held',
+  });
+  if (!booking) return res.status(404).json({ success: false, message: 'Hold not found' });
+  if (booking.holdExpiresAt < new Date()) {
+    booking.status = 'cancelled';
+    await booking.save();
+    return res.status(410).json({ success: false, message: 'Hold expired' });
+  }
+  const conflict = await hasOverlap(booking.ground, booking.startTime, booking.endTime, booking._id);
+  if (conflict) {
+    booking.status = 'cancelled';
+    await booking.save();
+    return res.status(409).json({ success: false, message: 'Slot no longer available' });
+  }
+
+  let externalRef = 'mock-gateway';
+  if (isStripeEnabled()) {
+    const { paymentIntentId } = req.body;
+    if (!paymentIntentId) {
+      return res.status(400).json({ success: false, message: 'paymentIntentId is required after card payment.' });
+    }
+    const pi = await retrieveSucceededPaymentIntent(paymentIntentId);
+    if (
+      pi.metadata.purpose !== 'ground_booking' ||
+      pi.metadata.bookedById !== String(req.user.id) ||
+      pi.metadata.bookedByRole !== 'coach' ||
+      pi.metadata.bookingId !== String(booking._id)
+    ) {
+      return res.status(400).json({ success: false, message: 'Invalid payment for this booking.' });
+    }
+    assertAmountMatches(pi, dollarsToCents(booking.amount));
+    externalRef = paymentIntentId;
+  }
+
+  const payment = await Payment.create({
+    payer: req.user.id,
+    type: 'ground_booking',
+    amount: booking.amount,
+    status: 'completed',
+    externalRef,
+  });
+  booking.payment = payment._id;
+  booking.status = 'confirmed';
+  booking.holdExpiresAt = undefined;
+  await booking.save();
+  res.json({ success: true, data: booking });
+});
+
+const cancelGroundBooking = asyncHandler(async (req, res) => {
+  const booking = await GroundBooking.findOne({
+    _id: req.params.id,
+    bookedBy: req.user.id,
+    bookedByRole: 'coach',
+  });
+  if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+  if (booking.status === 'cancelled') return res.json({ success: true, data: booking });
+  booking.status = 'cancelled';
+  await booking.save();
+  res.json({ success: true, data: booking });
 });
 
 const listFeedback = asyncHandler(async (req, res) => {
@@ -420,6 +656,10 @@ module.exports = {
   addPerformance,
   getPlayerProgress,
   listCoachGroundBookings,
+  holdGroundBooking,
+  createGroundBookingPaymentIntent,
+  confirmGroundPayment,
+  cancelGroundBooking,
   getRecommendedPlayers,
   notifyRecommendedPlayer,
   listFeedback,

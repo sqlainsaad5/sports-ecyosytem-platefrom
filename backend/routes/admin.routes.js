@@ -5,6 +5,7 @@ const { authenticate, requireRole, loadUser } = require('../middleware/auth');
 const { validateRequest } = require('../middleware/validate');
 
 const r = Router();
+const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
 r.use(authenticate, loadUser, requireRole('admin'));
 
 r.get('/dashboard', a.dashboard);
@@ -26,7 +27,11 @@ r.post(
   '/users',
   [
     body('email').isEmail(),
-    body('password').isLength({ min: 6 }),
+    body('password')
+      .matches(strongPasswordRegex)
+      .withMessage(
+        'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.'
+      ),
     body('role').isIn(['player', 'coach', 'business_owner']),
   ],
   validateRequest,

@@ -9,6 +9,7 @@ const businessProfileSchema = new mongoose.Schema(
     phone: String,
     storeName: String,
     storeDescription: String,
+    locationMapUrl: { type: String, required: true, trim: true },
     subscriptionPackage: { type: String, enum: ['basic', 'pro', 'premium'], default: 'basic' },
     listingSlotsRemaining: { type: Number, default: 0 },
     subscriptionRenewsAt: Date,

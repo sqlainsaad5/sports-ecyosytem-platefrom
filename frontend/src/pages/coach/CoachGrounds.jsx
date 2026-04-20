@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import PlayerCard from '../../components/player/PlayerCard';
-import PlayerPageHeader from '../../components/player/PlayerPageHeader';
 import { playerBtnPrimary, playerField, playerLabel, playerSelect } from '../../components/player/playerClassNames';
 import StripePaySection, { stripePublishableConfigured } from '../../components/payment/StripePaySection';
 import { api, getErrorMessage } from '../../services/api';
 
-export default function PlayerGrounds() {
+export default function CoachGrounds() {
   const [grounds, setGrounds] = useState([]);
   const [selected, setSelected] = useState('');
   const [start, setStart] = useState('');
@@ -32,7 +30,7 @@ export default function PlayerGrounds() {
     setOk('');
     setClientSecret('');
     try {
-      const { data } = await api.post('/players/ground-bookings/hold', {
+      const { data } = await api.post('/coaches/ground-bookings/hold', {
         groundId: selected,
         startTime: new Date(start).toISOString(),
         endTime: new Date(end).toISOString(),
@@ -51,7 +49,7 @@ export default function PlayerGrounds() {
     setIntentLoading(true);
     setClientSecret('');
     try {
-      const { data } = await api.post(`/players/ground-bookings/${hold._id}/payment-intent`);
+      const { data } = await api.post(`/coaches/ground-bookings/${hold._id}/payment-intent`);
       setClientSecret(data.data.clientSecret);
     } catch (e) {
       setErr(getErrorMessage(e));
@@ -64,7 +62,7 @@ export default function PlayerGrounds() {
     if (!hold?._id) return;
     setErr('');
     try {
-      await api.post(`/players/ground-bookings/${hold._id}/confirm-payment`, {});
+      await api.post(`/coaches/ground-bookings/${hold._id}/confirm-payment`, {});
       setOk('Booking confirmed (mock payment).');
       setHold(null);
       setClientSecret('');
@@ -77,7 +75,7 @@ export default function PlayerGrounds() {
     if (!hold?._id) return;
     setErr('');
     try {
-      await api.post(`/players/ground-bookings/${hold._id}/confirm-payment`, { paymentIntentId });
+      await api.post(`/coaches/ground-bookings/${hold._id}/confirm-payment`, { paymentIntentId });
       setOk('Booking confirmed.');
       setHold(null);
       setClientSecret('');
@@ -87,18 +85,17 @@ export default function PlayerGrounds() {
   };
 
   return (
-    <div>
-      <PlayerPageHeader
-        title="Book ground"
-        subtitle="Choose a ground managed by admin, then hold and confirm your booking."
-      />
-      {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
-      {ok ? <p className="mb-4 text-sm text-player-green">{ok}</p> : null}
-      <PlayerCard className="max-w-md space-y-4">
+    <div className="space-y-4 text-player-on-surface">
+      <h1 className="font-headline text-2xl font-bold uppercase tracking-[0.08em] text-white">Book ground</h1>
+      <p className="text-sm text-slate-400">Choose a ground managed by admin, then hold and confirm your booking.</p>
+      {err ? <p className="text-sm text-red-400">{err}</p> : null}
+      {ok ? <p className="text-sm text-player-green">{ok}</p> : null}
+
+      <div className="max-w-xl space-y-4 rounded-2xl bg-player-container p-5 shadow-player-card">
         <div>
           <label className={playerLabel}>Ground</label>
           <select className={`${playerSelect} mt-2`} value={selected} onChange={(e) => setSelected(e.target.value)}>
-            <option value="">Select…</option>
+            <option value="">Select...</option>
             {grounds.map((g) => (
               <option key={g._id} value={g._id}>
                 {g.name} ({g.sportType})
@@ -111,7 +108,7 @@ export default function PlayerGrounds() {
             <p className="font-semibold text-white">{selectedGround.name}</p>
             <p className="text-xs text-slate-400">
               Owner: {selectedGround.ownerName} ·{' '}
-              <a className="text-player-green underline-offset-2 hover:underline" href={`tel:${selectedGround.ownerPhone}`}>
+              <a className="text-[#ff7524] underline-offset-2 hover:underline" href={`tel:${selectedGround.ownerPhone}`}>
                 {selectedGround.ownerPhone}
               </a>
             </p>
@@ -135,7 +132,7 @@ export default function PlayerGrounds() {
           Hold slot
         </button>
         {hold ? (
-          <div className="rounded-2xl bg-player-green/10 px-4 py-3 text-sm text-player-on-surface outline outline-1 outline-player-green/25">
+          <div className="rounded-2xl bg-[#ff7524]/10 px-4 py-3 text-sm text-player-on-surface outline outline-1 outline-[#ff7524]/25">
             <p>Hold active until {new Date(hold.holdExpiresAt).toLocaleTimeString()}</p>
             {useStripeFlow ? (
               <div className="mt-3 space-y-3">
@@ -147,7 +144,7 @@ export default function PlayerGrounds() {
                     onClick={prepareGroundPayment}
                     className={`${playerBtnPrimary} w-full`}
                   >
-                    {intentLoading ? 'Preparing…' : 'Continue to card payment'}
+                    {intentLoading ? 'Preparing...' : 'Continue to card payment'}
                   </button>
                 ) : (
                   <StripePaySection
@@ -166,7 +163,7 @@ export default function PlayerGrounds() {
             )}
           </div>
         ) : null}
-      </PlayerCard>
+      </div>
     </div>
   );
 }

@@ -7,6 +7,7 @@ const inputClass =
 const labelClass = 'block text-[11px] font-bold uppercase tracking-[0.15em] text-slate-500';
 const selectClass =
   'mt-1 w-full rounded-xl border border-[#414859]/40 bg-black/35 px-3 py-2.5 text-sm text-[#dfe5fb] focus:border-[#cc97ff]/50 focus:outline-none focus:ring-1 focus:ring-[#cc97ff]/40';
+const strongPasswordPattern = '(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}';
 
 export default function Register() {
   const { register } = useAuth();
@@ -15,6 +16,7 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [err, setErr] = useState('');
+  const [okMessage, setOkMessage] = useState('');
   const [busy, setBusy] = useState(false);
 
   const [fullName, setFullName] = useState('');
@@ -25,6 +27,7 @@ export default function Register() {
   const [specialties, setSpecialties] = useState('cricket');
   const [academyLocation, setAcademyLocation] = useState('');
   const [locationMapUrl, setLocationMapUrl] = useState('');
+  const [businessLocationMapUrl, setBusinessLocationMapUrl] = useState('');
   const [businessName, setBusinessName] = useState('');
 
   const buildProfile = () => {
@@ -38,21 +41,22 @@ export default function Register() {
         specialties: specialties.split(',').map((s) => s.trim()).filter(Boolean),
         academyLocation,
         city,
-        locationMapUrl: locationMapUrl.trim() || undefined,
+        locationMapUrl: locationMapUrl.trim(),
       };
     }
-    return { businessName, phone, storeName: businessName };
+    return { businessName, phone, storeName: businessName, locationMapUrl: businessLocationMapUrl.trim() };
   };
 
   const submit = async (e) => {
     e.preventDefault();
     setErr('');
+    setOkMessage('');
     setBusy(true);
     try {
-      const u = await register({ email, password, role, profile: buildProfile() });
-      if (u.role === 'player') navigate('/player', { replace: true });
-      else if (u.role === 'coach') navigate('/coach', { replace: true });
-      else navigate('/business', { replace: true });
+      const result = await register({ email, password, role, profile: buildProfile() });
+      const msg = result?.message || 'Registration successful. Please verify your email before signing in.';
+      setOkMessage(msg);
+      navigate('/login', { replace: true, state: { emailPrefill: email, message: msg } });
     } catch (er) {
       setErr(getErrorMessage(er));
     } finally {
@@ -85,6 +89,11 @@ export default function Register() {
             {err && (
               <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">{err}</p>
             )}
+            {okMessage && (
+              <p className="rounded-xl border border-emerald-400/25 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
+                {okMessage}
+              </p>
+            )}
 
             <div>
               <label className={labelClass}>Role</label>
@@ -109,16 +118,21 @@ export default function Register() {
                 />
               </div>
               <div className="sm:col-span-2">
-                <label className={labelClass}>Password (min 8)</label>
+                <label className={labelClass}>Password</label>
                 <input
                   className={inputClass}
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   minLength={8}
+                  pattern={strongPasswordPattern}
+                  title="Use at least 8 characters including uppercase, lowercase, number, and special character."
                   required
                   autoComplete="new-password"
                 />
+                <p className="mt-2 text-xs text-slate-500">
+                  Must include 8+ characters with uppercase, lowercase, number, and special character.
+                </p>
               </div>
             </div>
 
@@ -187,12 +201,13 @@ export default function Register() {
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Google Maps link (optional, SRS UC-C1)</label>
+                  <label className={labelClass}>Google Maps link (required)</label>
                   <input
                     className={inputClass}
                     placeholder="https://maps.google.com/..."
                     value={locationMapUrl}
                     onChange={(e) => setLocationMapUrl(e.target.value)}
+                    required
                   />
                 </div>
                 <div>
@@ -221,6 +236,16 @@ export default function Register() {
                 <div>
                   <label className={labelClass}>Phone</label>
                   <input className={inputClass} value={phone} onChange={(e) => setPhone(e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Google Maps link (required)</label>
+                  <input
+                    className={inputClass}
+                    placeholder="https://maps.google.com/..."
+                    value={businessLocationMapUrl}
+                    onChange={(e) => setBusinessLocationMapUrl(e.target.value)}
+                    required
+                  />
                 </div>
               </div>
             )}

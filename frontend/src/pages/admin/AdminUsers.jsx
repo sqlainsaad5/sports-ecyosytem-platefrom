@@ -5,6 +5,8 @@ import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import { adminBtnSecondary, adminTableHead, adminTableRow } from '../../components/admin/adminClassNames';
 import { api, getErrorMessage } from '../../services/api';
 
+const strongPasswordPattern = '(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}';
+
 export default function AdminUsers() {
   const [list, setList] = useState([]);
   const [err, setErr] = useState('');
@@ -80,10 +82,13 @@ export default function AdminUsers() {
           />
           <input
             className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white"
-            placeholder="password (min 6)"
+            placeholder="Strong password"
             type="password"
             value={newPass}
             onChange={(e) => setNewPass(e.target.value)}
+            minLength={8}
+            pattern={strongPasswordPattern}
+            title="Use at least 8 characters including uppercase, lowercase, number, and special character."
             required
           />
           <select
@@ -105,6 +110,9 @@ export default function AdminUsers() {
             Create
           </button>
         </form>
+        <p className="mt-2 text-xs text-slate-500">
+          Password must include 8+ chars, uppercase, lowercase, number, and special character.
+        </p>
       </AdminCard>
 
       <AdminCard accent="cyan" className="overflow-hidden">

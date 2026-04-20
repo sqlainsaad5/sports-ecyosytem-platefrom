@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
@@ -6,6 +7,7 @@ const PlayerProfile = require('../models/PlayerProfile');
 const CoachProfile = require('../models/CoachProfile');
 const BusinessProfile = require('../models/BusinessProfile');
 const { asyncHandler } = require('../utils/asyncHandler');
+const { sendMail, isMailerConfigured } = require('../utils/mailer');
 
 function signToken(user) {
   return jwt.sign(
@@ -20,6 +22,37 @@ function adminLoginPasswordOk(provided) {
   const expected = process.env.ADMIN_PASSWORD;
   if (expected == null || expected === '') return false;
   return String(provided) === expected;
+}
+
+const EMAIL_VERIFY_TTL_MS = 24 * 60 * 60 * 1000;
+const RESET_TTL_MS = 15 * 60 * 1000;
+
+function hashToken(token) {
+  return crypto.createHash('sha256').update(String(token)).digest('hex');
+}
+
+function makeToken() {
+  return crypto.randomBytes(32).toString('hex');
+}
+
+function frontendBaseUrl() {
+  return (process.env.APP_BASE_URL || 'http://localhost:5173').replace(/\/+$/, '');
+}
+
+async function sendVerificationEmail(user, rawToken) {
+  const verifyUrl = `${frontendBaseUrl()}/verify-email?email=${encodeURIComponent(user.email)}&token=${rawToken}`;
+  const subject = 'Verify your Sports Ecosystem account';
+  const text = `Welcome! Verify your email by opening this link: ${verifyUrl}`;
+  const html = `<p>Welcome to Sports Ecosystem.</p><p>Please verify your email by clicking <a href="${verifyUrl}">this link</a>.</p>`;
+  await sendMail({ to: user.email, subject, text, html });
+}
+
+async function sendPasswordResetEmail(user, rawToken) {
+  const resetUrl = `${frontendBaseUrl()}/reset-password?email=${encodeURIComponent(user.email)}&token=${rawToken}`;
+  const subject = 'Reset your Sports Ecosystem password';
+  const text = `Reset your password by opening this link: ${resetUrl}`;
+  const html = `<p>We received a password reset request.</p><p>Reset your password by clicking <a href="${resetUrl}">this link</a>.</p><p>This link expires in 15 minutes.</p>`;
+  await sendMail({ to: user.email, subject, text, html });
 }
 
 const register = asyncHandler(async (req, res) => {
@@ -46,9 +79,38 @@ const register = asyncHandler(async (req, res) => {
         message: 'Specialties must be cricket and/or badminton only (SRS scope).',
       });
     }
+    const mapLink = String(profile?.locationMapUrl || '').trim();
+    if (!mapLink) {
+      return res.status(400).json({
+        success: false,
+        message: 'Google Maps link is required for coach registration.',
+      });
+    }
+    try {
+      // URL constructor gives stricter URL shape checks than a basic truthy check.
+      new URL(mapLink);
+    } catch (e) {
+      return res.status(400).json({
+        success: false,
+        message: 'Google Maps link must be a valid URL.',
+      });
+    }
+    profile.locationMapUrl = mapLink;
   }
   if (role === 'business_owner' && (!profile?.businessName || String(profile.businessName).trim() === '')) {
     return res.status(400).json({ success: false, message: 'Business name is required.' });
+  }
+  if (role === 'business_owner') {
+    const mapLink = String(profile?.locationMapUrl || '').trim();
+    if (!mapLink) {
+      return res.status(400).json({ success: false, message: 'Google Maps link is required for business registration.' });
+    }
+    try {
+      new URL(mapLink);
+    } catch (e) {
+      return res.status(400).json({ success: false, message: 'Google Maps link must be a valid URL.' });
+    }
+    profile.locationMapUrl = mapLink;
   }
   const existing = await User.findOne({ email: String(email).toLowerCase() });
   if (existing) {
@@ -63,6 +125,7 @@ const register = asyncHandler(async (req, res) => {
     passwordHash,
     role,
     verificationStatus,
+    emailVerified: false,
   });
 
   if (role === 'player') {
@@ -99,16 +162,37 @@ const register = asyncHandler(async (req, res) => {
       phone: profile.phone,
       storeName: profile.storeName || profile.businessName,
       storeDescription: profile.storeDescription,
+      locationMapUrl: profile.locationMapUrl,
       listingSlotsRemaining: 0,
     });
     user.businessProfile = bp._id;
     await user.save();
   }
 
-  const token = signToken(user);
+  const rawToken = makeToken();
+  user.emailVerificationTokenHash = hashToken(rawToken);
+  user.emailVerificationExpiresAt = new Date(Date.now() + EMAIL_VERIFY_TTL_MS);
+  await user.save();
+  if (isMailerConfigured()) {
+    try {
+      await sendVerificationEmail(user, rawToken);
+    } catch (e) {
+      console.error('Verification email send failed:', e.message);
+    }
+  }
+
   res.status(201).json({
     success: true,
-    data: { token, user: { id: user._id, email: user.email, role: user.role, verificationStatus: user.verificationStatus } },
+    data: {
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        verificationStatus: user.verificationStatus,
+        emailVerified: user.emailVerified,
+      },
+    },
+    message: 'Registration successful. Please check your email to verify your account.',
   });
 });
 
@@ -129,6 +213,12 @@ const login = asyncHandler(async (req, res) => {
   if (!ok) {
     return res.status(401).json({ success: false, message: 'Invalid credentials' });
   }
+  if (user.role !== 'admin' && !user.emailVerified) {
+    return res.status(403).json({
+      success: false,
+      message: 'Please verify your email before signing in. You can request a new verification email.',
+    });
+  }
   if (user.isSuspended) {
     return res.status(403).json({ success: false, message: 'Account suspended' });
   }
@@ -137,7 +227,13 @@ const login = asyncHandler(async (req, res) => {
     success: true,
     data: {
       token,
-      user: { id: user._id, email: user.email, role: user.role, verificationStatus: user.verificationStatus },
+      user: {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+        verificationStatus: user.verificationStatus,
+        emailVerified: user.emailVerified,
+      },
     },
   });
 });
@@ -154,13 +250,117 @@ const me = asyncHandler(async (req, res) => {
 });
 
 const passwordResetRequest = asyncHandler(async (req, res) => {
-  const { email } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+  const { email, role } = req.body;
+  const normalized = String(email || '').toLowerCase();
+  const user = await User.findOne({ email: normalized });
+  if (user && (!role || user.role === role)) {
+    const rawToken = makeToken();
+    user.passwordResetTokenHash = hashToken(rawToken);
+    user.passwordResetExpiresAt = new Date(Date.now() + RESET_TTL_MS);
+    await user.save();
+    if (isMailerConfigured()) {
+      try {
+        await sendPasswordResetEmail(user, rawToken);
+      } catch (e) {
+        console.error('Password reset email failed:', e.message);
+      }
+    }
+  }
   res.json({
     success: true,
-    message:
-      'If an account exists for this email, password reset instructions would be sent (integrate SMTP per SDD Notification Service).',
-    data: { email },
+    message: 'If an account exists for this email, password reset instructions have been sent.',
+    data: { email: normalized },
   });
 });
 
-module.exports = { register, login, me, passwordResetRequest, signToken };
+const verifyEmail = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+  const email = String(req.query.email || '').toLowerCase();
+  const token = String(req.query.token || '');
+  if (!email || !token) {
+    return res.status(400).json({ success: false, message: 'email and token are required' });
+  }
+  const user = await User.findOne({ email });
+  if (!user) return res.status(400).json({ success: false, message: 'Invalid or expired verification link.' });
+  if (user.emailVerified) {
+    return res.json({ success: true, message: 'Email already verified. You can sign in.' });
+  }
+  if (!user.emailVerificationTokenHash || !user.emailVerificationExpiresAt) {
+    return res.status(400).json({ success: false, message: 'Invalid or expired verification link.' });
+  }
+  if (user.emailVerificationTokenHash !== hashToken(token) || user.emailVerificationExpiresAt < new Date()) {
+    return res.status(400).json({ success: false, message: 'Invalid or expired verification link.' });
+  }
+  user.emailVerified = true;
+  user.emailVerificationTokenHash = undefined;
+  user.emailVerificationExpiresAt = undefined;
+  await user.save();
+  res.json({ success: true, message: 'Email verified successfully. You can now sign in.' });
+});
+
+const resendVerification = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+  const email = String(req.body.email || '').toLowerCase();
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.json({ success: true, message: 'If an account exists, a verification email has been sent.' });
+  }
+  if (user.emailVerified) {
+    return res.json({ success: true, message: 'Email is already verified.' });
+  }
+  const rawToken = makeToken();
+  user.emailVerificationTokenHash = hashToken(rawToken);
+  user.emailVerificationExpiresAt = new Date(Date.now() + EMAIL_VERIFY_TTL_MS);
+  await user.save();
+  if (isMailerConfigured()) {
+    try {
+      await sendVerificationEmail(user, rawToken);
+    } catch (e) {
+      console.error('Verification email resend failed:', e.message);
+    }
+  }
+  res.json({ success: true, message: 'If an account exists, a verification email has been sent.' });
+});
+
+const passwordResetConfirm = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, errors: errors.array() });
+  }
+  const email = String(req.body.email || '').toLowerCase();
+  const token = String(req.body.token || '');
+  const newPassword = String(req.body.newPassword || '');
+  const user = await User.findOne({ email });
+  if (!user || !user.passwordResetTokenHash || !user.passwordResetExpiresAt) {
+    return res.status(400).json({ success: false, message: 'Invalid or expired password reset link.' });
+  }
+  if (user.passwordResetTokenHash !== hashToken(token) || user.passwordResetExpiresAt < new Date()) {
+    return res.status(400).json({ success: false, message: 'Invalid or expired password reset link.' });
+  }
+  user.passwordHash = await bcrypt.hash(newPassword, 12);
+  user.passwordResetTokenHash = undefined;
+  user.passwordResetExpiresAt = undefined;
+  await user.save();
+  res.json({ success: true, message: 'Password has been reset successfully.' });
+});
+
+module.exports = {
+  register,
+  login,
+  me,
+  passwordResetRequest,
+  passwordResetConfirm,
+  verifyEmail,
+  resendVerification,
+  signToken,
+};

@@ -9,6 +9,14 @@ export default function AdminGrounds() {
   const [name, setName] = useState('');
   const [sportType, setSportType] = useState('cricket');
   const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+  const [ownerName, setOwnerName] = useState('');
+  const [ownerPhone, setOwnerPhone] = useState('');
+  const [ownerAddress, setOwnerAddress] = useState('');
+  const [ownerLocation, setOwnerLocation] = useState('');
+  const [openTime, setOpenTime] = useState('08:00');
+  const [closeTime, setCloseTime] = useState('22:00');
+  const [slotDurationMinutes, setSlotDurationMinutes] = useState('60');
   const [err, setErr] = useState('');
   const load = () =>
     api
@@ -22,8 +30,26 @@ export default function AdminGrounds() {
   const create = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/admin/grounds', { name, sportType, city, address: city, isActive: true });
+      await api.post('/admin/grounds', {
+        name,
+        sportType,
+        city,
+        address,
+        ownerName,
+        ownerPhone,
+        ownerAddress,
+        ownerLocation,
+        openTime,
+        closeTime,
+        slotDurationMinutes: Number(slotDurationMinutes) || 60,
+        isActive: true,
+      });
       setName('');
+      setAddress('');
+      setOwnerName('');
+      setOwnerPhone('');
+      setOwnerAddress('');
+      setOwnerLocation('');
       load();
     } catch (er) {
       alert(getErrorMessage(er));
@@ -46,27 +72,88 @@ export default function AdminGrounds() {
         <h2 className="mb-4 font-headline text-xs font-bold uppercase tracking-widest text-slate-400">
           Add ground
         </h2>
-        <form onSubmit={create} className="flex flex-wrap items-end gap-3">
+        <form onSubmit={create} className="grid gap-3 md:grid-cols-2">
           <input
-            className={`${adminField} min-w-[140px] flex-1`}
+            className={adminField}
             placeholder="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
-          <select className={`${adminSelect} min-w-[140px]`} value={sportType} onChange={(e) => setSportType(e.target.value)}>
+          <select className={adminSelect} value={sportType} onChange={(e) => setSportType(e.target.value)}>
             <option value="cricket">Cricket</option>
             <option value="badminton">Badminton</option>
           </select>
           <input
-            className={`${adminField} min-w-[120px]`}
+            className={adminField}
             placeholder="City"
             value={city}
             onChange={(e) => setCity(e.target.value)}
+            required
           />
-          <button type="submit" className={adminBtnPrimary}>
-            Add
-          </button>
+          <input
+            className={adminField}
+            placeholder="Ground address"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            required
+          />
+          <input
+            className={adminField}
+            placeholder="Owner name"
+            value={ownerName}
+            onChange={(e) => setOwnerName(e.target.value)}
+            required
+          />
+          <input
+            className={adminField}
+            placeholder="Owner phone"
+            value={ownerPhone}
+            onChange={(e) => setOwnerPhone(e.target.value)}
+            required
+          />
+          <input
+            className={adminField}
+            placeholder="Owner address"
+            value={ownerAddress}
+            onChange={(e) => setOwnerAddress(e.target.value)}
+            required
+          />
+          <input
+            className={adminField}
+            placeholder="Owner location / map link"
+            value={ownerLocation}
+            onChange={(e) => setOwnerLocation(e.target.value)}
+            required
+          />
+          <input
+            type="time"
+            className={adminField}
+            value={openTime}
+            onChange={(e) => setOpenTime(e.target.value)}
+            required
+          />
+          <input
+            type="time"
+            className={adminField}
+            value={closeTime}
+            onChange={(e) => setCloseTime(e.target.value)}
+            required
+          />
+          <input
+            type="number"
+            min="15"
+            className={adminField}
+            placeholder="Slot duration (minutes)"
+            value={slotDurationMinutes}
+            onChange={(e) => setSlotDurationMinutes(e.target.value)}
+            required
+          />
+          <div className="md:col-span-2">
+            <button type="submit" className={adminBtnPrimary}>
+              Add
+            </button>
+          </div>
         </form>
       </AdminCard>
 
@@ -82,6 +169,9 @@ export default function AdminGrounds() {
               <span className="capitalize text-slate-400">{g.sportType}</span>
               <span className="mx-2 text-slate-600">·</span>
               <span className="font-label text-slate-500">{g.city}</span>
+              <p className="mt-1 text-xs text-slate-500">
+                Owner: {g.ownerName} ({g.ownerPhone})
+              </p>
             </li>
           ))}
           {!list.length ? (

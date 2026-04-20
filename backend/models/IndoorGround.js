@@ -4,6 +4,10 @@ const indoorGroundSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     sportType: { type: String, enum: ['cricket', 'badminton'], required: true },
+    ownerName: { type: String, required: true, trim: true },
+    ownerPhone: { type: String, required: true, trim: true },
+    ownerAddress: { type: String, required: true, trim: true },
+    ownerLocation: { type: String, required: true, trim: true },
     address: String,
     city: String,
     description: String,

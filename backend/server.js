@@ -17,6 +17,12 @@ async function seedMinimal() {
   }
   const grounds = await IndoorGround.countDocuments();
   if (grounds === 0) {
+    const demoOwner = {
+      ownerName: 'Demo Owner',
+      ownerPhone: '+923001234567',
+      ownerAddress: 'Demo owner mailing address',
+      ownerLocation: 'Gulberg III, Lahore',
+    };
     await IndoorGround.insertMany([
       {
         name: 'Central Indoor Cricket Arena',
@@ -24,6 +30,7 @@ async function seedMinimal() {
         city: 'Lahore',
         address: 'Demo address',
         isActive: true,
+        ...demoOwner,
       },
       {
         name: 'Feather Court Badminton',
@@ -31,6 +38,7 @@ async function seedMinimal() {
         city: 'Lahore',
         address: 'Demo address',
         isActive: true,
+        ...demoOwner,
       },
     ]);
     console.log('Seeded sample indoor grounds');

@@ -4,9 +4,11 @@
  *
  * Usage (from backend/):
  *   node scripts/wipeDatabase.js --yes
- *
- * Or from repo root:
+ *   npm run wipe:database -- --yes
  *   npm run wipe:db -- --yes
+ *
+ * From project parent folder:
+ *   cd backend && npm run wipe:db -- --yes
  */
 require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') });
 const mongoose = require('mongoose');
@@ -14,8 +16,10 @@ const mongoose = require('mongoose');
 if (!process.argv.includes('--yes')) {
   console.error(
     'Refusing to wipe the database without --yes.\n' +
-      'Run: node scripts/wipeDatabase.js --yes\n' +
-      'Or:  npm run wipe:db -- --yes   (from repo root)'
+      'Run:  node scripts/wipeDatabase.js --yes\n' +
+      '  or:  npm run wipe:db -- --yes\n' +
+      '  or:  npm run wipe:database -- --yes\n' +
+      '  (run these from the backend/ folder where package.json is)'
   );
   process.exit(1);
 }

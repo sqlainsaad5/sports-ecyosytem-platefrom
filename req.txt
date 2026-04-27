@@ -1,0 +1,29 @@
+# Sports Ecosystem Platform — project requirements
+# FYP monorepo: Node API (Express + MongoDB) + React (Vite) frontend.
+# Use this file as a quick checklist for what must be present to run the app.
+
+## Runtime (system)
+- Node.js: 18.x or later (LTS 20+ or 22+ recommended). npm ships with Node.
+- MongoDB: 6.x+ compatible. Set MONGODB_URI in backend/.env to your connection string (local, Atlas, etc.).
+
+## Install JavaScript dependencies (from repo root)
+1. npm install                    # root: concurrently (runs api + web together)
+2. npm install --prefix backend  # or: cd backend && npm install
+3. npm install --prefix frontend # or: cd frontend && npm install
+
+## Run (from repo root)
+- npm run dev        # backend + frontend (see root package.json)
+- Or separately: npm run backend | npm run frontend
+
+## Optional / third-party (configure in backend/.env as needed)
+- Email (Nodemailer), Stripe payments — enable via env variables documented in your deployment notes.
+- A reachable MongoDB instance is required before the API will start (see config/database.js).
+
+## Stack summary
+- Root: dev orchestration (concurrently).
+- backend/: express, mongoose, jsonwebtoken, multer, stripe, nodemailer, pdfkit, jest (tests).
+- frontend/: Vite, React, react-router, axios, Tailwind, @stripe/*.
+
+## Notes
+- No Python or pip requirements; this project is Node/npm only.
+- If Node is not installed, download the Windows installer from https://nodejs.org/ (LTS).

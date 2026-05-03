@@ -36,7 +36,7 @@ function makeToken() {
 }
 
 function frontendBaseUrl() {
-  return (process.env.APP_BASE_URL || 'http://localhost:5173').replace(/\/+$/, '');
+  return process.env.APP_BASE_URL || 'http://localhost:5173';
 }
 
 async function sendVerificationEmail(user, rawToken) {

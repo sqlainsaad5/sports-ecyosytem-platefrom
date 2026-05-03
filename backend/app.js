@@ -22,4 +22,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api', apiLimiter, routes);
 app.use(errorHandler);
 
+// Enable CORS for frontend origin
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+
 module.exports = app;

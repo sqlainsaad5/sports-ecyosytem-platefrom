@@ -39,15 +39,20 @@ r.post(
   ],
   auth.register
 );
+
 r.post('/login', authLimiter, [emailField('email'), body('password').notEmpty()], auth.login);
+
 r.get('/me', authenticate, auth.me);
+
 r.get(
   '/verify-email',
   authLimiter,
   [query('email').trim().isEmail(), query('token').trim().notEmpty()],
   auth.verifyEmail
 );
+
 r.post('/resend-verification', authLimiter, [emailField('email')], auth.resendVerification);
+
 r.post(
   '/password-reset-request',
   authLimiter,
@@ -60,6 +65,7 @@ r.post(
   ],
   auth.passwordResetRequest
 );
+
 r.post(
   '/password-reset-confirm',
   authLimiter,

@@ -30,8 +30,8 @@ export default function VerifyEmail() {
       .catch((err) => {
         const raw = String(err?.response?.data?.message || '');
         const normalized =
-          raw.includes('Invalid or expired verification link')
-            ? 'Verification link is invalid or expired. Request a new verification email and try again.'
+          raw.includes('Verification failed')
+            ? 'The verification link is invalid or expired. Please request a new one.'
             : getErrorMessage(err);
         setStatus('error');
         setMessage(normalized);

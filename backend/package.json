@@ -7,6 +7,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "seed:admin": "node scripts/seedAdmin.js",
+    "seed:demo-users": "node scripts/seedDemoUsers.js",
     "seed:admin:reset": "node scripts/seedAdmin.js --reset-password",
     "wipe:database": "node scripts/wipeDatabase.js",
     "wipe:db": "node scripts/wipeDatabase.js",

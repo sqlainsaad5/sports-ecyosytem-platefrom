@@ -32,7 +32,7 @@ export default function AdminSettings() {
     <div>
       <AdminPageHeader
         title="Platform settings"
-        subtitle="Central configuration for platform keys and display name."
+        subtitle="Keys include coach monthly fee: coach_platform_subscription_usd (number, USD; use 0 for free access)."
         actions={
           <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-admin-surface-high/60 px-4 py-2 font-label text-xs text-slate-400">
             <AdminIcon name="tune" className="text-[18px] text-admin-cyan" />

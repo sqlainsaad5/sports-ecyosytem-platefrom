@@ -155,21 +155,13 @@ export default function AdminDashboard() {
             </AdminCard>
           ) : null}
 
-          <div className="mb-8 grid gap-6 lg:grid-cols-3">
+          <div className="mb-8 grid gap-6 lg:grid-cols-2">
             <AdminCard accent="cyan" className="p-6">
               <p className="font-headline text-xs font-bold uppercase tracking-wider text-slate-400">
                 Confirmed ground bookings
               </p>
               <p className="font-orbitron mt-2 text-2xl font-black tabular-nums text-white">
                 {d.bookingsConfirmed}
-              </p>
-            </AdminCard>
-            <AdminCard accent="gold" className="p-6">
-              <p className="font-headline text-xs font-bold uppercase tracking-wider text-slate-400">
-                Training sessions
-              </p>
-              <p className="font-orbitron mt-2 text-2xl font-black tabular-nums text-white">
-                {d.trainingSessions}
               </p>
             </AdminCard>
             <AdminCard accent="none" className="border border-white/[0.06] p-6">
@@ -184,8 +176,8 @@ export default function AdminDashboard() {
           </div>
 
           <div className="mb-10 grid gap-6 lg:grid-cols-2">
-            <ChartPlaceholder title="Booking trend" subtitle="Last 30 days (placeholder)" />
-            <ChartPlaceholder title="Session load" subtitle="Training volume (placeholder)" />
+            <ChartPlaceholder title="Booking trend" subtitle="Ground bookings — last 30 days (placeholder)" />
+            <ChartPlaceholder title="Ground utilization" subtitle="Slot usage across venues (placeholder)" />
           </div>
 
           <div className="grid gap-6 lg:grid-cols-2">

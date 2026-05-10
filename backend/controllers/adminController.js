@@ -1,3 +1,5 @@
+const path = require('path');
+const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const PDFDocument = require('pdfkit');
@@ -8,7 +10,6 @@ const BusinessProfile = require('../models/BusinessProfile');
 const SportCategory = require('../models/SportCategory');
 const IndoorGround = require('../models/IndoorGround');
 const GroundBooking = require('../models/GroundBooking');
-const TrainingSession = require('../models/TrainingSession');
 const PerformanceEvaluation = require('../models/PerformanceEvaluation');
 const AttendanceRecord = require('../models/AttendanceRecord');
 const Complaint = require('../models/Complaint');
@@ -33,6 +34,23 @@ async function setVerificationDocumentsStatus(userId, roleContext, action) {
   );
 }
 
+async function attachVerificationDocuments(users, roleContext) {
+  if (!users?.length) return;
+  const ids = users.map((u) => u._id);
+  const docs = await VerificationDocument.find({ user: { $in: ids }, roleContext })
+    .sort({ createdAt: -1 })
+    .lean();
+  const map = {};
+  for (const d of docs) {
+    const k = String(d.user);
+    if (!map[k]) map[k] = [];
+    map[k].push(d);
+  }
+  for (const u of users) {
+    u.verificationDocuments = map[String(u._id)] || [];
+  }
+}
+
 function sanitizeGroundPayload(body = {}) {
   const payload = {
     name: body.name,
@@ -44,6 +62,7 @@ function sanitizeGroundPayload(body = {}) {
     address: body.address,
     city: body.city,
     description: body.description,
+    imagePath: body.imagePath,
     isActive: body.isActive,
     slotDurationMinutes: body.slotDurationMinutes,
     openTime: body.openTime,
@@ -60,7 +79,6 @@ const dashboard = asyncHandler(async (req, res) => {
     User.countDocuments({ role: 'admin' }),
   ]);
   const bookings = await GroundBooking.countDocuments({ status: 'confirmed' });
-  const sessions = await TrainingSession.countDocuments();
   const revenue = await Payment.aggregate([
     { $match: { status: 'completed' } },
     { $group: { _id: null, total: { $sum: '$amount' } } },
@@ -71,7 +89,6 @@ const dashboard = asyncHandler(async (req, res) => {
     data: {
       users: { players, coaches, businesses, admins },
       bookingsConfirmed: bookings,
-      trainingSessions: sessions,
       revenueTotal: revenue[0]?.total || 0,
       health: {
         database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
@@ -86,6 +103,7 @@ const verificationCoaches = asyncHandler(async (req, res) => {
   const list = await User.find({ role: 'coach', verificationStatus: { $in: ['pending_review', 'more_info'] } })
     .populate('coachProfile')
     .lean();
+  await attachVerificationDocuments(list, 'coach');
   res.json({ success: true, data: list });
 });
 
@@ -124,7 +142,71 @@ const verificationBusiness = asyncHandler(async (req, res) => {
   })
     .populate('businessProfile')
     .lean();
+  await attachVerificationDocuments(list, 'business_owner');
   res.json({ success: true, data: list });
+});
+
+/** Admin-only file access (Authorization header); public /uploads should not be relied on for sensitive docs. */
+const streamVerificationDocumentFile = asyncHandler(async (req, res) => {
+  const doc = await VerificationDocument.findById(req.params.docId).lean();
+  if (!doc) return res.status(404).json({ success: false, message: 'Document not found' });
+
+  const rel = String(doc.filePath || '').replace(/^\//, '');
+  if (!rel || rel.includes('..')) {
+    return res.status(400).json({ success: false, message: 'Invalid file path' });
+  }
+  const uploadsRoot = path.resolve(path.join(__dirname, '..', 'uploads'));
+  const abs = path.resolve(path.join(__dirname, '..', rel));
+  if (!abs.startsWith(uploadsRoot)) {
+    return res.status(400).json({ success: false, message: 'Invalid file path' });
+  }
+  if (!fs.existsSync(abs)) {
+    return res.status(404).json({ success: false, message: 'File missing on server' });
+  }
+
+  const ext = path.extname(abs).toLowerCase();
+  const type =
+    ext === '.pdf'
+      ? 'application/pdf'
+      : ext === '.png'
+        ? 'image/png'
+        : ext === '.jpg' || ext === '.jpeg'
+          ? 'image/jpeg'
+          : ext === '.webp'
+            ? 'image/webp'
+            : 'application/octet-stream';
+  const name = doc.originalName || path.basename(abs);
+  res.setHeader('Content-Type', type);
+  res.setHeader('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(name)}`);
+  res.sendFile(abs);
+});
+
+const patchVerificationDocumentStatus = asyncHandler(async (req, res) => {
+  const { status, reason } = req.body;
+  const doc = await VerificationDocument.findById(req.params.docId);
+  if (!doc) return res.status(404).json({ success: false, message: 'Document not found' });
+
+  doc.status = status;
+  await doc.save();
+
+  const label = doc.originalName || doc.docType || 'Verification document';
+  if (status === 'approved') {
+    await notifyUser(doc.user, {
+      title: 'Document approved',
+      body: `Admin approved your document: ${label}.`,
+      category: 'verification',
+    });
+  } else {
+    await notifyUser(doc.user, {
+      title: 'Document rejected',
+      body: reason
+        ? `Admin rejected "${label}". Reason: ${reason}`
+        : `Admin rejected "${label}". Please upload a corrected file if needed.`,
+      category: 'verification',
+    });
+  }
+
+  res.json({ success: true, data: doc });
 });
 
 const patchBusinessVerification = asyncHandler(async (req, res) => {
@@ -245,8 +327,7 @@ const monitorBookings = asyncHandler(async (req, res) => {
     .sort({ startTime: -1 })
     .limit(200)
     .lean();
-  const sessions = await TrainingSession.find().sort({ scheduledAt: -1 }).limit(200).lean();
-  res.json({ success: true, data: { bookings, sessions } });
+  res.json({ success: true, data: { bookings } });
 });
 
 const monitorPerformance = asyncHandler(async (req, res) => {
@@ -410,6 +491,8 @@ module.exports = {
   patchCoachVerification,
   verificationBusiness,
   patchBusinessVerification,
+  streamVerificationDocumentFile,
+  patchVerificationDocumentStatus,
   listUsers,
   patchUser,
   deleteUser,

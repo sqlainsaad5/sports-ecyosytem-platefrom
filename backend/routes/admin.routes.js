@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { body } = require('express-validator');
+const { body, param } = require('express-validator');
 const a = require('../controllers/adminController');
 const { authenticate, requireRole, loadUser } = require('../middleware/auth');
 const { validateRequest } = require('../middleware/validate');
@@ -22,6 +22,22 @@ r.patch(
   [body('action').isIn(['approve', 'reject', 'more_info'])],
   validateRequest,
   a.patchBusinessVerification
+);
+r.get(
+  '/verification/documents/:docId/file',
+  [param('docId').isMongoId()],
+  validateRequest,
+  a.streamVerificationDocumentFile
+);
+r.patch(
+  '/verification/documents/:docId',
+  [
+    param('docId').isMongoId(),
+    body('status').isIn(['approved', 'rejected']),
+    body('reason').optional().isString().isLength({ max: 2000 }),
+  ],
+  validateRequest,
+  a.patchVerificationDocumentStatus
 );
 r.post(
   '/users',

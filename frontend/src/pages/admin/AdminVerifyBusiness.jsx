@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import AdminCard from '../../components/admin/AdminCard';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
+import AdminVerificationDocumentList from '../../components/admin/AdminVerificationDocumentList';
 import { adminBtnCompactGhost, adminBtnCompactPrimary } from '../../components/admin/adminClassNames';
 import { api, getErrorMessage } from '../../services/api';
 
@@ -43,7 +44,7 @@ export default function AdminVerifyBusiness() {
     <div>
       <AdminPageHeader
         title="Business verification"
-        subtitle="Validate business owner registrations before go-live."
+        subtitle="Review verification documents, then approve or reject the business account."
       />
       {banner ? (
         <AdminCard accent="orange" className="mb-6 p-4">
@@ -81,16 +82,17 @@ export default function AdminVerifyBusiness() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <button type="button" className={adminBtnCompactPrimary} onClick={() => act(u._id, 'approve')}>
-                  Approve
+                  Approve business
                 </button>
                 <button type="button" className={adminBtnCompactGhost} onClick={() => act(u._id, 'reject')}>
-                  Reject
+                  Reject business
                 </button>
                 <button type="button" className={adminBtnCompactGhost} onClick={() => act(u._id, 'more_info')}>
                   Request docs
                 </button>
               </div>
             </div>
+            <AdminVerificationDocumentList documents={u.verificationDocuments} onChanged={load} />
           </AdminCard>
         ))}
         {!list.length && !err ? (

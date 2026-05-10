@@ -17,6 +17,26 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+    const url = String(error.config?.url || '');
+    const isAuthForm =
+      url.includes('/auth/login') || url.includes('/auth/register');
+    if (status === 401) {
+      localStorage.removeItem('token');
+      if (!isAuthForm) {
+        const path = window.location.pathname;
+        if (!['/login', '/register'].some((p) => path.startsWith(p))) {
+          window.location.assign('/login');
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export function getErrorMessage(err) {
   return err.response?.data?.message || err.message || 'Request failed';
 }

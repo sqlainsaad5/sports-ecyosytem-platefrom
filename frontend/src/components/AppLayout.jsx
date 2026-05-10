@@ -8,12 +8,12 @@ const linkCls = ({ isActive }) =>
 const nav = {
   coach: [
     { to: '/coach', end: true, label: 'Dashboard' },
+    { to: '/coach/subscription', label: 'Subscription' },
     { to: '/coach/requests', label: 'Requests' },
     { to: '/coach/sessions', label: 'Sessions' },
     { to: '/coach/plans', label: 'Weekly plans' },
     { to: '/coach/grounds', label: 'Grounds' },
     { to: '/coach/performance', label: 'Evaluations' },
-    { to: '/coach/matches', label: 'Matches' },
     { to: '/coach/feedback', label: 'Feedback' },
     { to: '/coach/payments', label: 'Payments' },
     { to: '/coach/notifications', label: 'Notifications' },
@@ -50,12 +50,12 @@ export default function AppLayout() {
           <div className="absolute right-0 top-0 h-80 w-80 rounded-full bg-[#FF6B00]/20 blur-[110px]" />
           <div className="absolute inset-0 opacity-[0.02] [background-image:radial-gradient(#fff_0.6px,transparent_0.6px)] [background-size:3px_3px]" />
         </div>
-        <aside className="fixed inset-y-0 left-0 z-50 hidden w-64 flex-col bg-[#080D1A] shadow-player-sidebar md:flex">
-          <div className="px-6 pb-8 pt-8">
+        <aside className="fixed inset-y-0 left-0 z-50 hidden h-screen w-64 flex-col bg-[#080D1A] shadow-player-sidebar md:flex">
+          <div className="shrink-0 px-6 pb-6 pt-8">
             <p className="font-display text-3xl tracking-[0.12em] text-[#FF6B00]">COACH PORTAL</p>
             <p className="font-headline text-[11px] uppercase tracking-[0.25em] text-slate-500">Elite Performance</p>
           </div>
-          <nav className="space-y-1">
+          <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto overflow-x-hidden px-0 pb-2 player-scrollbar">
             {items.map((item) => (
               <NavLink
                 key={item.to}
@@ -72,6 +72,8 @@ export default function AppLayout() {
                 <span className="material-symbols-outlined text-xl">
                   {item.label === 'Dashboard'
                     ? 'dashboard'
+                    : item.label === 'Subscription'
+                      ? 'subscriptions'
                     : item.label === 'Requests'
                       ? 'pending_actions'
                       : item.label === 'Sessions'
@@ -92,7 +94,7 @@ export default function AppLayout() {
               </NavLink>
             ))}
           </nav>
-          <div className="mt-auto border-t border-white/10 p-4">
+          <div className="shrink-0 border-t border-white/10 p-4">
             <button
               type="button"
               onClick={() => {

@@ -26,7 +26,7 @@ import CoachPlans from './pages/coach/CoachPlans';
 import CoachGrounds from './pages/coach/CoachGrounds';
 import CoachPerformance from './pages/coach/CoachPerformance';
 import CoachFeedback from './pages/coach/CoachFeedback';
-import CoachRecommended from './pages/coach/CoachRecommended';
+import CoachSubscription from './pages/coach/CoachSubscription';
 import CoachPayments from './pages/coach/CoachPayments';
 import CoachDocuments from './pages/coach/CoachDocuments';
 import CoachNotifications from './pages/coach/CoachNotifications';
@@ -79,12 +79,13 @@ export default function App() {
       <Route element={<ProtectedRoute roles={['coach']} />}>
         <Route path="/coach" element={<AppLayout />}>
           <Route index element={<CoachDashboard />} />
+          <Route path="subscription" element={<CoachSubscription />} />
           <Route path="requests" element={<CoachRequests />} />
           <Route path="sessions" element={<CoachSessions />} />
           <Route path="plans" element={<CoachPlans />} />
           <Route path="grounds" element={<CoachGrounds />} />
           <Route path="performance" element={<CoachPerformance />} />
-          <Route path="matches" element={<CoachRecommended />} />
+          <Route path="matches" element={<Navigate to="/coach" replace />} />
           <Route path="feedback" element={<CoachFeedback />} />
           <Route path="payments" element={<CoachPayments />} />
           <Route path="documents" element={<CoachDocuments />} />

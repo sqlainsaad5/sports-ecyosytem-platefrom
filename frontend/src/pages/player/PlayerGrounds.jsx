@@ -4,6 +4,7 @@ import PlayerPageHeader from '../../components/player/PlayerPageHeader';
 import { playerBtnPrimary, playerField, playerLabel, playerSelect } from '../../components/player/playerClassNames';
 import StripePaySection, { stripePublishableConfigured } from '../../components/payment/StripePaySection';
 import { api, getErrorMessage } from '../../services/api';
+import { publicAssetUrl } from '../../utils/assetUrl';
 
 export default function PlayerGrounds() {
   const [grounds, setGrounds] = useState([]);
@@ -16,9 +17,32 @@ export default function PlayerGrounds() {
   const [ok, setOk] = useState('');
   const [clientSecret, setClientSecret] = useState('');
   const [intentLoading, setIntentLoading] = useState(false);
+  const [slotCheck, setSlotCheck] = useState(null);
 
   const useStripeFlow = stripePublishableConfigured();
   const selectedGround = grounds.find((g) => g._id === selected);
+
+  useEffect(() => {
+    if (!selected || !start || !end) {
+      setSlotCheck(null);
+      return;
+    }
+    const startMs = new Date(start).getTime();
+    const endMs = new Date(end).getTime();
+    if (Number.isNaN(startMs) || Number.isNaN(endMs) || endMs <= startMs) {
+      setSlotCheck(null);
+      return;
+    }
+    const t = setTimeout(() => {
+      api
+        .get(`/public/grounds/${selected}/slots/check`, {
+          params: { startTime: new Date(start).toISOString(), endTime: new Date(end).toISOString() },
+        })
+        .then((r) => setSlotCheck(r.data.data))
+        .catch(() => setSlotCheck(null));
+    }, 400);
+    return () => clearTimeout(t);
+  }, [selected, start, end]);
 
   useEffect(() => {
     api
@@ -108,15 +132,49 @@ export default function PlayerGrounds() {
         </div>
         {selectedGround ? (
           <div className="rounded-2xl bg-player-bg px-4 py-3 text-sm text-player-on-surface outline outline-1 outline-white/10">
+            {selectedGround.imagePath ? (
+              <img
+                src={publicAssetUrl(selectedGround.imagePath)}
+                alt=""
+                className="mb-3 max-h-52 w-full rounded-xl object-cover"
+              />
+            ) : null}
             <p className="font-semibold text-white">{selectedGround.name}</p>
-            <p className="text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-400">
+              Hours: {selectedGround.openTime || '—'}–{selectedGround.closeTime || '—'} · Slot{' '}
+              {selectedGround.slotDurationMinutes ?? 60} min
+            </p>
+            <p className="mt-2 text-xs text-slate-400">
               Owner: {selectedGround.ownerName} ·{' '}
               <a className="text-player-green underline-offset-2 hover:underline" href={`tel:${selectedGround.ownerPhone}`}>
                 {selectedGround.ownerPhone}
               </a>
             </p>
             <p className="mt-1 text-xs text-slate-400">Address: {selectedGround.ownerAddress || selectedGround.address || '—'}</p>
-            <p className="mt-1 text-xs text-slate-400">Location: {selectedGround.ownerLocation || selectedGround.city || '—'}</p>
+            <p className="mt-1 text-xs text-slate-400">
+              Location:{' '}
+              {selectedGround.ownerLocation && /^https?:\/\//i.test(selectedGround.ownerLocation) ? (
+                <a
+                  href={selectedGround.ownerLocation}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-player-green underline-offset-2 hover:underline"
+                >
+                  Open map
+                </a>
+              ) : (
+                <span>{selectedGround.ownerLocation || selectedGround.city || '—'}</span>
+              )}
+            </p>
+            {slotCheck && start && end ? (
+              <p
+                className={`mt-3 font-headline text-xs font-bold uppercase tracking-wider ${
+                  slotCheck.available ? 'text-player-green' : 'text-red-400'
+                }`}
+              >
+                {slotCheck.available ? 'Selected time slot is available' : 'Selected time slot is not available (booked or held)'}
+              </p>
+            ) : null}
           </div>
         ) : null}
         <div>

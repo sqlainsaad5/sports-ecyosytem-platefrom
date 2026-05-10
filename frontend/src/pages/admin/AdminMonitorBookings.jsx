@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import AdminCard from '../../components/admin/AdminCard';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
-import { adminPillLive, adminPillPending } from '../../components/admin/adminClassNames';
+import { adminPillLive } from '../../components/admin/adminClassNames';
 import { api, getErrorMessage } from '../../services/api';
 
 function ListBlock({ title, accent, children }) {
@@ -29,41 +29,26 @@ export default function AdminMonitorBookings() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Booking monitor"
-        subtitle="Ground bookings and training sessions (UC-A10)."
+        subtitle="Indoor ground bookings only. Training schedules stay on coach and player accounts — not shown here."
       />
       {err ? (
         <AdminCard accent="orange" className="p-4">
           <p className="text-sm text-admin-orange">{err}</p>
         </AdminCard>
       ) : null}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <ListBlock title="Ground bookings" accent="cyan">
-          {(data?.bookings || []).map((b) => (
-            <li key={b._id} className="px-6 py-3.5 transition-colors hover:bg-white/[0.04]">
-              <span className={adminPillLive}>{b.status}</span>
-              <p className="mt-2 font-label text-xs text-slate-400">
-                {b.startTime ? new Date(b.startTime).toLocaleString() : '—'}
-              </p>
-            </li>
-          ))}
-          {!(data?.bookings || []).length ? (
-            <li className="px-6 py-10 text-center font-label text-sm text-slate-500">No bookings.</li>
-          ) : null}
-        </ListBlock>
-        <ListBlock title="Training sessions" accent="gold">
-          {(data?.sessions || []).map((s) => (
-            <li key={s._id} className="px-6 py-3.5 transition-colors hover:bg-white/[0.04]">
-              <span className={adminPillPending}>{s.status}</span>
-              <p className="mt-2 font-label text-xs text-slate-400">
-                {s.scheduledAt ? new Date(s.scheduledAt).toLocaleString() : '—'}
-              </p>
-            </li>
-          ))}
-          {!(data?.sessions || []).length ? (
-            <li className="px-6 py-10 text-center font-label text-sm text-slate-500">No sessions.</li>
-          ) : null}
-        </ListBlock>
-      </div>
+      <ListBlock title="Ground bookings" accent="cyan">
+        {(data?.bookings || []).map((b) => (
+          <li key={b._id} className="px-6 py-3.5 transition-colors hover:bg-white/[0.04]">
+            <span className={adminPillLive}>{b.status}</span>
+            <p className="mt-2 font-label text-xs text-slate-400">
+              {b.startTime ? new Date(b.startTime).toLocaleString() : '—'}
+            </p>
+          </li>
+        ))}
+        {!(data?.bookings || []).length ? (
+          <li className="px-6 py-10 text-center font-label text-sm text-slate-500">No bookings.</li>
+        ) : null}
+      </ListBlock>
     </div>
   );
 }

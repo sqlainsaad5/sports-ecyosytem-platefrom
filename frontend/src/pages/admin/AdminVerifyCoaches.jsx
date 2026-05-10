@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import AdminCard from '../../components/admin/AdminCard';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
+import AdminVerificationDocumentList from '../../components/admin/AdminVerificationDocumentList';
 import { adminBtnCompactGhost, adminBtnCompactPrimary } from '../../components/admin/adminClassNames';
 import { api, getErrorMessage } from '../../services/api';
 
@@ -43,7 +44,7 @@ export default function AdminVerifyCoaches() {
     <div>
       <AdminPageHeader
         title="Coach verification"
-        subtitle="Review pending coach applications. Approve, reject, or request more information."
+        subtitle="Review uploaded documents, then approve or reject the coach application."
       />
       {banner ? (
         <AdminCard accent="cyan" className="mb-6 p-4">
@@ -66,16 +67,17 @@ export default function AdminVerifyCoaches() {
               </div>
               <div className="flex flex-wrap gap-2">
                 <button type="button" className={adminBtnCompactPrimary} onClick={() => act(u._id, 'approve')}>
-                  Approve
+                  Approve coach
                 </button>
                 <button type="button" className={adminBtnCompactGhost} onClick={() => act(u._id, 'reject')}>
-                  Reject
+                  Reject coach
                 </button>
                 <button type="button" className={adminBtnCompactGhost} onClick={() => act(u._id, 'more_info')}>
                   Request docs
                 </button>
               </div>
             </div>
+            <AdminVerificationDocumentList documents={u.verificationDocuments} onChanged={load} />
           </AdminCard>
         ))}
         {!list.length && !err ? (

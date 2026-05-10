@@ -2,14 +2,31 @@ const { Router } = require('express');
 const { body, param } = require('express-validator');
 const c = require('../controllers/coachController');
 const { authenticate, requireRole, loadUser } = require('../middleware/auth');
+const { requireCoachPlatformSubscription } = require('../middleware/coachPlatformSubscription');
 const { upload } = require('../middleware/upload');
 const { validateRequest } = require('../middleware/validate');
 
 const r = Router();
 r.use(authenticate, loadUser, requireRole('coach'));
 
+/** Profile, verification docs, notifications, and platform subscription — no active sub required */
 r.get('/me/profile', c.getProfile);
 r.put('/me/profile', c.updateProfile);
+r.get('/subscription/status', c.getCoachSubscriptionStatus);
+r.post(
+  '/subscription/payment-intent',
+  [body('action').isIn(['subscribe', 'renew'])],
+  validateRequest,
+  c.createCoachSubscriptionPaymentIntent
+);
+r.post('/subscription', c.subscribeCoachPlatform);
+r.post('/subscription/renew', c.renewCoachPlatform);
+r.post('/documents', upload.single('file'), c.uploadDocumentMeta);
+r.get('/documents', c.listDocuments);
+r.get('/notifications', c.listNotifications);
+
+r.use(requireCoachPlatformSubscription);
+
 r.put('/me/availability', c.updateAvailability);
 r.get('/training-requests', c.listTrainingRequests);
 r.patch(
@@ -48,6 +65,7 @@ r.post(
     body('fitness').optional().isFloat({ min: 0, max: 100 }),
     body('attitude').optional().isFloat({ min: 0, max: 100 }),
   ],
+  validateRequest,
   c.addPerformance
 );
 r.get('/players/:playerId/progress', c.getPlayerProgress);
@@ -61,26 +79,14 @@ r.post('/ground-bookings/:id/payment-intent', c.createGroundBookingPaymentIntent
 r.post('/ground-bookings/:id/confirm-payment', c.confirmGroundPayment);
 r.get('/ground-bookings', c.listCoachGroundBookings);
 r.delete('/ground-bookings/:id', c.cancelGroundBooking);
-/** SRS UC-C4 — coach-side matching players (inverse of player recommendations) */
-r.get('/recommended-players', c.getRecommendedPlayers);
-r.post(
-  '/recommended-players/:playerId/notify',
-  [param('playerId').isMongoId()],
-  validateRequest,
-  c.notifyRecommendedPlayer
-);
 r.get('/feedback', c.listFeedback);
 r.post('/feedback/:id/reply', [body('reply').notEmpty()], c.replyFeedback);
 r.get('/payments', c.listPayments);
-/** SRS UC-C12 — withdrawal request (prototype settlement) */
 r.post(
   '/payments/withdrawal',
   [body('amount').isFloat({ min: 0.01 })],
   validateRequest,
   c.requestWithdrawal
 );
-r.get('/notifications', c.listNotifications);
-r.post('/documents', upload.single('file'), c.uploadDocumentMeta);
-r.get('/documents', c.listDocuments);
 
 module.exports = r;

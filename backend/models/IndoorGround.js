@@ -11,6 +11,8 @@ const indoorGroundSchema = new mongoose.Schema(
     address: String,
     city: String,
     description: String,
+    /** Optional — `/uploads/...` from admin upload or external https URL */
+    imagePath: { type: String, trim: true },
     isActive: { type: Boolean, default: true },
     slotDurationMinutes: { type: Number, default: 60 },
     openTime: { type: String, default: '08:00' },

@@ -25,6 +25,39 @@ const {
   paymentIntentMethodSpec,
 } = require('../utils/stripePayments');
 const { generateTrainingPlanDraft, providerConfig } = require('../services/aiCoachEngine');
+const {
+  coachPlatformSubscriptionActive,
+  getCoachPlatformSubscriptionPriceUsd,
+} = require('../utils/coachPlatformSubscription');
+
+async function verifyCoachPlatformSubscriptionPI(paymentIntentId, userId, action, amountUsd) {
+  const pi = await retrieveSucceededPaymentIntent(paymentIntentId);
+  if (pi.metadata.purpose !== 'coach_platform_subscription' || pi.metadata.userId !== String(userId)) {
+    const err = new Error('Invalid payment');
+    err.statusCode = 400;
+    throw err;
+  }
+  if (pi.metadata.action !== action) {
+    const err = new Error('Invalid payment action');
+    err.statusCode = 400;
+    throw err;
+  }
+  assertAmountMatches(pi, dollarsToCents(amountUsd));
+}
+
+async function extendCoachPlatformPeriod(userId) {
+  const cp = await CoachProfile.findOne({ user: userId });
+  if (!cp) return null;
+  const base = new Date();
+  const current = cp.platformSubscriptionRenewsAt ? new Date(cp.platformSubscriptionRenewsAt) : null;
+  if (current && current.getTime() > base.getTime()) {
+    base.setTime(current.getTime());
+  }
+  base.setMonth(base.getMonth() + 1);
+  cp.platformSubscriptionRenewsAt = base;
+  await cp.save();
+  return cp;
+}
 
 /** SRS UC-C5 — avoid overlapping coach sessions */
 const SESSION_GAP_MS = 90 * 60 * 1000;
@@ -73,9 +106,140 @@ const populatePlayerBrief = {
 };
 
 const getProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id).populate('coachProfile');
-  if (!user.coachProfile) return res.status(404).json({ success: false, message: 'Profile not found' });
-  res.json({ success: true, data: user.coachProfile });
+  const user = await User.findById(req.user.id).populate('coachProfile').lean();
+  if (!user?.coachProfile) return res.status(404).json({ success: false, message: 'Profile not found' });
+  const priceUsd = await getCoachPlatformSubscriptionPriceUsd();
+  const subscriptionActive = priceUsd <= 0 || coachPlatformSubscriptionActive(user.coachProfile);
+  res.json({
+    success: true,
+    data: {
+      ...user.coachProfile,
+      subscriptionActive,
+      platformSubscriptionPriceUsd: priceUsd,
+    },
+  });
+});
+
+const getCoachSubscriptionStatus = asyncHandler(async (req, res) => {
+  const cp = await CoachProfile.findOne({ user: req.user.id }).lean();
+  if (!cp) return res.status(404).json({ success: false, message: 'Profile not found' });
+  const priceUsd = await getCoachPlatformSubscriptionPriceUsd();
+  res.json({
+    success: true,
+    data: {
+      active: priceUsd <= 0 || coachPlatformSubscriptionActive(cp),
+      priceUsd,
+      renewsAt: cp.platformSubscriptionRenewsAt || null,
+    },
+  });
+});
+
+const createCoachSubscriptionPaymentIntent = asyncHandler(async (req, res) => {
+  if (!isStripeEnabled()) {
+    return res.status(503).json({ success: false, message: 'Stripe is not configured on the server.' });
+  }
+  const { action } = req.body;
+  if (!['subscribe', 'renew'].includes(action)) {
+    return res.status(400).json({ success: false, message: 'action must be subscribe or renew' });
+  }
+  const amountUsd = await getCoachPlatformSubscriptionPriceUsd();
+  if (amountUsd <= 0) {
+    return res.status(400).json({ success: false, message: 'Platform price is zero — no payment required.' });
+  }
+  const amountCents = dollarsToCents(amountUsd);
+  if (amountCents < 50) {
+    return res.status(400).json({
+      success: false,
+      message: 'Amount below Stripe minimum ($0.50). Increase coach_platform_subscription_usd in Admin → Settings.',
+    });
+  }
+  const stripe = getStripe();
+  const pi = await stripe.paymentIntents.create({
+    amount: amountCents,
+    currency: 'usd',
+    ...paymentIntentMethodSpec(),
+    metadata: {
+      purpose: 'coach_platform_subscription',
+      action,
+      userId: String(req.user.id),
+      amountCents: String(amountCents),
+    },
+  });
+  res.json({
+    success: true,
+    data: { clientSecret: pi.client_secret, amount: amountUsd, action, currency: 'usd' },
+  });
+});
+
+const subscribeCoachPlatform = asyncHandler(async (req, res) => {
+  const { paymentIntentId, cardLast4 } = req.body;
+  const amountUsd = await getCoachPlatformSubscriptionPriceUsd();
+  if (amountUsd <= 0) {
+    const profile = await extendCoachPlatformPeriod(req.user.id);
+    return res.json({
+      success: true,
+      data: { profile, skippedPayment: true },
+    });
+  }
+  if (isStripeEnabled()) {
+    if (!paymentIntentId) {
+      return res.status(400).json({ success: false, message: 'paymentIntentId is required when Stripe is enabled.' });
+    }
+    try {
+      await verifyCoachPlatformSubscriptionPI(paymentIntentId, req.user.id, 'subscribe', amountUsd);
+    } catch (e) {
+      return res.status(e.statusCode || 400).json({ success: false, message: e.message });
+    }
+  }
+  await Payment.create({
+    payer: req.user.id,
+    type: 'subscription',
+    amount: amountUsd,
+    status: 'completed',
+    externalRef: isStripeEnabled() ? paymentIntentId : 'mock-coach-platform-sub',
+    meta: { context: 'coach_platform', cardLast4: cardLast4 || 'mock', invoiceRef: `COACH-SUB-${Date.now()}` },
+  });
+  const profile = await extendCoachPlatformPeriod(req.user.id);
+  await notifyUser(req.user.id, {
+    title: 'Coach platform subscription',
+    body: `Monthly access active until ${new Date(profile.platformSubscriptionRenewsAt).toLocaleDateString()}.`,
+    category: 'subscription',
+  });
+  res.json({ success: true, data: { profile } });
+});
+
+const renewCoachPlatform = asyncHandler(async (req, res) => {
+  const { paymentIntentId, cardLast4 } = req.body;
+  const amountUsd = await getCoachPlatformSubscriptionPriceUsd();
+  if (amountUsd <= 0) {
+    const profile = await extendCoachPlatformPeriod(req.user.id);
+    return res.json({ success: true, data: { profile, skippedPayment: true } });
+  }
+  if (isStripeEnabled()) {
+    if (!paymentIntentId) {
+      return res.status(400).json({ success: false, message: 'paymentIntentId is required when Stripe is enabled.' });
+    }
+    try {
+      await verifyCoachPlatformSubscriptionPI(paymentIntentId, req.user.id, 'renew', amountUsd);
+    } catch (e) {
+      return res.status(e.statusCode || 400).json({ success: false, message: e.message });
+    }
+  }
+  await Payment.create({
+    payer: req.user.id,
+    type: 'subscription',
+    amount: amountUsd,
+    status: 'completed',
+    externalRef: isStripeEnabled() ? paymentIntentId : 'mock-coach-platform-renew',
+    meta: { context: 'coach_platform', cardLast4: cardLast4 || 'mock', invoiceRef: `COACH-REN-${Date.now()}` },
+  });
+  const profile = await extendCoachPlatformPeriod(req.user.id);
+  await notifyUser(req.user.id, {
+    title: 'Subscription renewed',
+    body: `Extended until ${new Date(profile.platformSubscriptionRenewsAt).toLocaleDateString()}.`,
+    category: 'subscription',
+  });
+  res.json({ success: true, data: { profile } });
 });
 
 const updateProfile = asyncHandler(async (req, res) => {
@@ -509,56 +673,6 @@ const replyFeedback = asyncHandler(async (req, res) => {
   res.json({ success: true, data: fb });
 });
 
-/** SRS UC-C4 — players matching coach sport / location / skill (mirrors UC-P3 engine) */
-const getRecommendedPlayers = asyncHandler(async (req, res) => {
-  const coachUser = await User.findById(req.user.id).populate('coachProfile');
-  const cp = coachUser.coachProfile;
-  if (!cp || !(cp.specialties || []).length) {
-    return res.status(400).json({ success: false, message: 'Set specialties on your profile first' });
-  }
-  const players = await User.find({ role: 'player', isSuspended: { $ne: true } }).populate('playerProfile').lean();
-  const levelOrder = { beginner: 0, intermediate: 1, advanced: 2 };
-  const scored = players
-    .filter((u) => u.playerProfile && (cp.specialties || []).includes(u.playerProfile.sportPreference))
-    .map((u) => {
-      let score = 50;
-      const city = (u.playerProfile.city || '').toLowerCase();
-      const ccity = (cp.city || '').toLowerCase();
-      if (city && ccity && city === ccity) score += 30;
-      else if (city && ccity && ccity.includes(city)) score += 15;
-      score += (levelOrder[u.playerProfile.skillLevel] || 0) * 5;
-      return { playerUser: u, profile: u.playerProfile, matchScore: score };
-    })
-    .sort((a, b) => b.matchScore - a.matchScore);
-  res.json({
-    success: true,
-    data: scored.map((s) => ({
-      userId: s.playerUser._id,
-      profile: s.profile,
-      matchScore: s.matchScore,
-    })),
-  });
-});
-
-/** SRS UC-C4 step 3 — notify player that this coach is interested (outreach) */
-const notifyRecommendedPlayer = asyncHandler(async (req, res) => {
-  const playerId = req.params.playerId;
-  const coachUser = await User.findById(req.user.id).populate('coachProfile');
-  const name = coachUser.coachProfile?.fullName || 'A coach';
-  const player = await User.findOne({ _id: playerId, role: 'player' }).populate('playerProfile');
-  if (!player?.playerProfile) return res.status(404).json({ success: false, message: 'Player not found' });
-  const cp = coachUser.coachProfile;
-  if (!cp || !cp.specialties.includes(player.playerProfile.sportPreference)) {
-    return res.status(400).json({ success: false, message: 'Player does not match your sports' });
-  }
-  await notifyUser(playerId, {
-    title: 'Coach match',
-    body: `${name} is interested in training you. Open Coaches to connect or send a training request.`,
-    category: 'training',
-  });
-  res.json({ success: true, data: { notified: true } });
-});
-
 async function coachAvailableBalance(coachId) {
   const income = await Payment.find({ payee: coachId, type: 'coach_fee', status: 'completed' }).lean();
   const gross = income.reduce((s, p) => s + p.amount, 0);
@@ -644,6 +758,10 @@ const listDocuments = asyncHandler(async (req, res) => {
 
 module.exports = {
   getProfile,
+  getCoachSubscriptionStatus,
+  createCoachSubscriptionPaymentIntent,
+  subscribeCoachPlatform,
+  renewCoachPlatform,
   updateProfile,
   updateAvailability,
   listTrainingRequests,
@@ -660,8 +778,6 @@ module.exports = {
   createGroundBookingPaymentIntent,
   confirmGroundPayment,
   cancelGroundBooking,
-  getRecommendedPlayers,
-  notifyRecommendedPlayer,
   listFeedback,
   replyFeedback,
   listPayments,

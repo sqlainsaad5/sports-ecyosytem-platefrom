@@ -27,6 +27,8 @@ const coachProfileSchema = new mongoose.Schema(
     locationMapUrl: { type: String, required: true, trim: true },
     /** SRS UC-C5 — max concurrent students (soft cap) */
     maxStudents: { type: Number, default: 40, min: 1 },
+    /** Monthly platform access — admin-priced via SystemSettings `coach_platform_subscription_usd` */
+    platformSubscriptionRenewsAt: Date,
   },
   { timestamps: true }
 );

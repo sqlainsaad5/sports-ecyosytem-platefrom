@@ -1,6 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api, getErrorMessage } from '../../services/api';
+import { publicAssetUrl } from '../../utils/assetUrl';
+
+function productPrimaryImageUrl(p) {
+  const arr = p.images || [];
+  if (!arr.length) return null;
+  const i = typeof p.primaryImageIndex === 'number' ? p.primaryImageIndex : 0;
+  return arr[i] || arr[0] || null;
+}
 
 /** SRS UC-B6–B11 — products, pricing windows, categories, low-stock threshold */
 export default function BusinessProducts() {
@@ -20,6 +28,7 @@ export default function BusinessProducts() {
   const [saleStart, setSaleStart] = useState('');
   const [saleEnd, setSaleEnd] = useState('');
   const [lowStockThreshold, setLowStockThreshold] = useState('5');
+  const [imageFile, setImageFile] = useState(null);
   const isVerified = verificationStatus === 'verified';
   const hasDocuments = documentsCount > 0;
   const hasListingSlots = Number(listingSlotsRemaining || 0) > 0;
@@ -63,8 +72,15 @@ export default function BusinessProducts() {
       if (discountPercent) body.discountPercent = Number(discountPercent);
       if (saleStart) body.saleStart = new Date(saleStart).toISOString();
       if (saleEnd) body.saleEnd = new Date(saleEnd).toISOString();
-      await api.post('/business/products', body);
+      const { data } = await api.post('/business/products', body);
+      const newId = data.data?._id;
+      if (newId && imageFile) {
+        const fd = new FormData();
+        fd.append('image', imageFile);
+        await api.post(`/business/products/${newId}/images`, fd);
+      }
       setName('');
+      setImageFile(null);
       await Promise.all([loadMine(), loadGate()]);
     } catch (er) {
       alert(getErrorMessage(er));
@@ -180,6 +196,15 @@ export default function BusinessProducts() {
             onChange={(e) => setLowStockThreshold(e.target.value)}
           />
         </div>
+        <div>
+          <label className="mb-1 block text-xs text-slate-500">Product image (optional)</label>
+          <input
+            type="file"
+            accept="image/*"
+            className="text-xs text-slate-400 file:mr-2 file:rounded-lg file:border-0 file:bg-[#cc97ff]/20 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-[#cc97ff]"
+            onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+          />
+        </div>
         <button
           type="submit"
           disabled={!canAddProducts}
@@ -190,7 +215,19 @@ export default function BusinessProducts() {
       </form>
       <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {items.map((p) => (
-          <li key={p._id} className="rounded-xl bg-[#11192c] p-4 text-sm">
+          <li key={p._id} className="overflow-hidden rounded-xl bg-[#11192c] text-sm">
+            {productPrimaryImageUrl(p) ? (
+              <img
+                src={publicAssetUrl(productPrimaryImageUrl(p))}
+                alt=""
+                className="h-40 w-full object-cover"
+              />
+            ) : (
+              <div className="flex h-28 w-full items-center justify-center bg-black/30 text-xs text-slate-500">
+                No image
+              </div>
+            )}
+            <div className="p-4">
             <p className="font-rajdhani text-2xl font-bold text-white">{p.name}</p>
             <p className="mt-1 text-xs uppercase tracking-widest text-slate-500">
               {p.sportType}
@@ -202,6 +239,27 @@ export default function BusinessProducts() {
                 Stock {p.stock} · alert ≤{p.lowStockThreshold ?? 5}
               </span>
             </div>
+            <label className="mt-3 block text-[10px] uppercase tracking-wider text-slate-500">
+              {p.images?.length ? 'Add another image' : 'Add image'}
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              className="mt-1 w-full text-xs text-slate-400 file:mr-2 file:rounded file:border-0 file:bg-white/10 file:px-2 file:py-1 file:text-[#cc97ff]"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                e.target.value = '';
+                if (!file) return;
+                const fd = new FormData();
+                fd.append('image', file);
+                try {
+                  await api.post(`/business/products/${p._id}/images`, fd);
+                  loadMine();
+                } catch (er) {
+                  alert(getErrorMessage(er));
+                }
+              }}
+            />
             <button
               type="button"
               className="mt-4 rounded-lg bg-[#a70138]/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#ff6e84]"
@@ -209,6 +267,7 @@ export default function BusinessProducts() {
             >
               Delete
             </button>
+            </div>
           </li>
         ))}
       </ul>

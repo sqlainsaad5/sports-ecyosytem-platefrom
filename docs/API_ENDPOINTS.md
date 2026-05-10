@@ -97,7 +97,7 @@ Auth: `Authorization: Bearer <JWT>` unless noted.
 | GET | `/admin/business-owners` | Manage businesses (UC-A7) |
 | CRUD | `/admin/sports` | Sport categories (UC-A8) |
 | CRUD | `/admin/grounds` | Grounds & slots config (UC-A9) |
-| GET | `/admin/monitor/bookings` | Bookings & sessions (UC-A10) |
+| GET | `/admin/monitor/bookings` | Ground bookings only (UC-A10) |
 | GET | `/admin/monitor/performance` | Performance & attendance (UC-A11) |
 | GET | `/admin/complaints` | List (UC-A12) |
 | PATCH | `/admin/complaints/:id` | Resolve |

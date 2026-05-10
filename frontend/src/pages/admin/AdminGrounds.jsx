@@ -3,6 +3,7 @@ import AdminCard from '../../components/admin/AdminCard';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import { adminBtnPrimary, adminField, adminSelect } from '../../components/admin/adminClassNames';
 import { api, getErrorMessage } from '../../services/api';
+import { publicAssetUrl } from '../../utils/assetUrl';
 
 export default function AdminGrounds() {
   const [list, setList] = useState([]);
@@ -17,6 +18,8 @@ export default function AdminGrounds() {
   const [openTime, setOpenTime] = useState('08:00');
   const [closeTime, setCloseTime] = useState('22:00');
   const [slotDurationMinutes, setSlotDurationMinutes] = useState('60');
+  const [imagePath, setImagePath] = useState('');
+  const [photoUploading, setPhotoUploading] = useState(false);
   const [err, setErr] = useState('');
   const load = () =>
     api
@@ -26,6 +29,23 @@ export default function AdminGrounds() {
   useEffect(() => {
     load();
   }, []);
+
+  const onPickGroundPhoto = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setPhotoUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const { data } = await api.post('/uploads/image', fd);
+      setImagePath(data.data?.path || '');
+    } catch (er) {
+      alert(getErrorMessage(er));
+    } finally {
+      setPhotoUploading(false);
+    }
+  };
 
   const create = async (e) => {
     e.preventDefault();
@@ -43,6 +63,7 @@ export default function AdminGrounds() {
         closeTime,
         slotDurationMinutes: Number(slotDurationMinutes) || 60,
         isActive: true,
+        ...(imagePath ? { imagePath } : {}),
       });
       setName('');
       setAddress('');
@@ -50,6 +71,7 @@ export default function AdminGrounds() {
       setOwnerPhone('');
       setOwnerAddress('');
       setOwnerLocation('');
+      setImagePath('');
       load();
     } catch (er) {
       alert(getErrorMessage(er));
@@ -149,6 +171,14 @@ export default function AdminGrounds() {
             onChange={(e) => setSlotDurationMinutes(e.target.value)}
             required
           />
+          <div className="md:col-span-2 space-y-2">
+            <label className="block font-label text-[11px] uppercase tracking-wider text-slate-500">
+              Ground photo (optional)
+            </label>
+            <input type="file" accept="image/*" onChange={onPickGroundPhoto} className="text-sm text-slate-400" />
+            {photoUploading ? <p className="text-xs text-slate-500">Uploading…</p> : null}
+            {imagePath ? <p className="font-mono text-[11px] text-admin-cyan">{imagePath}</p> : null}
+          </div>
           <div className="md:col-span-2">
             <button type="submit" className={adminBtnPrimary}>
               Add
@@ -163,7 +193,17 @@ export default function AdminGrounds() {
         </div>
         <ul className="max-h-[min(60vh,440px)] divide-y divide-white/[0.04] overflow-y-auto admin-scrollbar">
           {list.map((g) => (
-            <li key={g._id} className="px-6 py-3.5 text-sm transition-colors hover:bg-white/[0.04]">
+            <li key={g._id} className="flex gap-4 px-6 py-3.5 text-sm transition-colors hover:bg-white/[0.04]">
+              {g.imagePath ? (
+                <img
+                  src={publicAssetUrl(g.imagePath)}
+                  alt=""
+                  className="h-14 w-20 shrink-0 rounded-md object-cover"
+                />
+              ) : (
+                <div className="h-14 w-20 shrink-0 rounded-md bg-admin-surface-low" />
+              )}
+              <div className="min-w-0 flex-1">
               <span className="font-semibold text-slate-200">{g.name}</span>
               <span className="mx-2 text-slate-600">·</span>
               <span className="capitalize text-slate-400">{g.sportType}</span>
@@ -172,6 +212,7 @@ export default function AdminGrounds() {
               <p className="mt-1 text-xs text-slate-500">
                 Owner: {g.ownerName} ({g.ownerPhone})
               </p>
+              </div>
             </li>
           ))}
           {!list.length ? (

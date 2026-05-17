@@ -70,7 +70,7 @@ export default function AdminUsers() {
       ) : null}
 
       <AdminCard accent="gold" className="mb-6 p-6">
-        <p className="font-headline text-xs font-bold uppercase tracking-widest text-slate-400">UC-A5 — create user</p>
+        <p className="font-headline text-xs font-bold uppercase tracking-widest text-slate-400">Create user</p>
         <form onSubmit={createUser} className="mt-4 flex flex-wrap items-end gap-3">
           <input
             className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white"

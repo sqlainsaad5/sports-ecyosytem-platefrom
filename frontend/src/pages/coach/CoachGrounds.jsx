@@ -1,15 +1,24 @@
 import { useEffect, useState } from 'react';
-import { playerBtnPrimary, playerField, playerLabel, playerSelect } from '../../components/player/playerClassNames';
+import { coachBtnPrimary, coachField, coachLabel, coachSelect } from '../../components/coach/coachClassNames';
 import StripePaySection, { stripePublishableConfigured } from '../../components/payment/StripePaySection';
+import { GroundBrowseCard, GroundDetailsPanel, GroundPhotoStrip } from '../../components/GroundMedia';
 import { api, getErrorMessage } from '../../services/api';
-import { publicAssetUrl } from '../../utils/assetUrl';
+import {
+  formatGroundBookingAmount,
+  GROUND_BOOKING_MIN_PKR,
+} from '../../utils/groundBookingCurrency';
+
+const coachLinkClass = 'text-[#ff7524] underline-offset-2 hover:underline';
+const coachBtnOutline =
+  'mt-3 rounded-lg border border-white/20 px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white transition hover:border-[#ff7524]/50 hover:text-[#ff7524]';
 
 export default function CoachGrounds() {
   const [grounds, setGrounds] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [selected, setSelected] = useState('');
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
-  const [amount, setAmount] = useState('500');
+  const [amount, setAmount] = useState('5000');
   const [hold, setHold] = useState(null);
   const [err, setErr] = useState('');
   const [ok, setOk] = useState('');
@@ -42,14 +51,28 @@ export default function CoachGrounds() {
     return () => clearTimeout(t);
   }, [selected, start, end]);
 
-  useEffect(() => {
+  const loadGrounds = () =>
     api
       .get('/public/grounds')
       .then((r) => setGrounds(r.data.data || []))
       .catch((e) => setErr(getErrorMessage(e)));
+
+  const loadBookings = () =>
+    api
+      .get('/coaches/ground-bookings')
+      .then((r) => setBookings(r.data.data || []))
+      .catch(() => {});
+
+  useEffect(() => {
+    loadGrounds();
+    loadBookings();
   }, []);
 
   const createHold = async () => {
+    if (!selected) {
+      setErr('Select a ground first.');
+      return;
+    }
     setErr('');
     setOk('');
     setClientSecret('');
@@ -90,6 +113,7 @@ export default function CoachGrounds() {
       setOk('Booking confirmed (mock payment).');
       setHold(null);
       setClientSecret('');
+      loadBookings();
     } catch (e) {
       setErr(getErrorMessage(e));
     }
@@ -103,23 +127,41 @@ export default function CoachGrounds() {
       setOk('Booking confirmed.');
       setHold(null);
       setClientSecret('');
+      loadBookings();
+    } catch (e) {
+      setErr(getErrorMessage(e));
+    }
+  };
+
+  const cancelBooking = async (id) => {
+    if (!window.confirm('Cancel this booking?')) return;
+    setErr('');
+    try {
+      await api.delete(`/coaches/ground-bookings/${id}`);
+      setOk('Booking cancelled.');
+      loadBookings();
     } catch (e) {
       setErr(getErrorMessage(e));
     }
   };
 
   return (
-    <div className="space-y-4 text-player-on-surface">
-      <h1 className="font-headline text-2xl font-bold uppercase tracking-[0.08em] text-white">Book ground</h1>
-      <p className="text-sm text-slate-400">Choose a ground managed by admin, then hold and confirm your booking.</p>
+    <div className="space-y-8 text-player-on-surface">
+      <div>
+        <h1 className="font-headline text-2xl font-bold uppercase tracking-[0.08em] text-white">Book ground</h1>
+        <p className="mt-2 text-sm text-slate-400">
+          Select a ground to see photos, location, dimensions, and owner details — then book your slot.
+        </p>
+      </div>
       {err ? <p className="text-sm text-red-400">{err}</p> : null}
-      {ok ? <p className="text-sm text-player-green">{ok}</p> : null}
+      {ok ? <p className="text-sm text-[#ff7524]">{ok}</p> : null}
 
-      <div className="max-w-xl space-y-4 rounded-2xl bg-player-container p-5 shadow-player-card">
+      <section className="max-w-2xl space-y-4 rounded-2xl bg-player-container p-5 shadow-player-card">
+        <h2 className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-[#ff7524]">Book a slot</h2>
         <div>
-          <label className={playerLabel}>Ground</label>
-          <select className={`${playerSelect} mt-2`} value={selected} onChange={(e) => setSelected(e.target.value)}>
-            <option value="">Select...</option>
+          <label className={coachLabel}>Ground</label>
+          <select className={`${coachSelect} mt-2`} value={selected} onChange={(e) => setSelected(e.target.value)}>
+            <option value="">Select a ground…</option>
             {grounds.map((g) => (
               <option key={g._id} value={g._id}>
                 {g.name} ({g.sportType})
@@ -127,66 +169,54 @@ export default function CoachGrounds() {
             ))}
           </select>
         </div>
-        {selectedGround ? (
-          <div className="rounded-2xl bg-player-bg px-4 py-3 text-sm text-player-on-surface outline outline-1 outline-white/10">
-            {selectedGround.imagePath ? (
-              <img
-                src={publicAssetUrl(selectedGround.imagePath)}
-                alt=""
-                className="mb-3 max-h-52 w-full rounded-xl object-cover"
-              />
-            ) : null}
-            <p className="font-semibold text-white">{selectedGround.name}</p>
-            <p className="mt-1 text-xs text-slate-400">
-              Hours: {selectedGround.openTime || '—'}–{selectedGround.closeTime || '—'} · Slot{' '}
-              {selectedGround.slotDurationMinutes ?? 60} min
-            </p>
-            <p className="mt-2 text-xs text-slate-400">
-              Owner: {selectedGround.ownerName} ·{' '}
-              <a className="text-[#ff7524] underline-offset-2 hover:underline" href={`tel:${selectedGround.ownerPhone}`}>
-                {selectedGround.ownerPhone}
-              </a>
-            </p>
-            <p className="mt-1 text-xs text-slate-400">Address: {selectedGround.ownerAddress || selectedGround.address || '—'}</p>
-            <p className="mt-1 text-xs text-slate-400">
-              Location:{' '}
-              {selectedGround.ownerLocation && /^https?:\/\//i.test(selectedGround.ownerLocation) ? (
-                <a
-                  href={selectedGround.ownerLocation}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-[#ff7524] underline-offset-2 hover:underline"
-                >
-                  Open map
-                </a>
-              ) : (
-                <span>{selectedGround.ownerLocation || selectedGround.city || '—'}</span>
-              )}
-            </p>
-            {slotCheck && start && end ? (
-              <p
-                className={`mt-3 font-headline text-xs font-bold uppercase tracking-wider ${
-                  slotCheck.available ? 'text-player-green' : 'text-red-400'
-                }`}
-              >
-                {slotCheck.available ? 'Selected time slot is available' : 'Selected time slot is not available (booked or held)'}
-              </p>
-            ) : null}
+        {!selected ? (
+          <p className="text-sm text-slate-400">Choose a ground from the list or grid below to view full details.</p>
+        ) : (
+          <div className="rounded-2xl bg-player-bg px-4 py-4 outline outline-1 outline-white/10">
+            <GroundDetailsPanel
+              ground={selectedGround}
+              linkClassName={coachLinkClass}
+              slotCheck={start && end ? slotCheck : null}
+              slotAvailableClassName="text-[#ff7524]"
+            />
           </div>
-        ) : null}
+        )}
         <div>
-          <label className={playerLabel}>Start</label>
-          <input type="datetime-local" className={`${playerField} mt-2`} value={start} onChange={(e) => setStart(e.target.value)} />
+          <label className={coachLabel}>Start</label>
+          <input
+            type="datetime-local"
+            className={`${coachField} mt-2`}
+            value={start}
+            onChange={(e) => setStart(e.target.value)}
+            disabled={!selected}
+          />
         </div>
         <div>
-          <label className={playerLabel}>End</label>
-          <input type="datetime-local" className={`${playerField} mt-2`} value={end} onChange={(e) => setEnd(e.target.value)} />
+          <label className={coachLabel}>End</label>
+          <input
+            type="datetime-local"
+            className={`${coachField} mt-2`}
+            value={end}
+            onChange={(e) => setEnd(e.target.value)}
+            disabled={!selected}
+          />
         </div>
         <div>
-          <label className={playerLabel}>Amount (USD)</label>
-          <input type="number" className={`${playerField} mt-2`} value={amount} onChange={(e) => setAmount(e.target.value)} />
+          <label className={coachLabel}>Amount (PKR)</label>
+          <input
+            type="number"
+            className={`${coachField} mt-2`}
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            disabled={!selected}
+          />
         </div>
-        <button type="button" onClick={createHold} className={`${playerBtnPrimary} w-full`}>
+        <button
+          type="button"
+          onClick={createHold}
+          disabled={!selected}
+          className={`${coachBtnPrimary} w-full disabled:cursor-not-allowed disabled:opacity-50`}
+        >
           Hold slot
         </button>
         {hold ? (
@@ -194,15 +224,15 @@ export default function CoachGrounds() {
             <p>Hold active until {new Date(hold.holdExpiresAt).toLocaleTimeString()}</p>
             {useStripeFlow ? (
               <div className="mt-3 space-y-3">
-                <p className="text-xs text-slate-500">Use Stripe for payment (min. $0.50).</p>
+                <p className="text-xs text-slate-500">Use Stripe for payment (min. {GROUND_BOOKING_MIN_PKR} PKR).</p>
                 {!clientSecret ? (
                   <button
                     type="button"
                     disabled={intentLoading}
                     onClick={prepareGroundPayment}
-                    className={`${playerBtnPrimary} w-full`}
+                    className={`${coachBtnPrimary} w-full`}
                   >
-                    {intentLoading ? 'Preparing...' : 'Continue to card payment'}
+                    {intentLoading ? 'Preparing…' : 'Continue to card payment'}
                   </button>
                 ) : (
                   <StripePaySection
@@ -210,18 +240,78 @@ export default function CoachGrounds() {
                     onSucceeded={onStripeSucceeded}
                     onError={(m) => setErr(m)}
                     submitLabel="Confirm booking"
-                    buttonClassName={`${playerBtnPrimary} w-full`}
+                    buttonClassName={`${coachBtnPrimary} w-full`}
                   />
                 )}
               </div>
             ) : (
-              <button type="button" onClick={confirmMock} className={`${playerBtnPrimary} mt-3 w-full`}>
+              <button type="button" onClick={confirmMock} className={`${coachBtnPrimary} mt-3 w-full`}>
                 Confirm payment (mock)
               </button>
             )}
           </div>
         ) : null}
-      </div>
+      </section>
+
+      <section>
+        <h2 className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Available grounds</h2>
+        {!grounds.length ? (
+          <p className="mt-4 text-sm text-slate-400">No active grounds listed yet.</p>
+        ) : (
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {grounds.map((g) => (
+              <GroundBrowseCard
+                key={g._id}
+                ground={g}
+                selected={selected === g._id}
+                onSelect={setSelected}
+                accent="coach"
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {bookings.length ? (
+        <section>
+          <h2 className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Your bookings</h2>
+          <ul className="mt-4 space-y-4">
+            {bookings.map((b) => {
+              const g = b.ground;
+              if (!g || typeof g !== 'object') return null;
+              return (
+                <li
+                  key={b._id}
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-player-container shadow-player-card"
+                >
+                  <GroundPhotoStrip ground={g} />
+                  <div className="p-4 text-sm">
+                    <p className="font-bold text-white">{g.name}</p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      {g.sportType}
+                      {g.city ? ` · ${g.city}` : ''}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      {b.status} · {new Date(b.startTime).toLocaleString()} – {new Date(b.endTime).toLocaleString()}
+                      {b.amount != null ? ` · ${formatGroundBookingAmount(b.amount)}` : ''}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      {g.ownerAddress || g.address || '—'}
+                      {g.lengthFeet ? ` · ${g.lengthFeet} ft` : ''}
+                      {g.areaSqFt ? ` · ${Number(g.areaSqFt).toLocaleString()} sq ft` : ''}
+                    </p>
+                    {b.status !== 'cancelled' && b.status !== 'completed' ? (
+                      <button type="button" onClick={() => cancelBooking(b._id)} className={`${coachBtnOutline} mt-3`}>
+                        Cancel
+                      </button>
+                    ) : null}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 }

@@ -1,13 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import PlayerCard from '../../components/player/PlayerCard';
 import PlayerPageHeader from '../../components/player/PlayerPageHeader';
-import { playerBtnSm, playerField, playerLabel } from '../../components/player/playerClassNames';
+import { playerBtnOutlineSm, playerBtnSm, playerField, playerLabel } from '../../components/player/playerClassNames';
+import { previewVerificationDocument, previewVerificationDocumentError } from '../../utils/previewVerificationDocument';
 import StripePaySection, { stripePublishableConfigured } from '../../components/payment/StripePaySection';
+import CoachAvatar from '../../components/CoachAvatar';
 import { api, getErrorMessage } from '../../services/api';
 
 export default function PlayerCoaches() {
   const [list, setList] = useState([]);
+  const [trainingRequests, setTrainingRequests] = useState([]);
   const [generationMethod, setGenerationMethod] = useState('rules');
+  const [requestingCoachId, setRequestingCoachId] = useState(null);
   const [requestNote, setRequestNote] = useState('');
   const [statusMsg, setStatusMsg] = useState('');
   const [err, setErr] = useState('');
@@ -15,14 +19,91 @@ export default function PlayerCoaches() {
   const [payCard, setPayCard] = useState('4242');
   const [stripeCheckout, setStripeCheckout] = useState(null);
   const [intentLoading, setIntentLoading] = useState(false);
+  const [certPicker, setCertPicker] = useState(null);
+  const [certLoadingId, setCertLoadingId] = useState(null);
 
   const useStripeFlow = stripePublishableConfigured();
 
+  const openCertificate = async (coachId, doc) => {
+    setErr('');
+    try {
+      await previewVerificationDocument(
+        `/players/coaches/${coachId}/certificates/${doc._id}/file`,
+        doc.originalName || 'certificate'
+      );
+    } catch (e) {
+      setErr(previewVerificationDocumentError(e));
+    }
+  };
+
+  const viewCertificate = async (row) => {
+    const coachId = row.userId;
+    const cached = row.certificates;
+    setCertLoadingId(coachId);
+    setErr('');
+    try {
+      let docs = cached;
+      if (!Array.isArray(docs)) {
+        const { data } = await api.get(`/players/coaches/${coachId}/certificates`);
+        docs = data.data || [];
+      }
+      if (!docs.length) {
+        setErr('No verified certificates are available for this coach yet.');
+        return;
+      }
+      if (docs.length === 1) {
+        await openCertificate(coachId, docs[0]);
+        return;
+      }
+      setCertPicker({ coachId, docs });
+    } catch (e) {
+      setErr(previewVerificationDocumentError(e));
+    } finally {
+      setCertLoadingId(null);
+    }
+  };
+
+  const requestByCoachId = useMemo(() => {
+    const map = new Map();
+    const priority = { accepted: 3, pending: 2, rejected: 1 };
+    for (const tr of trainingRequests) {
+      const id = String(tr.coach?._id || tr.coach || '');
+      if (!id) continue;
+      const prev = map.get(id);
+      if (!prev || (priority[tr.status] ?? 0) > (priority[prev.status] ?? 0)) map.set(id, tr);
+    }
+    return map;
+  }, [trainingRequests]);
+
+  function coachRequestAction(coachId) {
+    const tr = requestByCoachId.get(String(coachId));
+    if (!tr) return { label: 'Request training', disabled: false, hint: null };
+    if (tr.status === 'pending') {
+      return { label: 'Request pending', disabled: true, hint: 'Waiting for coach to accept.' };
+    }
+    if (tr.status === 'accepted') {
+      return { label: 'Training active', disabled: true, hint: 'This coach will train you.' };
+    }
+    if (tr.status === 'rejected') {
+      return { label: 'Request again', disabled: false, hint: 'Previous request was declined.' };
+    }
+    return { label: 'Request training', disabled: false, hint: null };
+  }
+
+  const loadTrainingRequests = async () => {
+    const { data } = await api.get('/players/training-requests');
+    setTrainingRequests(data.data || []);
+  };
+
   const load = async () => {
     try {
-      const { data } = await api.get('/players/recommendations', { params: { limit: 5 } });
-      setList(data.data || []);
-      setGenerationMethod(data.generationMethod || 'rules');
+      const [rec, tr] = await Promise.all([
+        api.get('/players/recommendations', { params: { limit: 5 } }),
+        api.get('/players/training-requests'),
+      ]);
+      setList(rec.data.data || []);
+      setGenerationMethod(rec.data.generationMethod || 'rules');
+      setTrainingRequests(tr.data.data || []);
     } catch (e) {
       setErr(getErrorMessage(e));
     }
@@ -92,15 +173,23 @@ export default function PlayerCoaches() {
   };
 
   const requestTraining = async (id) => {
+    const action = coachRequestAction(id);
+    if (action.disabled) return;
     setErr('');
+    setStatusMsg('');
+    setRequestingCoachId(id);
     try {
       await api.post('/players/training-requests', {
         coachId: id,
         message: requestNote || 'I would like to train with you.',
       });
-      setStatusMsg('Request sent.');
+      await loadTrainingRequests();
+      setStatusMsg('Request sent. The coach will review it soon.');
     } catch (e) {
+      await loadTrainingRequests().catch(() => {});
       setErr(getErrorMessage(e));
+    } finally {
+      setRequestingCoachId(null);
     }
   };
 
@@ -127,7 +216,9 @@ export default function PlayerCoaches() {
       <ul className="space-y-4">
         {list.map((row) => (
           <PlayerCard key={row.userId} className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
+            <div className="flex gap-4">
+              <CoachAvatar profile={row.profile} size="lg" />
+              <div>
               <div className="flex items-center gap-2">
                 <span className="rounded-md border border-player-green/40 bg-player-green/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-player-green">
                   #{row.rank || '—'}
@@ -159,12 +250,36 @@ export default function PlayerCoaches() {
                   ))}
                 </ul>
               ) : null}
+              </div>
             </div>
             <div className="flex flex-col gap-2 sm:w-56">
-              <button type="button" onClick={() => requestTraining(row.userId)} className={playerBtnSm}>
-                Request training
+              {(() => {
+                const action = coachRequestAction(row.userId);
+                return (
+                  <>
+                    <button
+                      type="button"
+                      disabled={action.disabled || requestingCoachId === row.userId}
+                      onClick={() => requestTraining(row.userId)}
+                      className={`${playerBtnSm} disabled:cursor-not-allowed disabled:opacity-50`}
+                    >
+                      {requestingCoachId === row.userId ? 'Sending…' : action.label}
+                    </button>
+                    {action.hint ? (
+                      <p className="text-[10px] leading-snug text-player-on-variant/80">{action.hint}</p>
+                    ) : null}
+                  </>
+                );
+              })()}
+              <button
+                type="button"
+                disabled={certLoadingId === row.userId}
+                onClick={() => viewCertificate(row)}
+                className={playerBtnOutlineSm}
+              >
+                {certLoadingId === row.userId ? 'Loading…' : 'View certificate'}
               </button>
-              <p className="text-[10px] uppercase tracking-wider text-slate-500">UC-P10 — pay fee</p>
+              <p className="text-[10px] uppercase tracking-wider text-slate-500">Pay fee</p>
               <input
                 type="number"
                 min="0.01"
@@ -216,6 +331,45 @@ export default function PlayerCoaches() {
           <p className="text-sm text-player-on-variant">No coaches yet — complete your profile or wait for verifications.</p>
         ) : null}
       </ul>
+
+      {certPicker ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="cert-picker-title"
+        >
+          <div className="w-full max-w-md rounded-xl border border-white/10 bg-player-container p-5 shadow-xl">
+            <p id="cert-picker-title" className="font-headline text-xs font-bold uppercase tracking-wider text-player-green">
+              Verified certificates
+            </p>
+            <p className="mt-1 text-sm text-player-on-variant">Select a document to open.</p>
+            <ul className="mt-4 max-h-64 space-y-2 overflow-y-auto">
+              {certPicker.docs.map((doc) => (
+                <li key={doc._id}>
+                  <button
+                    type="button"
+                    className="w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-left text-sm text-white hover:border-player-green/40"
+                    onClick={async () => {
+                      const { coachId } = certPicker;
+                      setCertPicker(null);
+                      await openCertificate(coachId, doc);
+                    }}
+                  >
+                    <span className="font-medium">{doc.originalName || 'Certificate'}</span>
+                    {doc.docType ? (
+                      <span className="mt-0.5 block text-xs text-player-on-variant">{doc.docType}</span>
+                    ) : null}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button type="button" className={`${playerBtnOutlineSm} mt-4 w-full`} onClick={() => setCertPicker(null)}>
+              Close
+            </button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -18,6 +18,7 @@ const SystemSettings = require('../models/SystemSettings');
 const VerificationDocument = require('../models/VerificationDocument');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { notifyUser } = require('../utils/notify');
+const { streamVerificationDocumentFile } = require('../utils/streamVerificationDocument');
 
 /** Mongoose 8 requires update operators; plain `{ status }` may not persist. */
 function verificationDocStatusForAction(action) {
@@ -51,7 +52,16 @@ async function attachVerificationDocuments(users, roleContext) {
   }
 }
 
+function parseGroundImagePaths(body = {}) {
+  if (Array.isArray(body.imagePaths)) {
+    return body.imagePaths.map((p) => String(p).trim()).filter(Boolean);
+  }
+  if (body.imagePath) return [String(body.imagePath).trim()].filter(Boolean);
+  return [];
+}
+
 function sanitizeGroundPayload(body = {}) {
+  const imagePaths = parseGroundImagePaths(body);
   const payload = {
     name: body.name,
     sportType: body.sportType,
@@ -59,16 +69,27 @@ function sanitizeGroundPayload(body = {}) {
     ownerPhone: body.ownerPhone,
     ownerAddress: body.ownerAddress,
     ownerLocation: body.ownerLocation,
+    location: body.location,
     address: body.address,
     city: body.city,
     description: body.description,
-    imagePath: body.imagePath,
+    imagePaths: imagePaths.length ? imagePaths : undefined,
+    imagePath: imagePaths[0],
+    lengthFeet: body.lengthFeet != null ? Number(body.lengthFeet) : undefined,
+    areaSqFt: body.areaSqFt != null ? Number(body.areaSqFt) : undefined,
     isActive: body.isActive,
     slotDurationMinutes: body.slotDurationMinutes,
     openTime: body.openTime,
     closeTime: body.closeTime,
   };
   return Object.fromEntries(Object.entries(payload).filter(([, value]) => value !== undefined));
+}
+
+function validateGroundImages(imagePaths) {
+  if (imagePaths.length < 3) {
+    return 'At least 3 ground images are required';
+  }
+  return null;
 }
 
 const dashboard = asyncHandler(async (req, res) => {
@@ -83,7 +104,7 @@ const dashboard = asyncHandler(async (req, res) => {
     { $match: { status: 'completed' } },
     { $group: { _id: null, total: { $sum: '$amount' } } },
   ]);
-  /** SRS UC-A2 — basic health indicators */
+  /** Dashboard health indicators */
   res.json({
     success: true,
     data: {
@@ -147,38 +168,10 @@ const verificationBusiness = asyncHandler(async (req, res) => {
 });
 
 /** Admin-only file access (Authorization header); public /uploads should not be relied on for sensitive docs. */
-const streamVerificationDocumentFile = asyncHandler(async (req, res) => {
+const streamVerificationDocumentFileHandler = asyncHandler(async (req, res) => {
   const doc = await VerificationDocument.findById(req.params.docId).lean();
   if (!doc) return res.status(404).json({ success: false, message: 'Document not found' });
-
-  const rel = String(doc.filePath || '').replace(/^\//, '');
-  if (!rel || rel.includes('..')) {
-    return res.status(400).json({ success: false, message: 'Invalid file path' });
-  }
-  const uploadsRoot = path.resolve(path.join(__dirname, '..', 'uploads'));
-  const abs = path.resolve(path.join(__dirname, '..', rel));
-  if (!abs.startsWith(uploadsRoot)) {
-    return res.status(400).json({ success: false, message: 'Invalid file path' });
-  }
-  if (!fs.existsSync(abs)) {
-    return res.status(404).json({ success: false, message: 'File missing on server' });
-  }
-
-  const ext = path.extname(abs).toLowerCase();
-  const type =
-    ext === '.pdf'
-      ? 'application/pdf'
-      : ext === '.png'
-        ? 'image/png'
-        : ext === '.jpg' || ext === '.jpeg'
-          ? 'image/jpeg'
-          : ext === '.webp'
-            ? 'image/webp'
-            : 'application/octet-stream';
-  const name = doc.originalName || path.basename(abs);
-  res.setHeader('Content-Type', type);
-  res.setHeader('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(name)}`);
-  res.sendFile(abs);
+  streamVerificationDocumentFile(doc, res);
 });
 
 const patchVerificationDocumentStatus = asyncHandler(async (req, res) => {
@@ -301,17 +294,42 @@ const listGrounds = asyncHandler(async (req, res) => {
 });
 
 const createGround = asyncHandler(async (req, res) => {
-  const required = ['name', 'sportType', 'ownerName', 'ownerPhone', 'ownerAddress', 'ownerLocation'];
+  const required = [
+    'name',
+    'sportType',
+    'ownerName',
+    'ownerPhone',
+    'ownerAddress',
+    'ownerLocation',
+    'location',
+  ];
   const missing = required.find((key) => !String(req.body?.[key] ?? '').trim());
   if (missing) {
     return res.status(400).json({ success: false, message: `${missing} is required` });
+  }
+  const imagePaths = parseGroundImagePaths(req.body);
+  const imageErr = validateGroundImages(imagePaths);
+  if (imageErr) return res.status(400).json({ success: false, message: imageErr });
+  const lengthFeet = Number(req.body.lengthFeet);
+  const areaSqFt = Number(req.body.areaSqFt);
+  if (!Number.isFinite(lengthFeet) || lengthFeet < 1) {
+    return res.status(400).json({ success: false, message: 'lengthFeet must be at least 1' });
+  }
+  if (!Number.isFinite(areaSqFt) || areaSqFt < 1) {
+    return res.status(400).json({ success: false, message: 'areaSqFt must be at least 1' });
   }
   const g = await IndoorGround.create(sanitizeGroundPayload(req.body));
   res.status(201).json({ success: true, data: g });
 });
 
 const updateGround = asyncHandler(async (req, res) => {
-  const g = await IndoorGround.findByIdAndUpdate(req.params.id, sanitizeGroundPayload(req.body), { new: true });
+  const payload = sanitizeGroundPayload(req.body);
+  if (payload.imagePaths) {
+    const imageErr = validateGroundImages(payload.imagePaths);
+    if (imageErr) return res.status(400).json({ success: false, message: imageErr });
+  }
+  const g = await IndoorGround.findByIdAndUpdate(req.params.id, payload, { new: true, runValidators: true });
+  if (!g) return res.status(404).json({ success: false, message: 'Not found' });
   res.json({ success: true, data: g });
 });
 
@@ -365,13 +383,13 @@ const reportsSummary = asyncHandler(async (req, res) => {
     { $match: { status: 'completed' } },
     { $group: { _id: '$type', total: { $sum: '$amount' }, count: { $sum: 1 } } },
   ]);
-  /** SRS UC-A13 / SDD — PDF export */
+  /** PDF export */
   if (req.query.format === 'pdf') {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename="platform-revenue-report.pdf"');
     const doc = new PDFDocument({ margin: 50 });
     doc.pipe(res);
-    doc.fontSize(18).text('Sports Ecosystem — Payment summary (UC-A13)', { align: 'center' });
+    doc.fontSize(18).text('Sports Ecosystem — Payment summary', { align: 'center' });
     doc.moveDown();
     doc.fontSize(10).text(`Generated: ${new Date().toISOString()}`, { align: 'center' });
     doc.moveDown();
@@ -385,7 +403,7 @@ const reportsSummary = asyncHandler(async (req, res) => {
   res.json({ success: true, data: { paymentsByType: byType } });
 });
 
-/** SRS UC-A5 — admin-provisioned accounts (same roles as public register) */
+/** Admin-provisioned accounts (same roles as public register) */
 const createUser = asyncHandler(async (req, res) => {
   const { email, password, role, profile } = req.body;
   if (!email || !password || !role || !profile) {
@@ -432,6 +450,13 @@ const createUser = asyncHandler(async (req, res) => {
     });
     user.coachProfile = cp._id;
   } else {
+    const businessAddress = String(profile.address || '').trim();
+    if (!businessAddress) {
+      return res.status(400).json({
+        success: false,
+        message: 'address is required for business accounts',
+      });
+    }
     const businessMapLink = String(profile.locationMapUrl || '').trim();
     if (!businessMapLink) {
       return res.status(400).json({
@@ -442,6 +467,7 @@ const createUser = asyncHandler(async (req, res) => {
     const bp = await BusinessProfile.create({
       user: user._id,
       businessName: profile.businessName || 'Business',
+      address: businessAddress,
       storeName: profile.storeName || profile.businessName || 'Store',
       locationMapUrl: businessMapLink,
     });
@@ -491,7 +517,7 @@ module.exports = {
   patchCoachVerification,
   verificationBusiness,
   patchBusinessVerification,
-  streamVerificationDocumentFile,
+  streamVerificationDocumentFile: streamVerificationDocumentFileHandler,
   patchVerificationDocumentStatus,
   listUsers,
   patchUser,

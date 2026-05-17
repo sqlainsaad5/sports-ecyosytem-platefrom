@@ -28,6 +28,11 @@ r.post(
       .bail()
       .isURL()
       .withMessage('Google Maps link must be a valid URL.'),
+    body('profile.address')
+      .if(body('role').equals('business_owner'))
+      .trim()
+      .notEmpty()
+      .withMessage('Business address is required.'),
     body('profile.locationMapUrl')
       .if(body('role').equals('business_owner'))
       .trim()

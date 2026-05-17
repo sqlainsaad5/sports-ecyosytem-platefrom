@@ -3,6 +3,7 @@ import PlayerCard from '../../components/player/PlayerCard';
 import PlayerIcon from '../../components/player/PlayerIcon';
 import PlayerPageHeader from '../../components/player/PlayerPageHeader';
 import { statusBadge } from '../../components/player/playerClassNames';
+import CoachAvatar from '../../components/CoachAvatar';
 import { api, getErrorMessage } from '../../services/api';
 
 export default function PlayerTraining() {
@@ -47,9 +48,7 @@ export default function PlayerTraining() {
               className="flex flex-col gap-3 py-5 text-sm transition-colors hover:bg-player-inner sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="flex items-start gap-4">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-player-highest">
-                  <PlayerIcon name="person" className="text-player-green" />
-                </div>
+                <CoachAvatar profile={r.coach?.coachProfile} name={r.coach?.email} size="md" />
                 <div>
                   <p className="font-bold text-white">
                     {r.coach?.coachProfile?.fullName || r.coach?.email || String(r.coach?._id || r.coach || '')}
@@ -78,7 +77,9 @@ export default function PlayerTraining() {
                 key={s._id}
                 className="flex flex-col gap-3 py-5 text-sm text-player-on-surface transition-colors hover:bg-player-inner sm:flex-row sm:items-center sm:justify-between"
               >
-                <div>
+                <div className="flex items-start gap-3">
+                  <CoachAvatar profile={s.coach?.coachProfile} name={s.coach?.email} size="md" />
+                  <div>
                   <p className="font-bold text-white">{s.coach?.coachProfile?.fullName || s.coach?.email || 'Coach'}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-3 text-[10px] font-medium text-player-on-variant">
                     <span className="inline-flex items-center gap-1">
@@ -95,6 +96,7 @@ export default function PlayerTraining() {
                         {s.location}
                       </span>
                     ) : null}
+                  </div>
                   </div>
                 </div>
                 <span className={statusBadge(s.status)}>{s.status}</span>
@@ -115,7 +117,11 @@ export default function PlayerTraining() {
               <pre className="mt-2 whitespace-pre-wrap text-xs text-player-on-variant">{p.goals || p.exercises}</pre>
             </PlayerCard>
           ))}
-          {!plans.length ? <p className="text-sm text-player-on-variant">No plans published yet.</p> : null}
+          {!plans.length ? (
+            <p className="text-sm text-player-on-variant">
+              No weekly plans yet. Your coach must publish a plan after generating it — check back soon or ask your coach.
+            </p>
+          ) : null}
         </ul>
       </section>
     </div>

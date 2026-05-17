@@ -16,18 +16,18 @@ Remove fragmentation between informal coach search, manual facility booking, dis
 
 ## 2. Requirements Extraction
 
-### 2.1 Functional requirements (from SRS use cases)
+### 2.1 Functional requirements
 
-**Coach (UC-C1–C15)**  
+**Coach**  
 Registration/login; profile management; availability and training schedule; visibility in recommendation engine; training session requests (accept/reject); review/approve training plans; attendance; weekly performance points; view player progress/history; view/manage ground bookings tied to training; ratings/feedback view (and response); receive player payments; weekly training plans CRUD; notifications; certification documents upload/update.
 
-**Business owner (UC-B1–B16)**  
-Registration/login; profile; subscribe to listing package (Basic/Pro/Premium quotas per SRS: **20 / 40 / 60** listings per month); manage/renew subscription; configure online store; product CRUD; pricing; stock/inventory; product images; orders; basic sales reports; **coach directory** and **partnership/sponsorship requests** to coaches; notifications; verification documents.
+**Business owner**  
+Registration/login; profile; subscribe to listing package (Basic/Pro/Premium quotas: **20 / 40 / 60** listings per month); manage/renew subscription; configure online store; product CRUD; pricing; stock/inventory; product images; orders; basic sales reports; **coach directory** and **partnership/sponsorship requests** to coaches; notifications; verification documents.
 
-**Player (UC-P1–P11)**  
+**Player**  
 Registration/login; profile; automated coach recommendations; request training; view schedule and weekly plans; indoor ground booking; performance/progress; purchase equipment; rate/feedback coach; pay coach; notifications.
 
-**Admin (UC-A1–A15)**  
+**Admin**  
 Login; dashboard/statistics; verify coach; verify business owner; user CRUD; coach CRUD; business owner CRUD; manage **sport categories**; manage **indoor grounds and time slots**; monitor bookings and sessions; monitor performance/attendance; complaints/disputes; reports; monitor business subscription payments; **system settings**.
 
 ### 2.2 Non-functional requirements (SRS §4)
@@ -73,4 +73,4 @@ Dedicated panels per role; dashboards; forms and tables; reports; labeled, user-
 ---
 
 ## Traceability note
-Every SRS use case ID above is mapped in `docs/API_ENDPOINTS.md` to concrete REST routes implemented under `/api/...`.
+Functional areas above are mapped in `docs/API_ENDPOINTS.md` to concrete REST routes implemented under `/api/...`.

@@ -1,17 +1,28 @@
 import { useEffect, useState } from 'react';
 import PlayerCard from '../../components/player/PlayerCard';
 import PlayerPageHeader from '../../components/player/PlayerPageHeader';
-import { playerBtnPrimary, playerField, playerLabel, playerSelect } from '../../components/player/playerClassNames';
+import {
+  playerBtnOutlineSm,
+  playerBtnPrimary,
+  playerField,
+  playerLabel,
+  playerSelect,
+} from '../../components/player/playerClassNames';
 import StripePaySection, { stripePublishableConfigured } from '../../components/payment/StripePaySection';
+import { GroundBrowseCard, GroundDetailsPanel, GroundPhotoStrip } from '../../components/GroundMedia';
 import { api, getErrorMessage } from '../../services/api';
-import { publicAssetUrl } from '../../utils/assetUrl';
+import {
+  formatGroundBookingAmount,
+  GROUND_BOOKING_MIN_PKR,
+} from '../../utils/groundBookingCurrency';
 
 export default function PlayerGrounds() {
   const [grounds, setGrounds] = useState([]);
+  const [bookings, setBookings] = useState([]);
   const [selected, setSelected] = useState('');
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
-  const [amount, setAmount] = useState('500');
+  const [amount, setAmount] = useState('5000');
   const [hold, setHold] = useState(null);
   const [err, setErr] = useState('');
   const [ok, setOk] = useState('');
@@ -44,14 +55,28 @@ export default function PlayerGrounds() {
     return () => clearTimeout(t);
   }, [selected, start, end]);
 
-  useEffect(() => {
+  const loadGrounds = () =>
     api
       .get('/public/grounds')
       .then((r) => setGrounds(r.data.data || []))
       .catch((e) => setErr(getErrorMessage(e)));
+
+  const loadBookings = () =>
+    api
+      .get('/players/ground-bookings')
+      .then((r) => setBookings(r.data.data || []))
+      .catch(() => {});
+
+  useEffect(() => {
+    loadGrounds();
+    loadBookings();
   }, []);
 
   const createHold = async () => {
+    if (!selected) {
+      setErr('Select a ground first.');
+      return;
+    }
     setErr('');
     setOk('');
     setClientSecret('');
@@ -92,6 +117,7 @@ export default function PlayerGrounds() {
       setOk('Booking confirmed (mock payment).');
       setHold(null);
       setClientSecret('');
+      loadBookings();
     } catch (e) {
       setErr(getErrorMessage(e));
     }
@@ -105,6 +131,19 @@ export default function PlayerGrounds() {
       setOk('Booking confirmed.');
       setHold(null);
       setClientSecret('');
+      loadBookings();
+    } catch (e) {
+      setErr(getErrorMessage(e));
+    }
+  };
+
+  const cancelBooking = async (id) => {
+    if (!window.confirm('Cancel this booking?')) return;
+    setErr('');
+    try {
+      await api.delete(`/players/ground-bookings/${id}`);
+      setOk('Booking cancelled.');
+      loadBookings();
     } catch (e) {
       setErr(getErrorMessage(e));
     }
@@ -114,15 +153,19 @@ export default function PlayerGrounds() {
     <div>
       <PlayerPageHeader
         title="Book ground"
-        subtitle="Choose a ground managed by admin, then hold and confirm your booking."
+        subtitle="Select a ground, book your slot, then browse all venues below."
       />
       {err ? <p className="mb-4 text-sm text-red-400">{err}</p> : null}
       {ok ? <p className="mb-4 text-sm text-player-green">{ok}</p> : null}
-      <PlayerCard className="max-w-md space-y-4">
+
+      <PlayerCard className="mb-8 space-y-4">
+        <h2 className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-player-green">
+          Book a slot
+        </h2>
         <div>
           <label className={playerLabel}>Ground</label>
           <select className={`${playerSelect} mt-2`} value={selected} onChange={(e) => setSelected(e.target.value)}>
-            <option value="">Select…</option>
+            <option value="">Select a ground…</option>
             {grounds.map((g) => (
               <option key={g._id} value={g._id}>
                 {g.name} ({g.sportType})
@@ -130,101 +173,140 @@ export default function PlayerGrounds() {
             ))}
           </select>
         </div>
-        {selectedGround ? (
-          <div className="rounded-2xl bg-player-bg px-4 py-3 text-sm text-player-on-surface outline outline-1 outline-white/10">
-            {selectedGround.imagePath ? (
-              <img
-                src={publicAssetUrl(selectedGround.imagePath)}
-                alt=""
-                className="mb-3 max-h-52 w-full rounded-xl object-cover"
-              />
-            ) : null}
-            <p className="font-semibold text-white">{selectedGround.name}</p>
-            <p className="mt-1 text-xs text-slate-400">
-              Hours: {selectedGround.openTime || '—'}–{selectedGround.closeTime || '—'} · Slot{' '}
-              {selectedGround.slotDurationMinutes ?? 60} min
-            </p>
-            <p className="mt-2 text-xs text-slate-400">
-              Owner: {selectedGround.ownerName} ·{' '}
-              <a className="text-player-green underline-offset-2 hover:underline" href={`tel:${selectedGround.ownerPhone}`}>
-                {selectedGround.ownerPhone}
-              </a>
-            </p>
-            <p className="mt-1 text-xs text-slate-400">Address: {selectedGround.ownerAddress || selectedGround.address || '—'}</p>
-            <p className="mt-1 text-xs text-slate-400">
-              Location:{' '}
-              {selectedGround.ownerLocation && /^https?:\/\//i.test(selectedGround.ownerLocation) ? (
-                <a
-                  href={selectedGround.ownerLocation}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-player-green underline-offset-2 hover:underline"
-                >
-                  Open map
-                </a>
+        {!selected ? (
+          <p className="text-sm text-player-on-variant">Choose a ground to see photos, location, and book your slot.</p>
+        ) : (
+            <div className="rounded-2xl bg-player-bg px-4 py-4 outline outline-1 outline-white/10">
+              <GroundDetailsPanel ground={selectedGround} slotCheck={start && end ? slotCheck : null} />
+            </div>
+          )}
+          <div>
+            <label className={playerLabel}>Start</label>
+            <input
+              type="datetime-local"
+              className={`${playerField} mt-2`}
+              value={start}
+              onChange={(e) => setStart(e.target.value)}
+              disabled={!selected}
+            />
+          </div>
+          <div>
+            <label className={playerLabel}>End</label>
+            <input
+              type="datetime-local"
+              className={`${playerField} mt-2`}
+              value={end}
+              onChange={(e) => setEnd(e.target.value)}
+              disabled={!selected}
+            />
+          </div>
+          <div>
+            <label className={playerLabel}>Amount (PKR)</label>
+            <input
+              type="number"
+              className={`${playerField} mt-2`}
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              disabled={!selected}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={createHold}
+            disabled={!selected}
+            className={`${playerBtnPrimary} w-full disabled:opacity-50`}
+          >
+            Hold slot
+          </button>
+          {hold ? (
+            <div className="rounded-2xl bg-player-green/10 px-4 py-3 text-sm text-player-on-surface outline outline-1 outline-player-green/25">
+              <p>Hold active until {new Date(hold.holdExpiresAt).toLocaleTimeString()}</p>
+              {useStripeFlow ? (
+                <div className="mt-3 space-y-3">
+                  <p className="text-xs text-slate-500">Use Stripe for payment (min. {GROUND_BOOKING_MIN_PKR} PKR).</p>
+                  {!clientSecret ? (
+                    <button
+                      type="button"
+                      disabled={intentLoading}
+                      onClick={prepareGroundPayment}
+                      className={`${playerBtnPrimary} w-full`}
+                    >
+                      {intentLoading ? 'Preparing…' : 'Continue to card payment'}
+                    </button>
+                  ) : (
+                    <StripePaySection
+                      clientSecret={clientSecret}
+                      onSucceeded={onStripeSucceeded}
+                      onError={(m) => setErr(m)}
+                      submitLabel="Confirm booking"
+                      buttonClassName={`${playerBtnPrimary} w-full`}
+                    />
+                  )}
+                </div>
               ) : (
-                <span>{selectedGround.ownerLocation || selectedGround.city || '—'}</span>
+                <button type="button" onClick={confirmMock} className={`${playerBtnPrimary} mt-3 w-full`}>
+                  Confirm payment (mock)
+                </button>
               )}
-            </p>
-            {slotCheck && start && end ? (
-              <p
-                className={`mt-3 font-headline text-xs font-bold uppercase tracking-wider ${
-                  slotCheck.available ? 'text-player-green' : 'text-red-400'
-                }`}
-              >
-                {slotCheck.available ? 'Selected time slot is available' : 'Selected time slot is not available (booked or held)'}
-              </p>
-            ) : null}
-          </div>
-        ) : null}
-        <div>
-          <label className={playerLabel}>Start</label>
-          <input type="datetime-local" className={`${playerField} mt-2`} value={start} onChange={(e) => setStart(e.target.value)} />
-        </div>
-        <div>
-          <label className={playerLabel}>End</label>
-          <input type="datetime-local" className={`${playerField} mt-2`} value={end} onChange={(e) => setEnd(e.target.value)} />
-        </div>
-        <div>
-          <label className={playerLabel}>Amount (USD)</label>
-          <input type="number" className={`${playerField} mt-2`} value={amount} onChange={(e) => setAmount(e.target.value)} />
-        </div>
-        <button type="button" onClick={createHold} className={`${playerBtnPrimary} w-full`}>
-          Hold slot
-        </button>
-        {hold ? (
-          <div className="rounded-2xl bg-player-green/10 px-4 py-3 text-sm text-player-on-surface outline outline-1 outline-player-green/25">
-            <p>Hold active until {new Date(hold.holdExpiresAt).toLocaleTimeString()}</p>
-            {useStripeFlow ? (
-              <div className="mt-3 space-y-3">
-                <p className="text-xs text-slate-500">Use Stripe for payment (min. $0.50).</p>
-                {!clientSecret ? (
-                  <button
-                    type="button"
-                    disabled={intentLoading}
-                    onClick={prepareGroundPayment}
-                    className={`${playerBtnPrimary} w-full`}
-                  >
-                    {intentLoading ? 'Preparing…' : 'Continue to card payment'}
-                  </button>
-                ) : (
-                  <StripePaySection
-                    clientSecret={clientSecret}
-                    onSucceeded={onStripeSucceeded}
-                    onError={(m) => setErr(m)}
-                    submitLabel="Confirm booking"
-                    buttonClassName={`${playerBtnPrimary} w-full`}
-                  />
-                )}
-              </div>
-            ) : (
-              <button type="button" onClick={confirmMock} className={`${playerBtnPrimary} mt-3 w-full`}>
-                Confirm payment (mock)
-              </button>
-            )}
-          </div>
-        ) : null}
+            </div>
+          ) : null}
       </PlayerCard>
+
+      <section className="mb-8">
+        <h2 className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-player-on-variant">
+          Available grounds
+        </h2>
+        {!grounds.length ? (
+          <p className="mt-4 text-sm text-player-on-variant">No active grounds listed yet.</p>
+        ) : (
+          <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {grounds.map((g) => (
+              <GroundBrowseCard
+                key={g._id}
+                ground={g}
+                selected={selected === g._id}
+                onSelect={setSelected}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {bookings.length ? (
+        <section className="mt-10">
+          <h2 className="font-headline text-xs font-bold uppercase tracking-[0.2em] text-player-on-variant">
+            Your bookings
+          </h2>
+          <ul className="mt-4 space-y-4">
+            {bookings.map((b) => {
+              const g = b.ground;
+              if (!g || typeof g !== 'object') return null;
+              return (
+                <PlayerCard key={b._id} className="overflow-hidden p-0">
+                  <GroundPhotoStrip ground={g} />
+                  <div className="p-4 text-sm">
+                    <p className="font-bold text-white">{g.name}</p>
+                    <p className="mt-1 text-xs text-player-on-variant">
+                      {b.status} · {new Date(b.startTime).toLocaleString()} – {new Date(b.endTime).toLocaleString()}
+                      {b.amount != null ? ` · ${formatGroundBookingAmount(b.amount)}` : ''}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      {g.city ? `${g.city} · ` : ''}
+                      {g.lengthFeet ? `${g.lengthFeet} ft` : ''}
+                      {g.areaSqFt ? ` · ${Number(g.areaSqFt).toLocaleString()} sq ft` : ''}
+                    </p>
+                    {b.status !== 'cancelled' && b.status !== 'completed' ? (
+                      <button type="button" onClick={() => cancelBooking(b._id)} className={`${playerBtnOutlineSm} mt-3`}>
+                        Cancel
+                      </button>
+                    ) : null}
+                  </div>
+                </PlayerCard>
+              );
+            })}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 }

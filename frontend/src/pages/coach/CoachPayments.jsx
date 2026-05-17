@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api, getErrorMessage } from '../../services/api';
 
-/** SRS UC-C12 — balance, history, withdrawal */
+/** Balance, history, withdrawal */
 export default function CoachPayments() {
   const [data, setData] = useState(null);
   const [err, setErr] = useState('');
@@ -47,7 +47,7 @@ export default function CoachPayments() {
       {err && <p className="text-sm text-red-400 mt-2">{err}</p>}
       <section className="midnight-asymmetric border border-player-inner/40 bg-player-container p-6">
         <h2 className="font-headline text-lg uppercase tracking-[0.12em] text-white">Request withdrawal</h2>
-        <p className="mt-1 text-xs text-slate-500">Prototype settlement — SRS UC-C12</p>
+        <p className="mt-1 text-xs text-slate-500">Prototype settlement</p>
         <form className="mt-4 flex flex-wrap items-end gap-3" onSubmit={withdraw}>
           <label className="flex flex-col text-sm text-slate-400">
             Amount

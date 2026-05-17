@@ -31,7 +31,7 @@ export default function AdminReports() {
     <div>
       <AdminPageHeader
         title="Reports & analytics"
-        subtitle="Payment aggregates by type (UC-A13)."
+        subtitle="Payment aggregates by type."
         actions={
           <button type="button" onClick={exportPdf} className="rounded-lg border border-admin-cyan/40 px-4 py-2 text-xs font-bold uppercase tracking-wider text-admin-cyan">
             Export PDF

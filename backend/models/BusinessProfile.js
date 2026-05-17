@@ -6,6 +6,8 @@ const businessProfileSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
     businessName: { type: String, required: true, trim: true },
+    /** Business / store postal address (registration & verification) */
+    address: { type: String, required: true, trim: true },
     phone: String,
     storeName: String,
     storeDescription: String,
@@ -14,7 +16,7 @@ const businessProfileSchema = new mongoose.Schema(
     listingSlotsRemaining: { type: Number, default: 0 },
     subscriptionRenewsAt: Date,
     legalDocumentNote: String,
-    /** SRS UC-B5 — storefront branding & policies */
+    /** Storefront branding & policies */
     storeLogoUrl: String,
     storeBannerUrl: String,
     shippingPolicyText: String,

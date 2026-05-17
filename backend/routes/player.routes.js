@@ -17,6 +17,8 @@ r.put(
   p.updateProfile
 );
 r.get('/recommendations', [query('limit').optional().isInt({ min: 3, max: 5 })], p.getRecommendations);
+r.get('/coaches/:coachId/certificates', p.listCoachCertificates);
+r.get('/coaches/:coachId/certificates/:docId/file', p.streamCoachCertificateFile);
 r.post('/training-requests', [body('coachId').notEmpty()], p.createTrainingRequest);
 r.get('/training-requests', p.listMyTrainingRequests);
 r.get('/training-sessions', p.listTrainingSessions);

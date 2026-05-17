@@ -31,7 +31,7 @@ const SUBSCRIPTION_PLANS = [
   },
 ];
 
-/** SRS UC-B13 — dashboard metrics + CSV export + date range + popular products */
+/** Dashboard metrics + CSV export + date range + popular products */
 export default function BusinessDashboard() {
   const [p, setP] = useState(null);
   const [sales, setSales] = useState(null);
@@ -103,7 +103,7 @@ export default function BusinessDashboard() {
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-[#11192c] p-6">
             <div>
-              <p className="text-xs uppercase tracking-widest text-slate-400">Sales (UC-B13)</p>
+              <p className="text-xs uppercase tracking-widest text-slate-400">Sales</p>
               <p className="mt-1 font-orbitron text-2xl text-[#9bffce]">
                 {sales.orderCount} orders · {sales.revenue} revenue
               </p>

@@ -4,6 +4,7 @@ import PlayerCard from '../../components/player/PlayerCard';
 import PlayerIcon from '../../components/player/PlayerIcon';
 import SkillArcRow from '../../components/player/SkillArcRow';
 import { playerBadgeLive, playerHeroBtnPrimary, playerHeroBtnSecondary } from '../../components/player/playerClassNames';
+import CoachAvatar from '../../components/CoachAvatar';
 import { api, getErrorMessage } from '../../services/api';
 
 function greetingPrefix() {
@@ -16,13 +17,6 @@ function greetingPrefix() {
 function formatPts(n) {
   if (n == null || Number.isNaN(n)) return '—';
   return new Intl.NumberFormat().format(Math.round(n));
-}
-
-function coachInitials(s) {
-  const n = s?.coach?.coachProfile?.fullName || s?.coach?.email || 'C';
-  const parts = String(n).trim().split(/\s+/);
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return String(n).slice(0, 2).toUpperCase();
 }
 
 function coachName(s) {
@@ -57,6 +51,7 @@ export default function PlayerDashboard() {
   const [perfList, setPerfList] = useState([]);
   const [notifList, setNotifList] = useState([]);
   const [coaches, setCoaches] = useState(0);
+  const [trainingRequests, setTrainingRequests] = useState([]);
   const [orders, setOrders] = useState(0);
   const [err, setErr] = useState('');
 
@@ -65,13 +60,14 @@ export default function PlayerDashboard() {
     (async () => {
       setErr('');
       try {
-        const [meRes, n, r, s, o, p] = await Promise.all([
+        const [meRes, n, r, s, o, p, tr] = await Promise.all([
           api.get('/auth/me'),
           api.get('/players/notifications'),
           api.get('/players/recommendations'),
           api.get('/players/training-sessions'),
           api.get('/players/orders'),
           api.get('/players/performance'),
+          api.get('/players/training-requests'),
         ]);
         if (cancelled) return;
         setMe(meRes.data.data);
@@ -80,6 +76,7 @@ export default function PlayerDashboard() {
         setSessionList(s.data.data || []);
         setOrders(o.data.data?.length || 0);
         setPerfList(p.data.data || []);
+        setTrainingRequests(tr.data.data || []);
       } catch (e) {
         if (!cancelled) setErr(getErrorMessage(e));
       }
@@ -133,6 +130,24 @@ export default function PlayerDashboard() {
   }, [sessionList]);
 
   const activityItems = useMemo(() => notifList.slice(0, 5), [notifList]);
+
+  const myCoaches = useMemo(() => {
+    const seen = new Set();
+    const list = [];
+    for (const req of trainingRequests) {
+      if (req.status !== 'accepted') continue;
+      const coach = req.coach;
+      const coachId = String(coach?._id || coach || '');
+      if (!coachId || seen.has(coachId)) continue;
+      seen.add(coachId);
+      list.push({
+        coachId,
+        coach,
+        acceptedAt: req.updatedAt || req.createdAt,
+      });
+    }
+    return list;
+  }, [trainingRequests]);
 
   const fullName = me?.playerProfile?.fullName;
   const first = fullName?.split(/\s+/)[0] || me?.email?.split('@')[0] || 'Player';
@@ -304,6 +319,69 @@ export default function PlayerDashboard() {
         </PlayerCard>
       </section>
 
+      <section className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="font-headline text-xl font-bold uppercase tracking-wider text-white">Your coach</h2>
+          <Link to="/player/training" className="text-xs font-bold uppercase text-player-green hover:underline">
+            Training schedule
+          </Link>
+        </div>
+        <p className="text-sm text-player-on-variant">Coaches who accepted your request and will train you.</p>
+        {myCoaches.length ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {myCoaches.map(({ coachId, coach, acceptedAt }) => {
+              const name = coach?.coachProfile?.fullName || coach?.email || 'Coach';
+              const city = coach?.coachProfile?.city;
+              const specialties = coach?.coachProfile?.specialties;
+              return (
+                <div
+                  key={coachId}
+                  className="midnight-asymmetric flex gap-4 border border-player-green/25 bg-player-highest p-5 shadow-xl transition-all hover:border-player-green/50"
+                >
+                  <CoachAvatar profile={coach?.coachProfile} name={name} size="lg" />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-lg font-bold text-white">{name}</p>
+                    <p className="mt-1 text-sm font-medium text-player-green">Your coach will train you</p>
+                    {city ? (
+                      <p className="mt-2 text-xs text-player-on-variant">
+                        <PlayerIcon name="location_on" className="mr-1 align-middle text-sm" />
+                        {city}
+                      </p>
+                    ) : null}
+                    {specialties?.length ? (
+                      <p className="mt-1 text-[10px] uppercase tracking-wider text-player-on-variant">
+                        {specialties.slice(0, 3).join(' · ')}
+                      </p>
+                    ) : null}
+                    {acceptedAt ? (
+                      <p className="mt-2 text-[10px] text-player-on-variant">
+                        Accepted {new Date(acceptedAt).toLocaleDateString()}
+                      </p>
+                    ) : null}
+                    <Link
+                      to="/player/training"
+                      className="mt-3 inline-block font-headline text-[10px] font-bold uppercase tracking-widest text-player-green hover:underline"
+                    >
+                      View sessions & plans →
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <PlayerCard>
+            <p className="text-sm text-player-on-variant">
+              No coach assigned yet. Send a training request from{' '}
+              <Link to="/player/coaches" className="font-semibold text-player-green hover:underline">
+                Find coach
+              </Link>
+              .
+            </p>
+          </PlayerCard>
+        )}
+      </section>
+
       <section className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <PlayerCard elevate={false} className="relative p-8 lg:col-span-2">
           <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -381,9 +459,7 @@ export default function PlayerDashboard() {
                 className="midnight-asymmetric flex flex-col gap-4 border border-[#434857]/10 bg-player-highest p-5 shadow-xl transition-all duration-300 hover:border-player-green/25 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-player-highest font-orbitron text-sm font-bold text-player-green">
-                    {coachInitials(s)}
-                  </div>
+                  <CoachAvatar profile={s.coach?.coachProfile} name={coachName(s)} size="md" />
                   <div>
                     <p className="text-sm font-bold text-white">{coachName(s)}</p>
                     <div className="mt-1 flex flex-wrap items-center gap-3 text-[10px] font-medium text-player-on-variant">

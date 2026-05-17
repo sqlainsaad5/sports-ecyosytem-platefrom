@@ -28,7 +28,7 @@ export default function AdminMonitorPerformance() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Performance monitor"
-        subtitle="Evaluations and attendance records (UC-A11)."
+        subtitle="Evaluations and attendance records."
       />
       {err ? (
         <AdminCard accent="orange" className="p-4">

@@ -1,4 +1,4 @@
-/** SRS UC-B9 — sale price / discount windows */
+/** Sale price / discount windows */
 
 function inSaleWindow(p) {
   if (!p?.saleStart || !p?.saleEnd) return false;

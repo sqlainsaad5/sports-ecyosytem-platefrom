@@ -43,7 +43,7 @@ export default function AdminSports() {
     <div>
       <AdminPageHeader
         title="Sport categories"
-        subtitle="Taxonomy used across bookings and profiles (UC-A8)."
+        subtitle="Taxonomy used across bookings and profiles."
       />
       {err ? (
         <AdminCard accent="orange" className="mb-6 p-4">

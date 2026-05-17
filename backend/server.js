@@ -23,12 +23,27 @@ async function seedMinimal() {
       ownerAddress: 'Demo owner mailing address',
       ownerLocation: 'Gulberg III, Lahore',
     };
+    const cricketImages = [
+      '/uploads/demo-ground-cricket-1.jpg',
+      '/uploads/demo-ground-cricket-2.jpg',
+      '/uploads/demo-ground-cricket-3.jpg',
+    ];
+    const badmintonImages = [
+      '/uploads/demo-ground-badminton-1.jpg',
+      '/uploads/demo-ground-badminton-2.jpg',
+      '/uploads/demo-ground-badminton-3.jpg',
+    ];
     await IndoorGround.insertMany([
       {
         name: 'Central Indoor Cricket Arena',
         sportType: 'cricket',
         city: 'Lahore',
         address: 'Demo address',
+        location: 'Gulberg III, Lahore — https://maps.google.com',
+        imagePaths: cricketImages,
+        imagePath: cricketImages[0],
+        lengthFeet: 120,
+        areaSqFt: 14400,
         isActive: true,
         ...demoOwner,
       },
@@ -37,6 +52,11 @@ async function seedMinimal() {
         sportType: 'badminton',
         city: 'Lahore',
         address: 'Demo address',
+        location: 'DHA Phase 5, Lahore',
+        imagePaths: badmintonImages,
+        imagePath: badmintonImages[0],
+        lengthFeet: 44,
+        areaSqFt: 880,
         isActive: true,
         ...demoOwner,
       },

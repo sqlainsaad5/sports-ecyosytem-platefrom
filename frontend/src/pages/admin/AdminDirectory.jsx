@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import AdminCard from '../../components/admin/AdminCard';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
+import CoachAvatar from '../../components/CoachAvatar';
 import { api, getErrorMessage } from '../../services/api';
 
-function DirectoryTable({ title, accent, rows, renderPrimary, renderSecondary }) {
+function DirectoryTable({ title, accent, rows, renderPrimary, renderSecondary, showCoachAvatar }) {
   return (
     <AdminCard accent={accent} className="overflow-hidden">
       <div className="border-b border-white/5 px-6 py-4">
@@ -12,10 +13,13 @@ function DirectoryTable({ title, accent, rows, renderPrimary, renderSecondary })
       </div>
       <ul className="max-h-72 divide-y divide-white/[0.04] overflow-y-auto admin-scrollbar text-sm">
         {rows.map((u) => (
-          <li key={u._id} className="px-6 py-3.5 transition-colors hover:bg-white/[0.04]">
+          <li key={u._id} className="flex items-center gap-3 px-6 py-3.5 transition-colors hover:bg-white/[0.04]">
+            {showCoachAvatar ? <CoachAvatar profile={u.coachProfile} size="sm" /> : null}
+            <div className="min-w-0 flex-1">
             <p className="font-semibold text-slate-200">{renderPrimary(u)}</p>
             <p className="font-label text-xs text-slate-500">{u.email}</p>
             <p className="mt-1 font-label text-xs text-slate-400">{renderSecondary(u)}</p>
+            </div>
           </li>
         ))}
         {!rows.length ? (
@@ -43,7 +47,7 @@ export default function AdminDirectory() {
     <div className="space-y-6">
       <AdminPageHeader
         title="Coaches & business"
-        subtitle="Directory of coaches and business owners (UC-A6 / UC-A7)."
+        subtitle="Directory of coaches and business owners."
       />
       {err ? (
         <AdminCard accent="orange" className="p-4">
@@ -55,6 +59,7 @@ export default function AdminDirectory() {
           title="Coaches"
           accent="cyan"
           rows={coaches}
+          showCoachAvatar
           renderPrimary={(u) => u.coachProfile?.fullName || u.email}
           renderSecondary={(u) => `Verification: ${u.verificationStatus}`}
         />

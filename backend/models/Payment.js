@@ -6,7 +6,7 @@ const paymentSchema = new mongoose.Schema(
     payee: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     type: {
       type: String,
-      // SRS UC-C12 — coach withdrawal to bank (prototype: recorded as platform payout)
+      // Coach withdrawal to bank (prototype: recorded as platform payout)
       enum: ['coach_fee', 'ground_booking', 'product', 'subscription', 'withdrawal'],
       required: true,
     },

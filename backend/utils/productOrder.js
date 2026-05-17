@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const Product = require('../models/Product');
 const { effectiveProductPrice } = require('./pricing');
+const { productPrimaryImagePath } = require('./productImages');
 
 function hashProductItems(items) {
   const normalized = [...items]
@@ -14,7 +15,7 @@ function hashProductItems(items) {
 }
 
 /**
- * Validates cart and returns totals for Stripe + order creation (SRS UC-P8).
+ * Validates cart and returns totals for Stripe + order creation.
  * @returns {{ total: number, lineDocs: Array, ownerId: import('mongoose').Types.ObjectId, itemHash: string }}
  */
 async function buildProductOrderContext(items) {
@@ -61,7 +62,13 @@ async function buildProductOrderContext(items) {
     const unit = effectiveProductPrice(prod);
     const sub = unit * qty;
     total += sub;
-    lineDocs.push({ product: prod._id, name: prod.name, unitPrice: unit, quantity: qty });
+    lineDocs.push({
+      product: prod._id,
+      name: prod.name,
+      unitPrice: unit,
+      quantity: qty,
+      imagePath: productPrimaryImagePath(prod),
+    });
   }
 
   total = Math.round(total * 100) / 100;

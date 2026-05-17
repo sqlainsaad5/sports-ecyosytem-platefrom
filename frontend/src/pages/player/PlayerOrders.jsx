@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import PlayerCard from '../../components/player/PlayerCard';
 import PlayerPageHeader from '../../components/player/PlayerPageHeader';
+import ProductImage from '../../components/ProductImage';
 import { api, getErrorMessage } from '../../services/api';
 
 export default function PlayerOrders() {
@@ -31,10 +32,19 @@ export default function PlayerOrders() {
                 Ship: {o.shippingAddress.fullName} · {o.shippingAddress.line1}, {o.shippingAddress.city}
               </p>
             ) : null}
-            <ul className="mt-3 space-y-1 text-player-on-variant">
+            <ul className="mt-3 space-y-2 text-player-on-variant">
               {o.items?.map((i, idx) => (
-                <li key={idx}>
-                  {i.name} × {i.quantity}
+                <li key={idx} className="flex items-center gap-3">
+                  <ProductImage
+                    product={i}
+                    path={i.imagePath}
+                    alt={i.name}
+                    className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                    placeholderClassName="h-12 w-12 shrink-0 rounded-lg"
+                  />
+                  <span>
+                    {i.name} × {i.quantity}
+                  </span>
                 </li>
               ))}
             </ul>

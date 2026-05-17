@@ -63,6 +63,9 @@ export default function AdminVerifyBusiness() {
               <div>
                 <p className="text-base font-bold text-white">{u.businessProfile?.businessName || '—'}</p>
                 <p className="mt-1 font-label text-sm text-slate-400">{u.email}</p>
+                {u.businessProfile?.address ? (
+                  <p className="mt-1 font-label text-xs text-slate-400">Address: {u.businessProfile.address}</p>
+                ) : null}
                 <p className="mt-1 font-label text-xs text-slate-400">
                   Map:{' '}
                   {u.businessProfile?.locationMapUrl ? (

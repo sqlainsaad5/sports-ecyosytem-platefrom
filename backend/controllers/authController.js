@@ -101,6 +101,11 @@ const register = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, message: 'Business name is required.' });
   }
   if (role === 'business_owner') {
+    const address = String(profile?.address || '').trim();
+    if (!address) {
+      return res.status(400).json({ success: false, message: 'Business address is required.' });
+    }
+    profile.address = address;
     const mapLink = String(profile?.locationMapUrl || '').trim();
     if (!mapLink) {
       return res.status(400).json({ success: false, message: 'Google Maps link is required for business registration.' });
@@ -159,6 +164,7 @@ const register = asyncHandler(async (req, res) => {
     const bp = await BusinessProfile.create({
       user: user._id,
       businessName: profile.businessName,
+      address: profile.address,
       phone: profile.phone,
       storeName: profile.storeName || profile.businessName,
       storeDescription: profile.storeDescription,

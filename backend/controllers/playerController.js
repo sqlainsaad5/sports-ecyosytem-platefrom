@@ -13,6 +13,7 @@ const Order = require('../models/Order');
 const Payment = require('../models/Payment');
 const Notification = require('../models/Notification');
 const CoachFeedback = require('../models/CoachFeedback');
+const VerificationDocument = require('../models/VerificationDocument');
 const Complaint = require('../models/Complaint');
 const { asyncHandler } = require('../utils/asyncHandler');
 const { hasOverlap } = require('../utils/groundBookings');
@@ -20,6 +21,14 @@ const { notifyUser } = require('../utils/notify');
 const { verifiedBusinessOwnerIds } = require('../utils/verifiedSellers');
 const { effectiveProductPrice, inSaleWindow } = require('../utils/pricing');
 const { buildProductOrderContext } = require('../utils/productOrder');
+const {
+  GROUND_BOOKING_CURRENCY,
+  GROUND_BOOKING_MIN_PKR,
+  groundBookingAmountToMinor,
+  isValidGroundBookingStripeAmount,
+} = require('../utils/groundBookingCurrency');
+const { enrichOrderItemsWithImages } = require('../utils/productImages');
+const { streamVerificationDocumentFile } = require('../utils/streamVerificationDocument');
 const {
   getStripe,
   isStripeEnabled,
@@ -33,7 +42,7 @@ const { generateCoachRecommendations } = require('../services/aiCoachEngine');
 const populateCoachBrief = {
   path: 'coach',
   select: 'email verificationStatus',
-  populate: { path: 'coachProfile', select: 'fullName city specialties' },
+  populate: { path: 'coachProfile', select: 'fullName city specialties profilePhotoUrl averageRating' },
 };
 const populatePlayerBrief = {
   path: 'player',
@@ -191,7 +200,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   res.json({ success: true, data: profile });
 });
 
-/** UC-P3 — automated coach recommendation (sport, skill, location); verified coaches only */
+/** Automated coach recommendation (sport, skill, location); verified coaches only */
 const getRecommendations = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ success: false, errors: errors.array() });
@@ -307,6 +316,24 @@ const getRecommendations = asyncHandler(async (req, res) => {
     }
   }
 
+  const coachIds = finalRows.map((r) => r.userId);
+  let certsByCoach = {};
+  if (coachIds.length) {
+    const approved = await VerificationDocument.find({
+      user: { $in: coachIds },
+      roleContext: 'coach',
+      status: 'approved',
+    })
+      .select('_id user originalName docType')
+      .lean();
+    certsByCoach = approved.reduce((acc, d) => {
+      const k = String(d.user);
+      if (!acc[k]) acc[k] = [];
+      acc[k].push({ _id: d._id, originalName: d.originalName, docType: d.docType });
+      return acc;
+    }, {});
+  }
+
   const elapsed = Date.now() - start;
   res.set('X-Recommendation-ms', String(elapsed));
   res.json({
@@ -320,24 +347,66 @@ const getRecommendations = asyncHandler(async (req, res) => {
       matchScore: s.matchScore,
       breakdown: s.breakdown,
       reasons: s.reasons,
+      certificates: certsByCoach[String(s.userId)] || [],
     })),
   });
+});
+
+async function findVerifiedCoachForPlayer(coachId) {
+  return User.findOne({
+    _id: coachId,
+    role: 'coach',
+    verificationStatus: 'verified',
+    isSuspended: false,
+  }).lean();
+}
+
+const listCoachCertificates = asyncHandler(async (req, res) => {
+  const coach = await findVerifiedCoachForPlayer(req.params.coachId);
+  if (!coach) return res.status(404).json({ success: false, message: 'Coach not found' });
+
+  const list = await VerificationDocument.find({
+    user: coach._id,
+    roleContext: 'coach',
+    status: 'approved',
+  })
+    .select('_id originalName docType issueDate expiryDate createdAt')
+    .sort({ createdAt: -1 })
+    .lean();
+
+  res.json({ success: true, data: list });
+});
+
+const streamCoachCertificateFile = asyncHandler(async (req, res) => {
+  const coach = await findVerifiedCoachForPlayer(req.params.coachId);
+  if (!coach) return res.status(404).json({ success: false, message: 'Coach not found' });
+
+  const doc = await VerificationDocument.findOne({
+    _id: req.params.docId,
+    user: coach._id,
+    roleContext: 'coach',
+    status: 'approved',
+  }).lean();
+  if (!doc) return res.status(404).json({ success: false, message: 'Certificate not found' });
+
+  streamVerificationDocumentFile(doc, res);
 });
 
 const createTrainingRequest = asyncHandler(async (req, res) => {
   const { coachId, message, preferredStart } = req.body;
   const coach = await User.findOne({ _id: coachId, role: 'coach', verificationStatus: 'verified' });
   if (!coach) return res.status(404).json({ success: false, message: 'Coach not available' });
-  const pending = await TrainingRequest.findOne({
+  const existing = await TrainingRequest.findOne({
     player: req.user.id,
     coach: coachId,
-    status: 'pending',
+    status: { $in: ['pending', 'accepted'] },
   });
-  if (pending) {
-    return res.status(409).json({
-      success: false,
-      message: 'You already have a pending request for this coach.',
-    });
+  if (existing) {
+    const message =
+      existing.status === 'accepted'
+        ? 'You are already training with this coach.'
+        : 'You already have a pending request for this coach.';
+    return res.status(409).json({ success: false, message });
   }
   const tr = await TrainingRequest.create({
     player: req.user.id,
@@ -370,7 +439,7 @@ const listTrainingSessions = asyncHandler(async (req, res) => {
 });
 
 const listTrainingPlans = asyncHandler(async (req, res) => {
-  /** SRS UC-P5 — players only see published weekly plans */
+  /** Players only see published weekly plans */
   const list = await TrainingPlan.find({ player: req.user.id, status: 'published' })
     .sort({ weekStartDate: -1 })
     .lean();
@@ -423,29 +492,29 @@ const createGroundBookingPaymentIntent = asyncHandler(async (req, res) => {
     await booking.save();
     return res.status(410).json({ success: false, message: 'Hold expired' });
   }
-  const amountCents = dollarsToCents(booking.amount);
-  if (amountCents < 50) {
+  const amountMinor = groundBookingAmountToMinor(booking.amount);
+  if (!isValidGroundBookingStripeAmount(booking.amount)) {
     return res.status(400).json({
       success: false,
-      message: 'Set booking amount to at least 0.50 USD for card payment.',
+      message: `Set booking amount to at least ${GROUND_BOOKING_MIN_PKR} PKR for card payment.`,
     });
   }
   const stripe = getStripe();
   const pi = await stripe.paymentIntents.create({
-    amount: amountCents,
-    currency: 'usd',
+    amount: amountMinor,
+    currency: GROUND_BOOKING_CURRENCY,
     ...paymentIntentMethodSpec(),
     metadata: {
       purpose: 'ground_booking',
       bookedById: String(req.user.id),
       bookedByRole: 'player',
       bookingId: String(booking._id),
-      amountCents: String(amountCents),
+      amountMinor: String(amountMinor),
     },
   });
   res.json({
     success: true,
-    data: { clientSecret: pi.client_secret, amount: booking.amount, currency: 'usd' },
+    data: { clientSecret: pi.client_secret, amount: booking.amount, currency: GROUND_BOOKING_CURRENCY },
   });
 });
 
@@ -484,7 +553,7 @@ const confirmGroundPayment = asyncHandler(async (req, res) => {
     ) {
       return res.status(400).json({ success: false, message: 'Invalid payment for this booking.' });
     }
-    assertAmountMatches(pi, dollarsToCents(booking.amount));
+    assertAmountMatches(pi, groundBookingAmountToMinor(booking.amount));
     externalRef = paymentIntentId;
   }
 
@@ -716,7 +785,8 @@ const createCoachPaymentIntent = asyncHandler(async (req, res) => {
 
 const listMyOrders = asyncHandler(async (req, res) => {
   const list = await Order.find({ player: req.user.id }).sort({ createdAt: -1 }).lean();
-  res.json({ success: true, data: list });
+  const data = await enrichOrderItemsWithImages(list, Product);
+  res.json({ success: true, data });
 });
 
 const submitCoachFeedback = asyncHandler(async (req, res) => {
@@ -849,6 +919,8 @@ module.exports = {
   getProfile,
   updateProfile,
   getRecommendations,
+  listCoachCertificates,
+  streamCoachCertificateFile,
   createTrainingRequest,
   listMyTrainingRequests,
   listTrainingSessions,

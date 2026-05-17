@@ -29,6 +29,7 @@ export default function Register() {
   const [locationMapUrl, setLocationMapUrl] = useState('');
   const [businessLocationMapUrl, setBusinessLocationMapUrl] = useState('');
   const [businessName, setBusinessName] = useState('');
+  const [businessAddress, setBusinessAddress] = useState('');
 
   const buildProfile = () => {
     if (role === 'player') {
@@ -44,7 +45,13 @@ export default function Register() {
         locationMapUrl: locationMapUrl.trim(),
       };
     }
-    return { businessName, phone, storeName: businessName, locationMapUrl: businessLocationMapUrl.trim() };
+    return {
+      businessName,
+      address: businessAddress.trim(),
+      phone,
+      storeName: businessName,
+      locationMapUrl: businessLocationMapUrl.trim(),
+    };
   };
 
   const submit = async (e) => {
@@ -236,6 +243,16 @@ export default function Register() {
                 <div>
                   <label className={labelClass}>Phone</label>
                   <input className={inputClass} value={phone} onChange={(e) => setPhone(e.target.value)} />
+                </div>
+                <div>
+                  <label className={labelClass}>Business address (required)</label>
+                  <input
+                    className={inputClass}
+                    placeholder="Street, area, city"
+                    value={businessAddress}
+                    onChange={(e) => setBusinessAddress(e.target.value)}
+                    required
+                  />
                 </div>
                 <div>
                   <label className={labelClass}>Google Maps link (required)</label>

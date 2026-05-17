@@ -6,6 +6,7 @@ const orderItemSchema = new mongoose.Schema(
     name: String,
     unitPrice: Number,
     quantity: { type: Number, required: true, min: 1 },
+    imagePath: String,
   },
   { _id: false }
 );
@@ -33,7 +34,7 @@ const orderSchema = new mongoose.Schema(
       default: 'pending',
     },
     payment: { type: mongoose.Schema.Types.ObjectId, ref: 'Payment' },
-    /** SRS UC-P8 / UC-B12 — checkout & fulfillment */
+    /** Checkout & fulfillment */
     shippingAddress: addressSchema,
     trackingNumber: String,
     customerNote: String,

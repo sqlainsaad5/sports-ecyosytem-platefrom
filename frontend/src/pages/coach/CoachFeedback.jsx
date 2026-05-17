@@ -26,7 +26,7 @@ export default function CoachFeedback() {
   return (
     <div>
       <h1 className="font-display text-5xl tracking-[0.08em] text-white">PLAYER FEEDBACK</h1>
-      <p className="font-headline text-xs uppercase tracking-[0.3em] text-[#ff7524]">SRS UC-C11 — ratings &amp; replies</p>
+      <p className="font-headline text-xs uppercase tracking-[0.3em] text-[#ff7524]">Ratings &amp; replies</p>
       {err && <p className="text-sm text-red-400 mt-2">{err}</p>}
       <ul className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {list.map((f) => (

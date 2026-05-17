@@ -22,9 +22,34 @@ const ALLOWED = new Set([
   'image/pjpeg',
 ]);
 
+const IMAGE_MIMES = new Set([
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/pjpeg',
+  'image/webp',
+  'image/gif',
+  'image/heic',
+  'image/heif',
+  'image/avif',
+]);
+
+const IMAGE_EXT = /\.(jpe?g|png|webp|gif|heic|heif|avif)$/i;
+
 const fileFilter = (_req, file, cb) => {
   if (ALLOWED.has(file.mimetype)) cb(null, true);
   else cb(new Error('Only PDF, JPG, and PNG files are allowed (SDD).'), false);
+};
+
+const imageFileFilter = (_req, file, cb) => {
+  const mime = (file.mimetype || '').toLowerCase();
+  if (IMAGE_MIMES.has(mime) || mime.startsWith('image/')) {
+    return cb(null, true);
+  }
+  if ((!mime || mime === 'application/octet-stream') && IMAGE_EXT.test(file.originalname || '')) {
+    return cb(null, true);
+  }
+  cb(new Error('Profile photo must be JPG, PNG, WebP, or GIF (max 8 MB).'), false);
 };
 
 const upload = multer({
@@ -33,4 +58,11 @@ const upload = multer({
   fileFilter,
 });
 
-module.exports = { upload, uploadDir };
+/** Coach profile photos — images only, relaxed MIME (phones often send HEIC/WebP or empty type). */
+const uploadImage = multer({
+  storage,
+  limits: { fileSize: 8 * 1024 * 1024 },
+  fileFilter: imageFileFilter,
+});
+
+module.exports = { upload, uploadImage, uploadDir };

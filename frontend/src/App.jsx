@@ -30,6 +30,7 @@ import CoachSubscription from './pages/coach/CoachSubscription';
 import CoachPayments from './pages/coach/CoachPayments';
 import CoachDocuments from './pages/coach/CoachDocuments';
 import CoachNotifications from './pages/coach/CoachNotifications';
+import CoachProfile from './pages/coach/CoachProfile';
 import BusinessDashboard from './pages/business/BusinessDashboard';
 import BusinessProducts from './pages/business/BusinessProducts';
 import BusinessOrders from './pages/business/BusinessOrders';
@@ -79,6 +80,7 @@ export default function App() {
       <Route element={<ProtectedRoute roles={['coach']} />}>
         <Route path="/coach" element={<AppLayout />}>
           <Route index element={<CoachDashboard />} />
+          <Route path="profile" element={<CoachProfile />} />
           <Route path="subscription" element={<CoachSubscription />} />
           <Route path="requests" element={<CoachRequests />} />
           <Route path="sessions" element={<CoachSessions />} />

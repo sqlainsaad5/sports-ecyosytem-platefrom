@@ -86,9 +86,7 @@ export default function CoachSubscription() {
       <div>
         <h1 className="font-display text-4xl tracking-[0.08em] text-white">PLATFORM SUBSCRIPTION</h1>
         <p className="mt-2 text-sm text-slate-400">
-          Monthly fee for coach portal access. Admin sets the USD amount in Settings key{' '}
-          <code className="text-[#ff7524]">coach_platform_subscription_usd</code> (default 25). Set to{' '}
-          <code className="text-[#ff7524]">0</code> for free access.
+          Monthly fee for full coach portal access — training, sessions, and payments.
         </p>
       </div>
 

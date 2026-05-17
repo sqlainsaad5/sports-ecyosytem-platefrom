@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import ProductImage from '../../components/ProductImage';
 import { api, getErrorMessage } from '../../services/api';
 
-/** SRS UC-B12 — filters, tracking, status */
+/** Filters, tracking, status */
 export default function BusinessOrders() {
   const [list, setList] = useState([]);
   const [err, setErr] = useState('');
@@ -78,6 +79,24 @@ export default function BusinessOrders() {
             ) : null}
             {o.trackingNumber ? (
               <p className="mt-1 font-orbitron text-xs text-[#9bffce]">Tracking: {o.trackingNumber}</p>
+            ) : null}
+            {o.items?.length ? (
+              <ul className="mt-3 space-y-2">
+                {o.items.map((i, idx) => (
+                  <li key={idx} className="flex items-center gap-3 text-slate-300">
+                    <ProductImage
+                      product={i}
+                      path={i.imagePath}
+                      alt={i.name}
+                      className="h-10 w-10 shrink-0 rounded object-cover"
+                      placeholderClassName="h-10 w-10 shrink-0 rounded"
+                    />
+                    <span>
+                      {i.name} × {i.quantity}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             ) : null}
             <div className="mt-2 flex flex-wrap gap-2">
               {['processing', 'shipped', 'completed'].map((s) => (

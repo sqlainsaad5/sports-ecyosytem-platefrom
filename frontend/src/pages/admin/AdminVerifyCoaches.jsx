@@ -3,6 +3,7 @@ import AdminCard from '../../components/admin/AdminCard';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import AdminVerificationDocumentList from '../../components/admin/AdminVerificationDocumentList';
 import { adminBtnCompactGhost, adminBtnCompactPrimary } from '../../components/admin/adminClassNames';
+import CoachAvatar from '../../components/CoachAvatar';
 import { api, getErrorMessage } from '../../services/api';
 
 export default function AdminVerifyCoaches() {
@@ -60,10 +61,13 @@ export default function AdminVerifyCoaches() {
         {list.map((u) => (
           <AdminCard key={u._id} accent="cyan" className="p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div>
+              <div className="flex gap-4">
+                <CoachAvatar profile={u.coachProfile} size="md" />
+                <div>
                 <p className="text-base font-bold text-white">{u.coachProfile?.fullName || '—'}</p>
                 <p className="mt-1 font-label text-sm text-slate-400">{u.email}</p>
                 <p className="mt-2 font-label text-xs text-slate-500">Status: {u.verificationStatus}</p>
+                </div>
               </div>
               <div className="flex flex-wrap gap-2">
                 <button type="button" className={adminBtnCompactPrimary} onClick={() => act(u._id, 'approve')}>

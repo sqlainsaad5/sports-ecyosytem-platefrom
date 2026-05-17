@@ -4,6 +4,7 @@ import AdminCard from '../../components/admin/AdminCard';
 import AdminIcon from '../../components/admin/AdminIcon';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import { adminBtnPrimary, adminBtnSecondary } from '../../components/admin/adminClassNames';
+import CoachAvatar from '../../components/CoachAvatar';
 import { api, getErrorMessage } from '../../services/api';
 
 const PREVIEW_N = 4;
@@ -147,7 +148,7 @@ export default function AdminDashboard() {
 
           {d.health ? (
             <AdminCard accent="none" className="mb-8 border border-white/[0.06] p-5">
-              <p className="font-headline text-xs font-bold uppercase tracking-wider text-slate-400">System health (UC-A2)</p>
+              <p className="font-headline text-xs font-bold uppercase tracking-wider text-slate-400">System health</p>
               <p className="mt-2 text-sm text-slate-300">
                 Database: <span className="text-emerald-400">{d.health.database}</span> · Uptime {d.health.uptimeSec}s ·{' '}
                 {d.health.nodeEnv}
@@ -198,9 +199,12 @@ export default function AdminDashboard() {
                   <li className="px-6 py-10 text-center text-sm text-slate-500">No pending coach applications.</li>
                 ) : (
                   coachPreview.map((u) => (
-                    <li key={u._id} className="px-6 py-3.5 transition-colors hover:bg-white/[0.04]">
-                      <p className="text-sm font-semibold text-slate-200">{u.coachProfile?.fullName || u.email}</p>
-                      <p className="font-label text-xs text-slate-500">{u.email}</p>
+                    <li key={u._id} className="flex items-center gap-3 px-6 py-3.5 transition-colors hover:bg-white/[0.04]">
+                      <CoachAvatar profile={u.coachProfile} size="sm" />
+                      <div>
+                        <p className="text-sm font-semibold text-slate-200">{u.coachProfile?.fullName || u.email}</p>
+                        <p className="font-label text-xs text-slate-500">{u.email}</p>
+                      </div>
                     </li>
                   ))
                 )}

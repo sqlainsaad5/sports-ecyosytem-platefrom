@@ -1,5 +1,6 @@
 import { adminBtnCompactGhost, adminBtnCompactPrimary } from './adminClassNames';
 import { api, getErrorMessage } from '../../services/api';
+import { previewVerificationDocument, previewVerificationDocumentError } from '../../utils/previewVerificationDocument';
 
 function statusPill(status) {
   if (status === 'approved') return 'bg-emerald-500/15 text-emerald-400';
@@ -10,19 +11,9 @@ function statusPill(status) {
 export default function AdminVerificationDocumentList({ documents, onChanged }) {
   const preview = async (docId, originalName) => {
     try {
-      const res = await api.get(`/admin/verification/documents/${docId}/file`, { responseType: 'blob' });
-      const url = URL.createObjectURL(res.data);
-      const w = window.open(url, '_blank', 'noopener,noreferrer');
-      if (!w) {
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = originalName || 'document';
-        a.rel = 'noopener';
-        a.click();
-      }
-      setTimeout(() => URL.revokeObjectURL(url), 120_000);
+      await previewVerificationDocument(`/admin/verification/documents/${docId}/file`, originalName);
     } catch (e) {
-      alert(getErrorMessage(e));
+      alert(previewVerificationDocumentError(e));
     }
   };
 

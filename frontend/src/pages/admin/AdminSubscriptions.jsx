@@ -18,7 +18,7 @@ export default function AdminSubscriptions() {
     <div>
       <AdminPageHeader
         title="Subscriptions & payments"
-        subtitle="Business subscription charges and status (UC-A14)."
+        subtitle="Business subscription charges and status."
       />
       {err ? (
         <AdminCard accent="orange" className="mb-6 p-4">

@@ -3,6 +3,7 @@ import AdminCard from '../../components/admin/AdminCard';
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import { adminPillLive } from '../../components/admin/adminClassNames';
 import { api, getErrorMessage } from '../../services/api';
+import { formatGroundBookingAmount } from '../../utils/groundBookingCurrency';
 
 function ListBlock({ title, accent, children }) {
   return (
@@ -27,10 +28,7 @@ export default function AdminMonitorBookings() {
 
   return (
     <div className="space-y-6">
-      <AdminPageHeader
-        title="Booking monitor"
-        subtitle="Indoor ground bookings only. Training schedules stay on coach and player accounts — not shown here."
-      />
+      <AdminPageHeader title="Booking monitor" />
       {err ? (
         <AdminCard accent="orange" className="p-4">
           <p className="text-sm text-admin-orange">{err}</p>
@@ -42,7 +40,11 @@ export default function AdminMonitorBookings() {
             <span className={adminPillLive}>{b.status}</span>
             <p className="mt-2 font-label text-xs text-slate-400">
               {b.startTime ? new Date(b.startTime).toLocaleString() : '—'}
+              {b.endTime ? ` – ${new Date(b.endTime).toLocaleString()}` : ''}
             </p>
+            {b.amount != null ? (
+              <p className="mt-1 font-orbitron text-xs text-admin-cyan">{formatGroundBookingAmount(b.amount)}</p>
+            ) : null}
           </li>
         ))}
         {!(data?.bookings || []).length ? (

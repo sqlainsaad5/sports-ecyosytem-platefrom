@@ -3,9 +3,10 @@ import PlayerCard from '../../components/player/PlayerCard';
 import PlayerPageHeader from '../../components/player/PlayerPageHeader';
 import { playerBtnOutlineSm, playerBtnPrimary } from '../../components/player/playerClassNames';
 import StripePaySection, { stripePublishableConfigured } from '../../components/payment/StripePaySection';
+import ProductImage from '../../components/ProductImage';
 import { api, getErrorMessage } from '../../services/api';
 
-/** SRS UC-P8 — browse, filter, cart, checkout (Stripe or mock when keys unset) */
+/** Browse, filter, cart, checkout (Stripe or mock when keys unset) */
 export default function PlayerShop() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState({});
@@ -115,6 +116,15 @@ export default function PlayerShop() {
 
   const add = (id) => setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 }));
 
+  const cartLines = useMemo(() => {
+    return Object.entries(cart)
+      .filter(([, qty]) => qty > 0)
+      .map(([productId, quantity]) => {
+        const product = products.find((p) => p._id === productId);
+        return { productId, quantity, product };
+      });
+  }, [cart, products]);
+
   return (
     <div>
       <PlayerPageHeader title="Equipment" subtitle="Browse verified stores — filters, sale pricing, checkout." />
@@ -146,9 +156,11 @@ export default function PlayerShop() {
         </select>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((p) => (
-          <PlayerCard key={p._id}>
+          <PlayerCard key={p._id} className="overflow-hidden p-0">
+            <ProductImage product={p} className="h-44 w-full object-cover" placeholderClassName="h-44 w-full" />
+            <div className="p-4">
             <p className="text-lg font-bold text-white">{p.name}</p>
             <p className="text-sm text-player-on-variant">
               {p.sportType}
@@ -169,6 +181,7 @@ export default function PlayerShop() {
             <button type="button" onClick={() => add(p._id)} className={`${playerBtnOutlineSm} mt-4 w-full`}>
               Add to cart ({cart[p._id] || 0})
             </button>
+            </div>
           </PlayerCard>
         ))}
       </div>
@@ -181,6 +194,25 @@ export default function PlayerShop() {
 
       {showCheckout ? (
         <div className="mt-6 max-w-lg space-y-3 rounded-xl border border-white/10 bg-black/25 p-4 text-sm">
+          {cartLines.length ? (
+            <div className="space-y-2 border-b border-white/10 pb-4">
+              <p className="font-headline text-xs uppercase text-slate-400">Your cart</p>
+              <ul className="space-y-2">
+              {cartLines.map(({ productId, quantity, product }) => (
+                <li key={productId} className="flex items-center gap-3">
+                  <ProductImage
+                    product={product}
+                    className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                    placeholderClassName="h-12 w-12 shrink-0 rounded-lg"
+                  />
+                  <span className="min-w-0 flex-1 text-white">
+                    {product?.name || 'Product'} × {quantity}
+                  </span>
+                </li>
+              ))}
+              </ul>
+            </div>
+          ) : null}
           <p className="font-headline text-xs uppercase text-slate-400">Shipping (optional)</p>
           {['fullName', 'line1', 'city', 'phone', 'postalCode'].map((k) => (
             <input

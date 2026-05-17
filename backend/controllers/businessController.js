@@ -8,6 +8,7 @@ const Notification = require('../models/Notification');
 const VerificationDocument = require('../models/VerificationDocument');
 const CoachPartnershipRequest = require('../models/CoachPartnershipRequest');
 const { asyncHandler } = require('../utils/asyncHandler');
+const { enrichOrderItemsWithImages } = require('../utils/productImages');
 const { notifyUser } = require('../utils/notify');
 const {
   getStripe,
@@ -18,7 +19,7 @@ const {
   paymentIntentMethodSpec,
 } = require('../utils/stripePayments');
 
-/** Monthly USD price per SRS / UC-B3 */
+/** Monthly USD price per subscription tier */
 function subscriptionPriceUsd(pkg) {
   if (pkg === 'premium') return 99;
   if (pkg === 'pro') return 49;
@@ -199,7 +200,7 @@ const renewSubscription = asyncHandler(async (req, res) => {
 });
 
 const updateStore = asyncHandler(async (req, res) => {
-  /** SRS UC-B5 — store branding & policies */
+  /** Store branding & policies */
   const allowed = [
     'storeName',
     'storeDescription',
@@ -214,7 +215,7 @@ const updateStore = asyncHandler(async (req, res) => {
   res.json({ success: true, data: bp });
 });
 
-/** SRS UC-B3 / UC-B4 — change tier with downgrade guard */
+/** Change subscription tier with downgrade guard */
 const changeSubscription = asyncHandler(async (req, res) => {
   const { package: pkg, paymentIntentId } = req.body;
   const amountUsd = subscriptionPriceUsd(pkg);
@@ -292,8 +293,14 @@ const listMyProducts = asyncHandler(async (req, res) => {
 
 const addProduct = asyncHandler(async (req, res) => {
   await assertVerifiedAndQuota(req.user.id);
+  const images = Array.isArray(req.body.images)
+    ? req.body.images.map((u) => String(u).trim()).filter(Boolean)
+    : [];
+  if (images.length < 1) {
+    return res.status(400).json({ success: false, message: 'At least one product image is required' });
+  }
   const bp = await BusinessProfile.findOne({ user: req.user.id });
-  const product = await Product.create({ ...req.body, businessOwner: req.user.id });
+  const product = await Product.create({ ...req.body, images, businessOwner: req.user.id });
   bp.listingSlotsRemaining -= 1;
   await bp.save();
   res.status(201).json({ success: true, data: product });
@@ -319,7 +326,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 const deleteProduct = asyncHandler(async (req, res) => {
   const p = await Product.findOne({ _id: req.params.id, businessOwner: req.user.id });
   if (!p) return res.status(404).json({ success: false, message: 'Not found' });
-  /** SRS UC-B8 — block delete when open orders reference product */
+  /** Block delete when open orders reference product */
   const openOrder = await Order.findOne({
     businessOwner: req.user.id,
     status: { $in: ['pending', 'paid', 'processing', 'shipped'] },
@@ -355,7 +362,7 @@ const patchStock = asyncHandler(async (req, res) => {
     new: true,
   });
   if (!p) return res.status(404).json({ success: false, message: 'Not found' });
-  /** SRS UC-B10 */
+  /** Stock update */
   const th = p.lowStockThreshold ?? 5;
   if (p.stock <= th) {
     await notifyUser(req.user.id, {
@@ -381,7 +388,8 @@ const addProductImage = asyncHandler(async (req, res) => {
 
 const listOrders = asyncHandler(async (req, res) => {
   const list = await Order.find({ businessOwner: req.user.id }).sort({ createdAt: -1 }).lean();
-  res.json({ success: true, data: list });
+  const data = await enrichOrderItemsWithImages(list, Product);
+  res.json({ success: true, data });
 });
 
 const updateOrderStatus = asyncHandler(async (req, res) => {
@@ -413,7 +421,7 @@ function escapeCsvCell(v) {
   return s;
 }
 
-/** SRS UC-B13 — sales analytics; optional CSV export (PDF/Excel via CSV interchange) */
+/** Sales analytics; optional CSV export */
 const salesReport = asyncHandler(async (req, res) => {
   const filter = { businessOwner: req.user.id, status: { $ne: 'cancelled' } };
   if (req.query.from) filter.createdAt = { ...filter.createdAt, $gte: new Date(req.query.from) };

@@ -13,6 +13,8 @@ const coachProfileSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
     fullName: { type: String, required: true, trim: true },
+    /** Public coach headshot — JPG/PNG via POST /coaches/me/profile-photo */
+    profilePhotoUrl: String,
     phone: String,
     specialties: [{ type: String, enum: ['cricket', 'badminton'] }],
     academyLocation: String,
@@ -23,9 +25,9 @@ const coachProfileSchema = new mongoose.Schema(
     averageRating: { type: Number, default: 0 },
     ratingCount: { type: Number, default: 0 },
     bankAccountLabel: String,
-    /** SRS UC-A3 / UC-C1 — map link for academy location verification */
+    /** Map link for academy location verification */
     locationMapUrl: { type: String, required: true, trim: true },
-    /** SRS UC-C5 — max concurrent students (soft cap) */
+    /** Max concurrent students (soft cap) */
     maxStudents: { type: Number, default: 40, min: 1 },
     /** Monthly platform access — admin-priced via SystemSettings `coach_platform_subscription_usd` */
     platformSubscriptionRenewsAt: Date,

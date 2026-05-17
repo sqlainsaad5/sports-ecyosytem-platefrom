@@ -16,18 +16,18 @@ const productSchema = new mongoose.Schema(
     category: { type: String, trim: true },
     sportType: { type: String, enum: ['cricket', 'badminton', 'general'], default: 'general' },
     price: { type: Number, required: true, min: 0 },
-    /** SRS UC-B9 — optional sale window */
+    /** Optional sale window */
     salePrice: { type: Number, min: 0 },
     discountPercent: { type: Number, min: 0, max: 100 },
     saleStart: Date,
     saleEnd: Date,
     stock: { type: Number, default: 0, min: 0 },
-    /** SRS UC-B10 */
+    /** Low-stock threshold */
     lowStockThreshold: { type: Number, default: 5, min: 0 },
     images: [String],
     primaryImageIndex: { type: Number, default: 0, min: 0 },
     isActive: { type: Boolean, default: true },
-    /** SRS UC-B7 — lightweight audit */
+    /** Lightweight audit trail */
     changeLog: [changeLogSchema],
   },
   { timestamps: true }

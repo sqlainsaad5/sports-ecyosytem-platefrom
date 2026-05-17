@@ -3,7 +3,7 @@ const { body, param } = require('express-validator');
 const c = require('../controllers/coachController');
 const { authenticate, requireRole, loadUser } = require('../middleware/auth');
 const { requireCoachPlatformSubscription } = require('../middleware/coachPlatformSubscription');
-const { upload } = require('../middleware/upload');
+const { upload, uploadImage } = require('../middleware/upload');
 const { validateRequest } = require('../middleware/validate');
 
 const r = Router();
@@ -12,6 +12,7 @@ r.use(authenticate, loadUser, requireRole('coach'));
 /** Profile, verification docs, notifications, and platform subscription — no active sub required */
 r.get('/me/profile', c.getProfile);
 r.put('/me/profile', c.updateProfile);
+r.post('/me/profile-photo', uploadImage.single('image'), c.uploadProfilePhoto);
 r.get('/subscription/status', c.getCoachSubscriptionStatus);
 r.post(
   '/subscription/payment-intent',
@@ -24,6 +25,7 @@ r.post('/subscription/renew', c.renewCoachPlatform);
 r.post('/documents', upload.single('file'), c.uploadDocumentMeta);
 r.get('/documents', c.listDocuments);
 r.get('/notifications', c.listNotifications);
+r.get('/dashboard', c.getDashboard);
 
 r.use(requireCoachPlatformSubscription);
 
@@ -39,6 +41,16 @@ r.patch(
   c.updateTrainingRequest
 );
 r.get('/training-sessions', c.listTrainingSessions);
+r.post(
+  '/training-plans/auto-draft',
+  [
+    body('playerId').isMongoId().withMessage('Valid player id required'),
+    body('weekStartDate').optional(),
+    body('publishNow').optional().isBoolean(),
+  ],
+  validateRequest,
+  c.generateAutoTrainingPlan
+);
 r.post(
   '/training-plans',
   [

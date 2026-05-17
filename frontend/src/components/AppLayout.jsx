@@ -8,6 +8,7 @@ const linkCls = ({ isActive }) =>
 const nav = {
   coach: [
     { to: '/coach', end: true, label: 'Dashboard' },
+    { to: '/coach/profile', label: 'Profile' },
     { to: '/coach/subscription', label: 'Subscription' },
     { to: '/coach/requests', label: 'Requests' },
     { to: '/coach/sessions', label: 'Sessions' },
@@ -72,6 +73,8 @@ export default function AppLayout() {
                 <span className="material-symbols-outlined text-xl">
                   {item.label === 'Dashboard'
                     ? 'dashboard'
+                    : item.label === 'Profile'
+                      ? 'account_circle'
                     : item.label === 'Subscription'
                       ? 'subscriptions'
                     : item.label === 'Requests'

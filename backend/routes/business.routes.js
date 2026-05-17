@@ -18,7 +18,7 @@ r.post(
 );
 r.post('/subscription', [body('package').isIn(['basic', 'pro', 'premium'])], b.subscribe);
 r.post('/subscription/renew', b.renewSubscription);
-/** SRS UC-B4 — change listing package */
+/** Change listing package */
 r.put(
   '/subscription/plan',
   [body('package').isIn(['basic', 'pro', 'premium'])],
